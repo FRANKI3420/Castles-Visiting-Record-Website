@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本続100名城訪問記録サイト</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <style>
+        body {
+            background: linear-gradient(to bottom, #e4e2da, #a6c175);
+        }
+
+        #map-container {
+            display: flex;
+            width: 100%;
+        }
+
+        /* 地図を表示するためのコンテナのスタイル */
+        #map {
+            height: 500px;
+            /* 地図の高さを指定 */
+            width: 50%;
+            /* 地図の幅を50%に指定 */
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="index.html">100名城の訪問記録サイトへ</a>
+        <h1>続100名城訪問記録サイト</h1>
+
+        <div class="image-container">
+            <img src="gujo.jpg" alt="画像1" width="200" height="300">
+            <img src="ninn.jpg" alt="画像2" width="200" height="300">
+        </div>
+
+
+        <label for="region">エリア選択:</label>
+        <select id="region" name="region">
+            <option value="未選択">未選択</option>
+            <option value="北海道・東北地方">北海道・東北地方</option>
+            <option value="関東・甲信越地方">関東・甲信越地方</option>
+            <option value="北陸・東海地方">北陸・東海地方</option>
+            <option value="近畿地方">近畿地方</option>
+            <option value="中国・四国地方">中国・四国地方</option>
+            <option value="九州・沖縄地方">九州・沖縄地方</option>
+        </select>
+
+        <br>
+        <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+
+        <label for="catsle">お城選択:</label>
+        <select id="catsle" name="catsle">
+        </select>
+
+        <br>
+        <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+
+        <label for="selectedDate">訪れた日付の選択:</label>
+        <input type="date" id="selectedDate" name="selectedDate">
+
+        <br>
+        <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+
+        <!-- <button onclick="saveSelectedData()">選択したデータを保存</button> -->
+        <button onclick="saveData()">データを保存</button>
+
+        <br>
+        <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+
+        <br>
+        <div id="map-container">
+            <!-- 地図を表示するためのコンテナ -->
+            <div id="map"></div>
+        </div>
+        <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+
+        <!-- <button onclick="displaySavedData()">保存されたデータを表示</button> -->
+        <button onclick="displayStoredData()">保存されたデータを表示(ID順)</button>
+        <button onclick="displayStoredData2()">保存されたデータを表示(日付順)</button>
+        <div id="savedData"></div>
+
+        <br>
+
+        <button onclick="reset()">記録をリセットする</button>
+
+
+        <br>
+        <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+
+        <!-- データをCSVで出力するボタン -->
+        <button onclick="outputCSV()">CSVで出力</button>
+
+        <br>
+        <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+
+        <button onclick="getAllCastleIds()">訪れていないお城を表示</button>
+        <button onclick="kakusu()">非表示</button>
+        <div id="nameList"></div>
+
+    </header>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script src="main2.js"></script>
+</body>
