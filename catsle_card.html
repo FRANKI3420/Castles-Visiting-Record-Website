@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日本百名城訪問記録サイト</title>
+    <title>城カード取得記録サイト</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
     <style>
@@ -133,15 +133,15 @@
         <h2>メニュー</h2>
         <ul>
             <!-- <li><a href="#">ホーム</a></li> -->
-            <li><a href="index2.html">続100名城訪問記録</a></li>
+            <li><a href="index.html">100名城訪問記録</a></li>
+            <li><a href="index2.html">続100名城の訪問記録</a></li>
+            <li><a href="https://jokaku.jp/business/castle-card/" target="_blank">城カード公式サイト</a></li>
             <!-- <li><a href="#">国宝5名城</a></li>
             <li><a href="#">現存12天守</a></li> -->
-            <li><a href="catsle_card.html">城カード取得記録</a></li>
-            <li><a href="https://shirobito.jp/article/1843" target="_blank">100名城公式サイト</a></li>
             <button class="toggle-button" id="toggleButton">＜</button>
-
         </ul>
     </div>
+
     <div class="mapzone" id="mapzone">
         <h2>Map</h2>
         <button onclick="setCurrentLocation()" style="font-size: 20px;">現在地へ</button>
@@ -150,32 +150,35 @@
             <div id="map"></div>
         </div>
     </div>
-    <div class="content" id="content">
 
+    <div class="content" id="content">
         <header>
 
-            <h1>日本100名城訪問記録サイト</h1>
+            <h1>城カード取得記録サイト</h1>
 
             <div id="image-container">
                 <img id="image" src="img/備中松山城.jpg" alt="画像" ,width="300" height="200">
                 <img id="image" src="img/ueda.jpg" alt="画像" ,width="300" height="200">
             </div>
 
-            <label for="region" style="font-size: 20px;">エリア選択:</label>
+            <label for="region" style="font-size: 20px;">段数選択:</label>
             <select id="region" name="region" style="font-size: 20px;">
-                <option value="未選択">未選択</option>
-                <option value="北海道・東北">北海道・東北</option>
-                <option value="関東">関東</option>
-                <option value="甲信越・北陸">甲信越・北陸</option>
-                <option value="東海・近畿">東海・近畿</option>
-                <option value="中国・四国">中国・四国</option>
-                <option value="九州・沖縄">九州・沖縄</option>
-                <option value="国宝5名城">国宝5名城</option>
-                <option value="現存12天守">現存12天守</option>
+                <option value="catsle_card.csv">全弾表示</option>
+                <option value="1dan.csv">第1弾</option>
+                <option value="2dan.csv">第2弾</option>
+                <option value="3dan.csv">第3弾</option>
+                <option value="4dan.csv">第4弾</option>
+                <option value="5dan.csv">第5弾</option>
+                <option value="6dan.csv">第6弾</option>
+                <option value="7dan.csv">第7弾</option>
+                <option value="8dan.csv">第8弾</option>
             </select>
+            <br>
+            <div id="dannData"></div>
+
 
             <br>
-            <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+            <div style="margin: 10px 0;"></div>
 
             <label for="catsle" style="font-size: 20px;">お城選択:</label>
             <select id="catsle" name="catsle" style="font-size: 20px;">
@@ -184,9 +187,8 @@
             <br>
             <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
 
-            <label for="selectedDate" style="font-size: 20px;">訪れた日付の選択:</label>
-            <!-- <input type="date" id="selectedDate" name="selectedDate" style="font-size: 20px;"> -->
-            <input type="date" id="selectedDate" name="selectedDate" style="font-size: 20px;">
+            <!-- <label for="selectedDate" style="font-size: 20px;">訪れた日付の選択:</label>
+            <input type="date" id="selectedDate" name="selectedDate" style="font-size: 20px;"> -->
 
             <br>
             <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
@@ -200,21 +202,14 @@
             <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
 
 
-            <button onclick="displayStoredData()">保存データを表示(ID順)</button>
-            <button onclick="displayStoredData2()">保存データを表示(日付順)</button>
-            <div>
-                <button onclick="kakusu2()">非表示</button>
-            </div>
+            <button onclick="displayStoredData()">保存データを表示</button>
+            <button onclick="kakusu2()">非表示</button>
+
+            <!-- <button onclick="displayStoredData2()">保存データを表示(日付順)</button> -->
             <div id="savedData"></div>
             <div style="margin: 30px 0;"></div> <!-- 縦の隙間 -->
 
-            <!--  
-            <div id="map-container">
-                <div id="map"></div>
-            </div>
-            -->
-
-            <button onclick="getAllCastleIds()">訪れていないお城を表示</button>
+            <button onclick="getAllCastleIds()">未取得のお城カードを表示</button>
             <button onclick="kakusu()">非表示</button>
             <div id="nameList"></div>
 
@@ -240,18 +235,16 @@
 
             <br>
             <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+            <!-- Leaflet JavaScriptファイルを読み込む -->
 
             <button onclick="document.getElementById('csvInput').click()">CSV読み込み</button>
             <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="inputCSV()">
             <pre id="output"></pre>
             <button id="loadButton" style="display:none" onclick="addData()">読み込んだデータを追加する</button>
-
-            <!-- Leaflet JavaScriptファイルを読み込む -->
-
         </header>
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-    <script src="main.js"></script>
+    <script src="main3.js"></script>
 </body>

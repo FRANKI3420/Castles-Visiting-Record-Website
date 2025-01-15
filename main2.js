@@ -114,6 +114,26 @@ const citiesByRegion = {
     ]
 };
 
+document.addEventListener("DOMContentLoaded", function() {
+    const toggleButton = document.getElementById("toggleButton");
+    const sidebar = document.getElementById("sidebar");
+    const mapzone = document.getElementById("mapzone");
+    const content = document.getElementById("content");
+
+    toggleButton.addEventListener("click", function() {
+        sidebar.classList.toggle("hidden");
+        mapzone.classList.toggle("active");
+        content.classList.toggle("expanded");
+
+        // ボタンのテキストを切り替え
+        if (sidebar.classList.contains("hidden")) {
+            toggleButton.textContent = "＞";  // メニューが隠れているときは右向きの矢印
+        } else {
+            toggleButton.textContent = "＜";  // メニューが表示されているときは左向きの矢印
+        }
+    });
+});
+
 const castleMap = new Map();
 const idMap = new Map();
 
@@ -129,8 +149,8 @@ for (const region in citiesByRegion) {
         idMap.set(currentId, castle)
     });
 }
-console.log(castleMap);
-console.log(idMap);
+// console.log(castleMap);
+// console.log(idMap);
 
 let selectedDate;
 let selectedCastleId;
@@ -153,6 +173,8 @@ document.getElementById("region").addEventListener("change", function () {
         citySelect.appendChild(option);
     });
 });
+
+
 
 function saveData() {
     const selectedCastle = document.getElementById("catsle").value;
@@ -191,6 +213,12 @@ function saveData() {
     }
 
     storedData.push({ castleId: id, castleName: selectedCastle, date: selectedDate });
+
+    const selectedCastleLocation = castleLocations.find(castle => castle.name === selectedCastle)?.location;
+    if (selectedCastleLocation) {
+        // 地図の中心を選択された城の位置に設定
+        map.setView(selectedCastleLocation, 9); // 10はズームレベルの例です。適宜調整してください。
+    }
     // マーカーの色を赤色に変更
     markerChangeColor(selectedCastle);
 
@@ -200,6 +228,8 @@ function saveData() {
     displayStoredData();
 
     console.log("データが保存されました:", storedData);
+    displayRecords();
+
 }
 
 function displayStoredData() {
@@ -215,9 +245,37 @@ function displayStoredData() {
     savedDataDiv.innerHTML = "";
 
     storedData.forEach(function (data) {
-        savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: ${data.castleName}, 日付: ${data.date}</p>`;
+        // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
+        savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.date}</p>`;
     });
 }
+
+// castle-link クラスを持つすべての要素にイベントリスナーを追加する
+const castleLinks = document.querySelectorAll('.castle-link');
+castleLinks.forEach(link => {
+    link.addEventListener('click', function (event) {
+        // クリックされた城の名前を取得する
+        event.preventDefault();
+
+        // 地図コンテナを取得
+        const mapContainer = document.getElementById('map');
+
+        // 地図コンテナの位置を取得
+        const containerTop = mapContainer.getBoundingClientRect().top;
+
+        // 画面をスクロールして地図コンテナが画面の中央に来るようにする
+        // window.scrollTo({
+        //     top: containerTop,
+        //     behavior: 'smooth' // スムーズなスクロールを有効にする
+        // });
+        // mapContainer.scrollIntoView({ behavior: "smooth" });
+
+        const castleName = this.textContent;
+        console.log('クリックされた城名:', castleName);
+        moveToCastleLocation(castleName, 10);
+        // ここにクリックされた城名を使用した任意の処理を追加する
+    });
+});
 
 function displayStoredData2() {
     // ローカルストレージからデータを取得
@@ -231,12 +289,33 @@ function displayStoredData2() {
     savedDataDiv.innerHTML = "";
 
     storedData.forEach(function (data) {
-        savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: ${data.castleName}, 日付: ${data.date}</p>`;
+        // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
+        savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.date}</p>`;
     });
 }
 
+// クリックされた城名の位置に地図を移動する関数
+function moveToCastleLocation(clickedCastleName) {
+    // castleLocationsから対応する城の位置情報を取得
+    console.log(clickedCastleName);
+    const castle = castleLocations.find(castle => castle.name === clickedCastleName);
+    if (castle) {
 
+        map.setView(castle.location); // 地図の中心をクリックされた城の位置に移動
+        // マーカーを作成して地図に追加し、ポップアップをバインド
+        const marker = L.marker(castle.location).addTo(map).bindPopup(castle.name);
+        marker.openPopup();
 
+        // 3秒後にポップアップを閉じる
+        setTimeout(() => {
+            marker.closePopup();
+            map.removeLayer(marker);
+
+        }, 3000);
+    } else {
+        alert(`${clickedCastleName} の位置情報が見つかりませんでした。`);
+    }
+}
 
 // CSV形式に変換する関数
 function convertToCSV(dataArray) {
@@ -267,7 +346,7 @@ function outputCSV() {
 
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.setAttribute('download', 'saved_data.csv');
+        link.setAttribute('download', 'zoku100catsle.csv');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -280,13 +359,13 @@ function getAllCastleIds() {
 
     // 登録されているすべての城IDを取得
     const castleIds = storedData.map(data => data.castleId);
-    console.log(castleIds);
+    // console.log(castleIds);
 
     const allNumbers = Array.from({ length: 100 }, (_, index) => index + 101);
 
     // 登録されていない数字を取得
     const unregisteredNumbers = allNumbers.filter(number => !castleIds.includes(number));
-    console.log(unregisteredNumbers);
+    // console.log(unregisteredNumbers);
 
     const nameList = [];
     for (const number of unregisteredNumbers) {
@@ -295,20 +374,65 @@ function getAllCastleIds() {
         // nameList.push(getCatsleName(stringNumber));
         nameList.push(idMap.get(number));
     }
-    console.log(nameList);
+    // console.log(nameList);
     const nameListDiv = document.getElementById("nameList");
     nameListDiv.innerHTML = "<ul>";
     nameListDiv.innerHTML += "訪れていないお城一覧\n";
     nameListDiv.innerHTML += "残り" + nameList.length + "城";
     nameList.forEach(function (name) {
-        nameListDiv.innerHTML += `<li>${name}</li>`;
+        nameListDiv.innerHTML += `<li><a href="#" class='castle-link2'>${name}</a></li>`;
     });
     nameListDiv.innerHTML += "</ul>";
+    // castle-link クラスを持つすべての要素にイベントリスナーを追加する
+    const castleLinks2 = document.querySelectorAll('.castle-link2');
+
+    castleLinks2.forEach(link => {
+        link.addEventListener('click', function (event) {
+            // クリックされた城の名前を取得する
+            event.preventDefault();
+
+            // 地図コンテナを取得
+            const mapContainer = document.getElementById('map');
+
+            const castleName = this.textContent;
+            console.log('クリックされた城名:', castleName);
+            moveToCastleLocation(castleName, 10);
+            // ここにクリックされた城名を使用した任意の処理を追加する
+        });
+    });
+
 }
 
 function kakusu() {
     const nameListDiv = document.getElementById("nameList");
     nameListDiv.innerHTML = null;
+}
+
+function kakusu2() {
+    const nameListDiv = document.getElementById("savedData");
+    nameListDiv.innerHTML = null;
+}
+
+function kakusu3() {
+    const nameListDiv = document.getElementById("recordList");
+    nameListDiv.innerHTML = null;
+}
+function getRcordList(){
+    const nameListDiv = document.getElementById("recordList");
+    nameListDiv.innerHTML = null;
+    const storedData = JSON.parse(localStorage.getItem("storedData2")) || [];
+    storedData.forEach(record => {
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = record.castleName; // お城のIDなどをvalueとして設定
+        recordList.appendChild(checkbox);
+
+        const label = document.createElement("label");
+        label.textContent = record.castleName;
+        recordList.appendChild(label);
+
+        recordList.appendChild(document.createElement("br"));
+    });
 }
 
 function reset() {
@@ -319,11 +443,14 @@ function reset() {
     }
     markers = [];
     loadCSV();
+    kakusu();
     displayStoredData();
+    displayRecords();
 }
 
 // 指定したCSVファイル名
-const csvFileName = 'zoku.csv';
+const csvFileName = 'data/zoku.csv';
+castleLocations = [];
 
 // ファイル読み込み処理を実行する関数
 function loadCSV() {
@@ -331,7 +458,7 @@ function loadCSV() {
         .then(response => response.text()) // テキストデータとして取得
         .then(csvData => {
             castleLocations = parseCSV(csvData); // CSVデータを解析して配列に変換
-            console.log(castleLocations); // データが正しく変換されていることを確認
+            // console.log(castleLocations); // データが正しく変換されていることを確認
             initMap(castleLocations); // 地図を初期化する関数を呼び出す
 
         })
@@ -358,8 +485,91 @@ function parseCSV(csv) {
     return data;
 }
 
+parsedData = []
+
+function inputCSV() {
+    const fileInput = document.getElementById('csvInput');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert('CSVファイルを選択してください。');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        const csvContent = event.target.result;
+        parsedData = parseInputCSV(csvContent);
+        displayData(parsedData);
+    };
+    reader.onerror = function () {
+        alert('ファイルを読み込む際にエラーが発生しました。');
+    };
+    reader.readAsText(file, 'UTF-8');
+     // ファイルが選ばれた後にボタンを表示
+     document.getElementById('loadButton').style.display = 'inline';
+}
+
+function parseInputCSV(data) {
+    const rows = data.split('\n');
+    // ヘッダーをスキップして、データ部分のみ処理
+    return rows.slice(1).map(row => {
+        const cells = row.split(',').map(cell => cell.trim());
+        console.log(cells);
+        return {
+            id: cells[0], // 城ID
+            name: cells[1], // 城名
+            date: cells[2] // 日付
+        };
+    });
+}
+
+function displayData(data) {
+    const output = document.getElementById('output');
+    output.textContent = "読み込んだデータ\n"
+    // カスタムフォーマットで出力
+    const formattedData = data.map(item => `${item.id}, 城名: ${item.name}, 日付: ${item.date}`).join('\n');
+    output.textContent += formattedData;
+}
+
+function addData() {
+    // 追加データを表示する処理
+    alert(parsedData.map(item => `${item.id}, 城名: ${item.name}, 日付: ${item.date}`).join('\n'));
+    alert("データが追加されました。");
+
+    const storedData = JSON.parse(localStorage.getItem("storedData2")) || [];
+
+    // 新しいデータを追加（重複しないデータのみ）
+    parsedData.forEach(item => {
+        // IDがすでにstoredDataに存在しない場合のみ追加
+        if (!storedData.some(existingItem => existingItem.castleName === item.name)) {
+            console.log("追加するデータ");
+            console.log(item.id);
+            console.log(item.name);
+            console.log(item.date);
+            // storedData.push(item);
+            storedData.push({ castleId: item.id, castleName: item.name,date: item.date});
+
+        }
+    });
+
+    // 新しいデータを再びローカルストレージに保存
+    localStorage.setItem("storedData2", JSON.stringify(storedData));
+
+    displayRecords(); // 更新後の記録を再表示
+    displayStoredData();
+    // ページをリロードする
+    location.reload();
+
+}
+
+
 // ページ読み込み時にファイルを読み込む
-window.onload = loadCSV;
+window.onload = function () {
+    loadCSV();
+    displayRecords();
+};
+
 
 // マーカーを格納する配列
 markers = [];
@@ -375,16 +585,31 @@ function initMap(castleLocations) {
     }).addTo(map);
 
     const catsleIcon = L.icon({
-        iconUrl: 'siro.png', // 赤いアイコンのURL
+        iconUrl: 'img/siro.png', // 赤いアイコンのURL
         iconSize: [25, 41], // アイコンのサイズ
         iconAnchor: [12, 41], // アイコンのアンカーポイント
         popupAnchor: [1, -34] // ポップアップのアンカーポイント
     });
 
+    const redMarkerIcon = L.icon({
+        iconUrl: 'img/hono.png', // 赤いアイコンのURL
+        iconSize: [25, 41], // アイコンのサイズ
+        iconAnchor: [12, 41], // アイコンのアンカーポイント
+        popupAnchor: [1, -34] // ポップアップのアンカーポイント
+    });
+
+    // ローカルストレージから城名のリストを取得
+    const storedData = JSON.parse(localStorage.getItem("storedData2")) || [];
+
     // 城のマーカーを地図上に表示
     castleLocations.forEach(castle => {
-        const marker = L.marker(castle.location).addTo(map).bindPopup(castle.name); // マーカーにポップアップを追加して城名を表示
-        marker.setIcon(catsleIcon);
+        // const marker = L.marker(castle.location).addTo(map).bindPopup(castle.name); // マーカーにポップアップを追加して城名を表示
+        // marker.setIcon(catsleIcon);
+
+        // 城名に応じて適切なアイコンを選択
+        const castleIcon = storedData.some(data => data.castleName === castle.name) ? redMarkerIcon : catsleIcon;
+        // マーカーを作成して地図に追加
+        const marker = L.marker(castle.location, { icon: castleIcon }).addTo(map).bindPopup(castle.name);
         markers.push(marker);
     });
 }
@@ -392,13 +617,13 @@ function initMap(castleLocations) {
 function markerChangeColor(targetCastleName) {
     // 赤いマーカーアイコン
     const redMarkerIcon = L.icon({
-        iconUrl: 'hono.png', // 赤いアイコンのURL
+        iconUrl: 'img/hono.png', // 赤いアイコンのURL
         iconSize: [25, 41], // アイコンのサイズ
         iconAnchor: [12, 41], // アイコンのアンカーポイント
         popupAnchor: [1, -34] // ポップアップのアンカーポイント
     });
-    console.log(targetCastleName);
-    console.log(markers);
+    // console.log(targetCastleName);
+    // console.log(markers);
     markers.forEach(marker => {
         if (marker.getPopup().getContent() === targetCastleName) {
             marker.setIcon(redMarkerIcon);
@@ -413,11 +638,86 @@ function setCurrentLocation() {
         navigator.geolocation.getCurrentPosition(position => {
             const { latitude, longitude } = position.coords;
             map.setView([latitude, longitude], 8); // 現在地を中心にしてズームレベルを15に設定
+            const marker = L.marker([latitude, longitude]).addTo(map).bindPopup(castle.name);
+
         }, error => {
             console.error('現在地の取得に失敗しました:', error);
         });
     } else {
         console.error('Geolocation API がサポートされていません');
+    }
+}
+// ページ読み込み時に現在地を取得して地図の中心に設定
+setCurrentLocation();
+
+
+// ローカルストレージから記録を取得し、チェックボックスリストを表示する関数
+function displayRecords() {
+    const storedData = JSON.parse(localStorage.getItem("storedData2")) || [];
+    const recordList = document.getElementById("recordList");
+    recordList.innerHTML = ""; // リストを初期化
+
+    storedData.forEach(record => {
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = record.castleName; // お城のIDなどをvalueとして設定
+        recordList.appendChild(checkbox);
+
+        const label = document.createElement("label");
+        label.textContent = record.castleName;
+        recordList.appendChild(label);
+
+        recordList.appendChild(document.createElement("br"));
+    });
+}
+
+// 選択した記録を削除する関数
+function remove() {
+    const checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
+    if (checkboxes.length === 0) {
+        alert("削除する記録を選択してください。");
+        return;
+    }
+
+    const confirmation = confirm('選択された記録を削除しますか？');
+    if (confirmation) {
+        localStorage.removeItem("storedData2"); // 特定のキーに関連付けられたデータを削除
+
+        const storedData = JSON.parse(localStorage.getItem("storedData2")) || [];
+        const updatedData = storedData.filter(record => !checkboxes.some(checkbox => checkbox.value === record.castleId));
+        localStorage.setItem("storedData2", JSON.stringify(updatedData));
+
+        // 選択されているチェックボックスの値を格納する配列
+        const selectedValues = [];
+
+        // 選択されたチェックボックスの要素を反復処理して、値を取得する
+        checkboxes.forEach(checkbox => {
+            selectedValues.push(checkbox.value);
+        });
+
+        // 選択されたチェックボックスの値を表示する
+        console.log("選択されたチェックボックスの値:", selectedValues);
+
+        const catsleIcon = L.icon({
+            iconUrl: 'img/siro.png', // 赤いアイコンのURL
+            iconSize: [25, 41], // アイコンのサイズ
+            iconAnchor: [12, 41], // アイコンのアンカーポイント
+            popupAnchor: [1, -34] // ポップアップのアンカーポイント
+        });
+
+        // 選択された城名と一致するマーカーの色を変更
+        markers.forEach(marker => {
+            // マーカーに関連付けられた城名を取得
+            const markerCastleName = marker.getPopup().getContent();
+            // 選択された城名の中にマーカーの城名が含まれているか確認
+            if (selectedValues.includes(markerCastleName)) {
+                marker.setIcon(catsleIcon);
+            }
+        });
+
+        displayRecords(); // 更新後の記録を再表示
+        displayStoredData();
+        alert("選択した記録が削除されました。");
     }
 }
 

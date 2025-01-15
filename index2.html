@@ -9,101 +9,250 @@
 
     <style>
         body {
-            background: linear-gradient(to bottom, #e4e2da, #a6c175);
+            background: linear-gradient(to bottom, #ded79b, #c8e9e9);
+            margin: 0;
+            padding: 0;
         }
 
         #map-container {
             display: flex;
             width: 100%;
+            height: calc(100vh - 100px);
+            /* メニューの高さを除いた残りの画面高さに設定 */
         }
 
-        /* 地図を表示するためのコンテナのスタイル */
         #map {
-            height: 500px;
-            /* 地図の高さを指定 */
+            height: 100%;
+            width: 100%;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: #d3e690;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(182, 214, 136, 0.1);
+            transition: transform 0.3s ease;
+            /* アニメーション */
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+            /* 左にスライドして隠す */
+        }
+
+        .sidebar h2 {
+            margin-bottom: 20px;
+            color: #130909;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar ul li a {
+            display: block;
+            color: #5242c7;
+            text-decoration: none;
+            padding: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #5e9cda;
+        }
+
+        .toggle-button {
+            position: fixed;
+            top: 20px;
+            left: 220px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mapzone {
+            position: fixed;
+            top: 0;
+            right: 0;
             width: 50%;
-            /* 地図の幅を50%に指定 */
+            height: 100%;
+            background-color: #d3e690;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(182, 214, 136, 0.1);
+            transition: transform 0.3s ease;
+            /* アニメーション */
+        }
+
+        .mapzone.active {
+            right: 0;
+        }
+
+        .content {
+            margin-left: 220px;
+            /* サイドバー分の余白 */
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+            /* メニューが隠れるときに広がる */
+        }
+
+        .content.expanded {
+            margin-left: 0;
+            /* サイドバー非表示時、コンテンツが広がる */
+        }
+
+        button {
+            border: none;
+            color: rgb(21, 23, 16);
+            font-size: 17px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #6f9888;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
 
 <body>
-    <header>
-        <a href="index.html">100名城の訪問記録サイトへ</a>
-        <h1>続100名城訪問記録サイト</h1>
+    <div class="sidebar" id="sidebar">
+        <h2>メニュー</h2>
+        <ul>
+            <!-- <li><a href="#">ホーム</a></li> -->
+            <li><a href="index.html">100名城訪問記録</a></li>
+            <li><a href="catsle_card.html">城カード取得記録</a></li>
+            <li><a href="https://shirobito.jp/article/1843" target="_blank">続100名城公式サイト</a></li>
+            <button class="toggle-button" id="toggleButton">＜</button>
+        </ul>
+    </div>
 
-        <div class="image-container">
-            <img src="gujo.jpg" alt="画像1" width="200" height="300">
-            <img src="ninn.jpg" alt="画像2" width="200" height="300">
+    <div>
+        <div class="mapzone" id="mapzone">
+            <h2>Map</h2>
+            <button onclick="setCurrentLocation()" style="font-size: 20px;">現在地へ</button>
+            <div id="map-container">
+                <!-- 地図を表示するためのコンテナ -->
+                <div id="map"></div>
+            </div>
         </div>
 
+        <div class="content" id="content">
+            <header>
+                <!-- <a href="index.html">100名城の訪問記録サイトへ</a> -->
+                <h1>続100名城訪問記録サイト</h1>
 
-        <label for="region">エリア選択:</label>
-        <select id="region" name="region">
-            <option value="未選択">未選択</option>
-            <option value="北海道・東北地方">北海道・東北地方</option>
-            <option value="関東・甲信越地方">関東・甲信越地方</option>
-            <option value="北陸・東海地方">北陸・東海地方</option>
-            <option value="近畿地方">近畿地方</option>
-            <option value="中国・四国地方">中国・四国地方</option>
-            <option value="九州・沖縄地方">九州・沖縄地方</option>
-        </select>
+                <div class="image-container">
+                    <img src="img/gujo.jpg" alt="画像1" width="200" height="300">
+                    <img src="img/ninn.jpg" alt="画像2" width="200" height="300">
+                </div>
 
-        <br>
-        <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
 
-        <label for="catsle">お城選択:</label>
-        <select id="catsle" name="catsle">
-        </select>
 
-        <br>
-        <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+                <label for="region" style="font-size: 20px;">エリア選択:</label>
+                <select id="region" name="region" style="font-size: 20px;">
+                    <option value="未選択">未選択</option>
+                    <option value="北海道・東北地方">北海道・東北地方</option>
+                    <option value="関東・甲信越地方">関東・甲信越地方</option>
+                    <option value="北陸・東海地方">北陸・東海地方</option>
+                    <option value="近畿地方">近畿地方</option>
+                    <option value="中国・四国地方">中国・四国地方</option>
+                    <option value="九州・沖縄地方">九州・沖縄地方</option>
+                </select>
+                <br>
 
-        <label for="selectedDate">訪れた日付の選択:</label>
-        <input type="date" id="selectedDate" name="selectedDate">
 
-        <br>
-        <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+                <br>
+                <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
 
-        <!-- <button onclick="saveSelectedData()">選択したデータを保存</button> -->
-        <button onclick="saveData()">データを保存</button>
+                <label for="catsle" style="font-size: 20px;">お城選択:</label>
+                <select id="catsle" name="catsle" style="font-size: 20px;">
+                </select>
 
-        <br>
-        <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+                <br>
+                <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
 
-        <br>
-        <div id="map-container">
-            <!-- 地図を表示するためのコンテナ -->
-            <div id="map"></div>
+                <label for="selectedDate" style="font-size: 20px;">訪れた日付の選択:</label>
+                <input type="date" id="selectedDate" name="selectedDate" style="font-size: 20px;">
+
+                <br>
+                <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+
+                <button onclick="saveData()" style="font-size: 20px;">データを保存</button>
+
+                <br>
+                <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+                <br>
+
+                <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+
+
+                <button onclick="displayStoredData()">保存データを表示(ID順)</button>
+                <button onclick="displayStoredData2()">保存データを表示(日付順)</button>
+                <div>
+                    <button onclick="kakusu2()">非表示</button>
+                </div>
+                <div id="savedData"></div>
+                <div style="margin: 30px 0;"></div> <!-- 縦の隙間 -->
+
+                <!--  
+                <div id="map-container">
+                    <div id="map"></div>
+                </div>
+                -->
+
+                <button onclick="getAllCastleIds()">訪れていないお城を表示</button>
+                <button onclick="kakusu()">非表示</button>
+                <div id="nameList"></div>
+
+                <br>
+                <button onclick="remove()">選択した訪問記録の削除</button>
+                <button onclick="getRcordList()">表示</button>
+                <button onclick="kakusu3()">非表示</button>
+                <br>
+                <div id="recordList">
+                </div>
+                <br>
+
+                <br>
+
+
+
+                <button onclick="reset()">記録をリセットする</button>
+                <br>
+                <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+
+                <!-- データをCSVで出力するボタン -->
+                <button onclick="outputCSV()">CSVで出力</button>
+
+                <br>
+                <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+
+                <button onclick="document.getElementById('csvInput').click()">CSV読み込み</button>
+                <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="inputCSV()">
+                <pre id="output"></pre>
+                <button id="loadButton" style="display:none" onclick="addData()">読み込んだデータを追加する</button>
+
+                <!-- Leaflet JavaScriptファイルを読み込む -->
+
+            </header>
         </div>
-        <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+        </header>
 
-        <!-- <button onclick="displaySavedData()">保存されたデータを表示</button> -->
-        <button onclick="displayStoredData()">保存されたデータを表示(ID順)</button>
-        <button onclick="displayStoredData2()">保存されたデータを表示(日付順)</button>
-        <div id="savedData"></div>
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-        <br>
-
-        <button onclick="reset()">記録をリセットする</button>
-
-
-        <br>
-        <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
-
-        <!-- データをCSVで出力するボタン -->
-        <button onclick="outputCSV()">CSVで出力</button>
-
-        <br>
-        <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
-
-        <button onclick="getAllCastleIds()">訪れていないお城を表示</button>
-        <button onclick="kakusu()">非表示</button>
-        <div id="nameList"></div>
-
-    </header>
-
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-    <script src="main2.js"></script>
+        <script src="main2.js"></script>
 </body>
