@@ -1,120 +1,3 @@
-const citiesByRegion = {
-    "未選択": ["未選択"],
-    "北海道・東北地方": [
-        "志苔館",
-        "上ノ国勝山館",
-        "浪岡城",
-        "九戸城",
-        "白石城",
-        "脇本城",
-        "秋田城",
-        "鶴ヶ岡城",
-        "米沢城",
-        "三春城",
-        "向羽黒山城"
-    ],
-    "関東・甲信越地方": [
-        "笠間城",
-        "土浦城",
-        "唐沢山城",
-        "名胡桃城",
-        "沼田城",
-        "岩櫃城",
-        "忍城",
-        "杉山城",
-        "菅谷館",
-        "本佐倉城",
-        "大多喜城",
-        "滝山城",
-        "品川台場",
-        "小机城",
-        "石垣山城",
-        "新府城",
-        "要害山城",
-        "龍岡城",
-        "高島城",
-        "村上城",
-        "高田城",
-        "鮫ケ尾城"
-    ],
-    "北陸・東海地方": [
-        "富山城",
-        "増山城",
-        "鳥越城",
-        "福井城",
-        "越前大野城",
-        "佐柿国吉城",
-        "玄蕃尾城",
-        "郡上八幡城",
-        "苗木城",
-        "美濃金山城",
-        "大垣城",
-        "興国寺城",
-        "諏訪原城",
-        "高天神城",
-        "浜松城",
-        "小牧山城",
-        "古宮城",
-        "吉田城",
-        "津城",
-        "多気北畠氏城館",
-        "田丸城",
-        "赤木城"
-    ],
-    "近畿地方": [
-        "鎌刃城",
-        "八幡山城",
-        "福知山城",
-        "芥川山城",
-        "飯盛城",
-        "岸和田城",
-        "出石城・有子山城",
-        "黒井城",
-        "洲本城",
-        "大和郡山城",
-        "宇陀松山城",
-        "新宮城"
-    ],
-    "中国・四国地方": [
-        "若桜鬼ケ城",
-        "米子城",
-        "浜田城",
-        "備中高松城",
-        "三原城",
-        "新高山城",
-        "大内氏館・高嶺城",
-        "勝瑞城",
-        "一宮城",
-        "引田城",
-        "能島城",
-        "河後森城",
-        "岡豊城"
-    ],
-    "九州・沖縄地方": [
-        "小倉城",
-        "水城",
-        "久留米城",
-        "基肄城",
-        "唐津城",
-        "金田城",
-        "福江城",
-        "原城",
-        "鞠智城",
-        "八代城",
-        "中津城",
-        "角牟礼城",
-        "臼杵城",
-        "佐伯城",
-        "延岡城",
-        "佐土原城",
-        "志布志城",
-        "知覧城",
-        "座喜味城",
-        "勝連城"
-    ]
-};
-
-
 document.addEventListener("DOMContentLoaded", function() {
     const toggleButton = document.getElementById("toggleButton");
     const sidebar = document.getElementById("sidebar");
@@ -239,7 +122,7 @@ function saveData() {
 
 
     // ローカルストレージから既存のデータを取得
-    let storedData = JSON.parse(localStorage.getItem("storedData3")) || [];
+    let storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
 
     // すでに同じ城IDが存在するか確認
     const existingIndex = storedData.findIndex(data => data.castleId === id);
@@ -267,7 +150,7 @@ function saveData() {
     markerChangeColor(selectedCastle);
 
     // ローカルストレージに保存
-    localStorage.setItem("storedData3", JSON.stringify(storedData));
+    localStorage.setItem("storedData4", JSON.stringify(storedData));
 
     displayStoredData();
 
@@ -278,7 +161,7 @@ function saveData() {
 
 function displayStoredData() {
     // ローカルストレージからデータを取得
-    const storedData = JSON.parse(localStorage.getItem("storedData3")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
 
     // IDでソート
     storedData.sort((a, b) => a.castleId - b.castleId);
@@ -323,9 +206,9 @@ castleLinks.forEach(link => {
     });
 });
 
-function displaystoredData3() {
+function displaystoredData4() {
     // ローカルストレージからデータを取得
-    const storedData = JSON.parse(localStorage.getItem("storedData3")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
 
     // 日付でソート
     storedData.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -382,7 +265,7 @@ function outputCSV() {
 
 
         // ローカルストレージからデータを取得
-        const storedData = JSON.parse(localStorage.getItem("storedData3")) || [];
+        const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
 
         // データをCSV形式に変換
         const csvData = convertToCSV(storedData);
@@ -392,7 +275,7 @@ function outputCSV() {
 
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.setAttribute('download', 'catsle_card.csv');
+        link.setAttribute('download', 'catsle_card_zoku.csv');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -467,7 +350,7 @@ function addData() {
     alert(parsedData.map(item => `${item.id}, 城名: ${item.name}`).join('\n'));
     alert("データが追加されました。");
 
-    const storedData = JSON.parse(localStorage.getItem("storedData3")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
 
     // 新しいデータを追加（重複しないデータのみ）
     parsedData.forEach(item => {
@@ -483,7 +366,7 @@ function addData() {
     });
 
     // 新しいデータを再びローカルストレージに保存
-    localStorage.setItem("storedData3", JSON.stringify(storedData));
+    localStorage.setItem("storedData4", JSON.stringify(storedData));
 
     displayRecords(); // 更新後の記録を再表示
     displayStoredData();
@@ -495,7 +378,7 @@ function addData() {
 
 function getAllCastleIds() {
     // ローカルストレージからデータを取得
-    const storedData = JSON.parse(localStorage.getItem("storedData3")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
 
     // 登録されているすべての城IDを取得
     const castleIds = storedData.map(data => data.castleId);
@@ -565,7 +448,7 @@ function kakusu3() {
 function reset() {
     const confirmation = confirm('ローカルストレージに保存されたデータをリセットします。よろしいですか？');
     if (confirmation) {
-        localStorage.removeItem("storedData3"); // 特定のキーに関連付けられたデータを削除
+        localStorage.removeItem("storedData4"); // 特定のキーに関連付けられたデータを削除
         alert('データがリセットされました。'); // リセット完了のメッセージを表示
     }
     markers = [];
@@ -576,7 +459,7 @@ function reset() {
 }
 
 // 指定したCSVファイル名
-const csvFileName = 'data/catsle_card.csv';
+const csvFileName = 'data/catsle_card_zoku.csv';
 castleLocations = [];
 allNumbers = [];
 
@@ -663,7 +546,7 @@ function initMap(castleLocations) {
     });
 
     // ローカルストレージから城名のリストを取得
-    const storedData = JSON.parse(localStorage.getItem("storedData3")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
 
     // 城のマーカーを地図上に表示
     castleLocations.forEach(castle => {
@@ -718,7 +601,7 @@ setCurrentLocation();
 
 // ローカルストレージから記録を取得し、チェックボックスリストを表示する関数
 function displayRecords() {
-    const storedData = JSON.parse(localStorage.getItem("storedData3")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
     const recordList = document.getElementById("recordList");
     recordList.innerHTML = ""; // リストを初期化
 
@@ -739,7 +622,7 @@ function displayRecords() {
 function getRcordList(){
     const nameListDiv = document.getElementById("recordList");
     nameListDiv.innerHTML = null;
-    const storedData = JSON.parse(localStorage.getItem("storedData3")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
     storedData.forEach(record => {
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
@@ -764,7 +647,7 @@ function remove() {
     const confirmation = confirm('選択された記録を削除しますか？');
     if (confirmation) {
         // ローカルストレージから既存データを取得
-        const storedData = JSON.parse(localStorage.getItem("storedData3")) || [];
+        const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
 
         // チェックボックスで選択された城名を取得
         const selectedValues = checkboxes.map(checkbox => checkbox.value);
@@ -773,7 +656,7 @@ function remove() {
         const updatedData = storedData.filter(record => !selectedValues.includes(record.castleName));
         
         // ローカルストレージを更新
-        localStorage.setItem("storedData3", JSON.stringify(updatedData));
+        localStorage.setItem("storedData4", JSON.stringify(updatedData));
 
         // マーカーの色を更新
         const castleIcon = L.icon({
@@ -800,132 +683,16 @@ function remove() {
 
 function getCatsleName(castleID) {
     switch (castleID) {
-        case "1": return "根室チャシ跡群";
-        case "2": return "五稜郭";
-        case "3": return "松前城";
-        case "4": return "弘前城";
-        case "5": return "根城";
-        case "6": return "盛岡城";
-        case "7": return "多賀城";
-        case "8": return "仙台城";
-        case "9": return "久保田城";
-        case "10": return "山形城";
-        case "11": return "二本松城";
-        case "12": return "会津若松城";
-        case "13": return "白河小峰城";
-        case "14": return "水戸城";
-        case "15": return "足利氏館(鑁阿寺)";
-        case "16": return "箕輪城";
-        case "17": return "金山城";
-        case "18": return "鉢形城";
-        case "19": return "川越城";
-        case "20": return "佐倉城";
-        case "21": return "江戸城";
-        case "22": return "八王子城";
-        case "23": return "小田原城";
-        case "24": return "武田氏館(武田神社)";
-        case "25": return "甲府城";
-        case "26": return "松代城";
-        case "27": return "上田城";
-        case "28": return "小諸城";
-        case "29": return "松本城";
-        case "30": return "高遠城";
-        case "31": return "新発田城";
-        case "32": return "春日山城";
-        case "33": return "高岡城";
-        case "34": return "七尾城";
-        case "35": return "金沢城";
-        case "36": return "丸岡城";
-        case "37": return "一乗谷城";
-        case "38": return "岩村城";
-        case "39": return "岐阜城";
-        case "40": return "山中城";
-        case "41": return "駿府城";
-        case "42": return "掛川城";
-        case "43": return "犬山城";
-        case "44": return "名古屋城";
-        case "45": return "岡崎城";
-        case "46": return "長篠城";
-        case "47": return "伊賀上野城";
-        case "48": return "松阪城";
-        case "49": return "小谷城";
-        case "50": return "彦根城";
-        case "51": return "安土城";
-        case "52": return "観音寺城";
-        case "53": return "二条城";
-        case "54": return "大阪城";
-        case "55": return "千早城";
-        case "56": return "竹田城";
-        case "57": return "篠山城";
-        case "58": return "明石城";
-        case "59": return "姫路城";
-        case "60": return "赤穂城";
-        case "61": return "高取城";
-        case "62": return "和歌山城";
-        case "63": return "鳥取城";
-        case "64": return "松江城";
-        case "65": return "月山富田城";
-        case "66": return "津和野城";
-        case "67": return "津山城";
-        case "68": return "備中松山城";
-        case "69": return "鬼ノ城";
-        case "70": return "岡山城";
-        case "71": return "福山城";
-        case "72": return "郡山城";
-        case "73": return "広島城";
-        case "74": return "岩国城";
-        case "75": return "萩城";
-        case "76": return "徳島城";
-        case "77": return "高松城";
-        case "78": return "丸亀城";
-        case "79": return "今治城";
-        case "80": return "湯築城";
-        case "81": return "松山城";
-        case "82": return "大洲城";
-        case "83": return "宇和島城";
-        case "84": return "高知城";
-        case "85": return "福岡城";
-        case "86": return "大野城";
-        case "87": return "名護屋城";
-        case "88": return "吉野ヶ里";
-        case "89": return "佐賀城";
-        case "90": return "平戸城";
-        case "91": return "島原城";
-        case "92": return "熊本城";
-        case "93": return "人吉城";
-        case "94": return "大分府内城";
-        case "95": return "岡城";
-        case "96": return "飫肥城";
-        case "97": return "鹿児島城";
-        case "98": return "今帰仁城";
-        case "99": return "中城城";
-        case "100": return "首里城";
-        case "71_1": return "福山城（伏見櫓）";
-        case "77_1": return "高松城(北之丸月見櫓)";
-        case "92_1": return "熊本城（宇土櫓）";
-        case "23_1": return "小田原城（天守）";
-        case "71_2": return "福山城（天守）";
-        case "77_2": return "高松城（旧東の丸艮櫓）";
-        case "92_2": return "熊本城（天守）";
-        case "23_2": return "小田原城(小峯御鐘ノ台大堀切東堀)";
-        case "28":
-        return "小諸城";
-        case "37":
-            return "一乗谷城";
-        case "65":
-            return "月山富田城";
-        case "86_1":
-            return "大野城(太宰府市)";
-        case "86_2":
-            return "大野城(大野城市)";
-        case "86_3":
-            return "大野城(宇美町)";
-        case "89":
-            return "佐賀城";
-        case "97":
-            return "鹿児島城";
-        case "99":
-            return "中城城";
+        case "105": return "白石城";
+        case "113": return "土浦城";
+        case "131": return "村上城";
+        case "138": return "越前大野城";
+        case "143": return "美濃金山城";
+        case "164": return "洲本城"; 
+        case "169": return "米子城"; 
+        case "172": return "三原城"; 
+        case "181": return "小倉城"; 
+        case "194": return "佐伯城"; 
         default: return "不明な城";
     }
 }
@@ -933,124 +700,16 @@ function getCatsleName(castleID) {
 
 function getCastleID(selectedCastleValue) {
     switch (selectedCastleValue) {
-        case "根室チャシ跡群": return "1";
-        case "五稜郭": return "2";
-        case "松前城": return "3";
-        case "弘前城": return "4";
-        case "根城": return "5";
-        case "盛岡城": return "6";
-        case "多賀城": return "7";
-        case "仙台城": return "8";
-        case "久保田城": return "9";
-        case "山形城": return "10";
-        case "二本松城": return "11";
-        case "会津若松城": return "12";
-        case "白河小峰城": return "13";
-        case "水戸城": return "14";
-        case "足利氏館(鑁阿寺)": return "15";
-        case "箕輪城": return "16";
-        case "金山城": return "17";
-        case "鉢形城": return "18";
-        case "川越城": return "19";
-        case "佐倉城": return "20";
-        case "江戸城": return "21";
-        case "八王子城": return "22";
-        case "小田原城": return "23";
-        case "小田原城(小峯御鐘ノ台大堀切東堀)": return "23";
-        case "小田原城（天守）": return "23";
-        case "武田氏館(武田神社)": return "24";
-        case "甲府城": return "25";
-        case "松代城": return "26";
-        case "上田城": return "27";
-        case "小諸城": return "28";
-        case "松本城": return "29";
-        case "高遠城": return "30";
-        case "新発田城": return "31";
-        case "春日山城": return "32";
-        case "高岡城": return "33";
-        case "七尾城": return "34";
-        case "金沢城": return "35";
-        case "丸岡城": return "36";
-        case "一乗谷城": return "37";
-        case "岩村城": return "38";
-        case "岐阜城": return "39";
-        case "山中城": return "40";
-        case "駿府城": return "41";
-        case "掛川城": return "42";
-        case "犬山城": return "43";
-        case "名古屋城": return "44";
-        case "岡崎城": return "45";
-        case "長篠城": return "46";
-        case "伊賀上野城": return "47";
-        case "松阪城": return "48";
-        case "小谷城": return "49";
-        case "彦根城": return "50";
-        case "安土城": return "51";
-        case "観音寺城": return "52";
-        case "二条城": return "53";
-        case "大阪城": return "54";
-        case "千早城": return "55";
-        case "竹田城": return "56";
-        case "篠山城": return "57";
-        case "明石城": return "58";
-        case "姫路城": return "59";
-        case "赤穂城": return "60";
-        case "高取城": return "61";
-        case "和歌山城": return "62";
-        case "鳥取城": return "63";
-        case "松江城": return "64";
-        case "月山富田城": return "65";
-        case "津和野城": return "66";
-        case "津山城": return "67";
-        case "備中松山城": return "68";
-        case "鬼ノ城": return "69";
-        case "岡山城": return "70";
-        case "福山城": return "71";
-        case "福山城（伏見櫓）": return "71";
-        case "福山城（天守）": return "71";
-        case "郡山城": return "72";
-        case "広島城": return "73";
-        case "岩国城": return "74";
-        case "萩城": return "75";
-        case "徳島城": return "76";
-        case "高松城": return "77";
-        case "高松城(北之丸月見櫓)": return "77";
-        case "高松城（旧東の丸艮櫓）": return "77";
-        case "丸亀城": return "78";
-        case "今治城": return "79";
-        case "湯築城": return "80";
-        case "松山城": return "81";
-        case "大洲城": return "82";
-        case "宇和島城": return "83";
-        case "高知城": return "84";
-        case "福岡城": return "85";
-        case "大野城": return "86";
-        case "名護屋城": return "87";
-        case "吉野ヶ里": return "88";
-        case "佐賀城": return "89";
-        case "平戸城": return "90";
-        case "島原城": return "91";
-        case "熊本城（宇土櫓）": return "92";
-        case "熊本城（天守）": return "92";
-        case "人吉城": return "93";
-        case "大分府内城": return "94";
-        case "岡城": return "95";
-        case "飫肥城": return "96";
-        case "鹿児島城": return "97";
-        case "今帰仁城": return "98";
-        case "中城城": return "99";
-        case "首里城": return "100";
-        case "福山城（伏見櫓）": return "71_1";
-        case "高松城(北之丸月見櫓)": return "77_1";
-        case "熊本城（宇土櫓）": return "92_1";
-        case "小田原城（天守）": return "23_1";
-        case "福山城（天守）": return "71_2";
-        case "高松城（旧東の丸艮櫓）": return "77_2";
-        case "熊本城（天守）": return "92_2";
-        case "小田原城(小峯御鐘ノ台大堀切東堀)": return "23_2";
-        case "大野城(太宰府市)": return "86_1";
-        case "大野城(大野城市)": return "86_2";
-        case "大野城(宇美町)": return "86_3";
-        default: return "不明な城";
+        case "白石城": return "105";
+        case "土浦城": return "113";
+        case "村上城": return "131";
+        case "越前大野城": return "138";
+        case "美濃金山城": return "143";
+        case "洲本城": return "164";
+        case "米子城": return "169";
+        case "三原城": return "172";
+        case "小倉城": return "181";
+        case "佐伯城": return "194";
+        default: return "不明なコード";
     }
 }

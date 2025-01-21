@@ -2,10 +2,10 @@ const citiesByRegion = {
     "未選択": ["未選択"],
     "北海道・東北": ["根室チャシ跡群", "五稜郭", "松前城", "弘前城", "根城", "久保田城", "盛岡城", "多賀城", "仙台城", "山形城", "二本松城", "会津若松城", "白河小峰城"],
     "関東": ["足利氏館(鑁阿寺)", "水戸城", "金山城", "箕輪城", "川越城", "鉢形城", "佐倉城", "江戸城", "八王子城", "小田原城"],
-    "甲信越・北陸": ["新発田城", "春日山城", "甲府城", "武田氏舘(武田神社)", "松代城", "高遠城", "上田城", "小諸城", "松本城", "高岡城", "七尾城", "金沢城", "丸岡城", "一乗谷城"],
+    "甲信越・北陸": ["新発田城", "春日山城", "甲府城", "武田氏館(武田神社)", "松代城", "高遠城", "上田城", "小諸城", "松本城", "高岡城", "七尾城", "金沢城", "丸岡城", "一乗谷城"],
     "東海・近畿": ["山中城", "駿府城", "掛川城", "岩村城", "岐阜城", "名古屋城", "長篠城", "犬山城", "岡崎城", "伊賀上野城", "松阪城", "安土城", "観音寺城", "小谷城", "彦根城", "二条城", "大阪城", "千早城", "明石城", "姫路城", "赤穂城", "竹田城", "篠山城", "高取城", "和歌山城"],
     "中国・四国": ["松江城", "月山富田城", "津和野城", "鳥取城", "津山城", "鬼ノ城", "岡山城", "備中松山城", "福山城", "郡山城", "広島城", "高松城", "丸亀城", "萩城", "岩国城", "徳島城", "今治城", "松山城", "宇和島城", "湯築城", "大洲城", "高知城"],
-    "九州・沖縄": ["福岡城", "大野城", "吉野ヶ里", "佐賀城", "名護屋城", "平戸城", "島原城", "大分城", "岡城", "熊本城", "人吉城", "飫肥城", "鹿児島城", "首里城", "今帰仁城", "中城城"],
+    "九州・沖縄": ["福岡城", "大野城", "吉野ヶ里", "佐賀城", "名護屋城", "平戸城", "島原城", "大分府内城", "岡城", "熊本城", "人吉城", "飫肥城", "鹿児島城", "首里城", "今帰仁城", "中城城"],
     "国宝5名城": ["松本城", "彦根城", "姫路城", "松江城", "犬山城"],
     "現存12天守": ["松本城", "彦根城", "姫路城", "松江城", "犬山城", "弘前城", "丸岡城", "丸亀城", "高知城", "松山城", "備中松山城", "宇和島城"],
 
@@ -106,6 +106,7 @@ function saveData() {
 
     displayStoredData();
 
+    alert("データが保存されました");
     console.log("データが保存されました:", storedData);
     displayRecords();
 }
@@ -126,6 +127,7 @@ function displayStoredData() {
         // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
         savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.date}</p>`;
     });
+    getAllCastleIds();
 }
 
 // castle-link クラスを持つすべての要素にイベントリスナーを追加する
@@ -402,14 +404,19 @@ function parseInputCSV(data) {
     // ヘッダーをスキップして、データ部分のみ処理
     return rows.slice(1).map(row => {
         const cells = row.split(',').map(cell => cell.trim());
+        // 空行を除外
+        if (cells.length < 2 || cells.every(cell => cell === "")) {
+            return null; // 空行は無視
+        }
         console.log(cells);
         return {
             id: cells[0], // 城ID
             name: cells[1], // 城名
             date: cells[2] // 日付
         };
-    });
+    }).filter(item => item !== null); // 空行を除外した結果だけを残す
 }
+
 
 function displayData(data) {
     const output = document.getElementById('output');
@@ -560,9 +567,8 @@ function displayRecords() {
 }
 
 
-// 選択した記録を削除する関数
 function remove() {
-    const checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
+    const checkboxes = Array.from(document.querySelectorAll("input[type='checkbox']:checked")); // 配列に変換
     if (checkboxes.length === 0) {
         alert("削除する記録を選択してください。");
         return;
@@ -570,45 +576,41 @@ function remove() {
 
     const confirmation = confirm('選択された記録を削除しますか？');
     if (confirmation) {
-        localStorage.removeItem("storedData1"); // 特定のキーに関連付けられたデータを削除
-
+        // ローカルストレージから既存データを取得
         const storedData = JSON.parse(localStorage.getItem("storedData1")) || [];
-        const updatedData = storedData.filter(record => !checkboxes.some(checkbox => checkbox.value === record.castleId));
+
+        // チェックボックスで選択された城名を取得
+        const selectedValues = checkboxes.map(checkbox => checkbox.value);
+
+        // 選択された城名を除外して新しいデータを作成
+        const updatedData = storedData.filter(record => !selectedValues.includes(record.castleName));
+        
+        // ローカルストレージを更新
         localStorage.setItem("storedData1", JSON.stringify(updatedData));
 
-        // 選択されているチェックボックスの値を格納する配列
-        const selectedValues = [];
-
-        // 選択されたチェックボックスの要素を反復処理して、値を取得する
-        checkboxes.forEach(checkbox => {
-            selectedValues.push(checkbox.value);
-        });
-
-        // 選択されたチェックボックスの値を表示する
-        console.log("選択されたチェックボックスの値:", selectedValues);
-
-        const catsleIcon = L.icon({
+        // マーカーの色を更新
+        const castleIcon = L.icon({
             iconUrl: 'img/siro.png', // 赤いアイコンのURL
-            iconSize: [25, 41], // アイコンのサイズ
-            iconAnchor: [12, 41], // アイコンのアンカーポイント
-            popupAnchor: [1, -34] // ポップアップのアンカーポイント
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
         });
 
-        // 選択された城名と一致するマーカーの色を変更
         markers.forEach(marker => {
-            // マーカーに関連付けられた城名を取得
             const markerCastleName = marker.getPopup().getContent();
-            // 選択された城名の中にマーカーの城名が含まれているか確認
             if (selectedValues.includes(markerCastleName)) {
-                marker.setIcon(catsleIcon);
+                marker.setIcon(castleIcon);
             }
         });
 
-        displayRecords(); // 更新後の記録を再表示
+        // UIを更新
+        displayRecords();
         displayStoredData();
+
         alert("選択した記録が削除されました。");
     }
 }
+
 
 function getCatsleName(castleID) {
     switch (castleID) {
@@ -712,7 +714,7 @@ function getCatsleName(castleID) {
         case "98": return "今帰仁城";
         case "99": return "中城城";
         case "100": return "首里城";
-        default: return "不明な城";
+        // default: return "不明な城";
     }
 }
 
@@ -819,7 +821,7 @@ function getCatsleID(selectedCastleValue) {
         case "今帰仁城": return "98";
         case "中城城": return "99";
         case "首里城": return "100";
-        default: return "不明な城";
+        // default: return "不明な城";
     }
 }
 

@@ -1,5 +1,5 @@
 const citiesByRegion = {
-    "未選択": ["未選択"],
+"未    選択": ["未選択"],
     "北海道・東北地方": [
         "志苔館",
         "上ノ国勝山館",
@@ -248,6 +248,9 @@ function displayStoredData() {
         // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
         savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.date}</p>`;
     });
+
+    getAllCastleIds();
+
 }
 
 // castle-link クラスを持つすべての要素にイベントリスナーを追加する
@@ -515,14 +518,19 @@ function parseInputCSV(data) {
     // ヘッダーをスキップして、データ部分のみ処理
     return rows.slice(1).map(row => {
         const cells = row.split(',').map(cell => cell.trim());
+        // 空行を除外
+        if (cells.length < 2 || cells.every(cell => cell === "")) {
+            return null; // 空行は無視
+        }
         console.log(cells);
         return {
             id: cells[0], // 城ID
             name: cells[1], // 城名
             date: cells[2] // 日付
         };
-    });
+    }).filter(item => item !== null); // 空行を除外した結果だけを残す
 }
+
 
 function displayData(data) {
     const output = document.getElementById('output');
@@ -671,9 +679,8 @@ function displayRecords() {
     });
 }
 
-// 選択した記録を削除する関数
 function remove() {
-    const checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
+    const checkboxes = Array.from(document.querySelectorAll("input[type='checkbox']:checked")); // 配列に変換
     if (checkboxes.length === 0) {
         alert("削除する記録を選択してください。");
         return;
@@ -681,42 +688,37 @@ function remove() {
 
     const confirmation = confirm('選択された記録を削除しますか？');
     if (confirmation) {
-        localStorage.removeItem("storedData2"); // 特定のキーに関連付けられたデータを削除
-
+        // ローカルストレージから既存データを取得
         const storedData = JSON.parse(localStorage.getItem("storedData2")) || [];
-        const updatedData = storedData.filter(record => !checkboxes.some(checkbox => checkbox.value === record.castleId));
+
+        // チェックボックスで選択された城名を取得
+        const selectedValues = checkboxes.map(checkbox => checkbox.value);
+
+        // 選択された城名を除外して新しいデータを作成
+        const updatedData = storedData.filter(record => !selectedValues.includes(record.castleName));
+        
+        // ローカルストレージを更新
         localStorage.setItem("storedData2", JSON.stringify(updatedData));
 
-        // 選択されているチェックボックスの値を格納する配列
-        const selectedValues = [];
-
-        // 選択されたチェックボックスの要素を反復処理して、値を取得する
-        checkboxes.forEach(checkbox => {
-            selectedValues.push(checkbox.value);
-        });
-
-        // 選択されたチェックボックスの値を表示する
-        console.log("選択されたチェックボックスの値:", selectedValues);
-
-        const catsleIcon = L.icon({
+        // マーカーの色を更新
+        const castleIcon = L.icon({
             iconUrl: 'img/siro.png', // 赤いアイコンのURL
-            iconSize: [25, 41], // アイコンのサイズ
-            iconAnchor: [12, 41], // アイコンのアンカーポイント
-            popupAnchor: [1, -34] // ポップアップのアンカーポイント
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
         });
 
-        // 選択された城名と一致するマーカーの色を変更
         markers.forEach(marker => {
-            // マーカーに関連付けられた城名を取得
             const markerCastleName = marker.getPopup().getContent();
-            // 選択された城名の中にマーカーの城名が含まれているか確認
             if (selectedValues.includes(markerCastleName)) {
-                marker.setIcon(catsleIcon);
+                marker.setIcon(castleIcon);
             }
         });
 
-        displayRecords(); // 更新後の記録を再表示
+        // UIを更新
+        displayRecords();
         displayStoredData();
+
         alert("選択した記録が削除されました。");
     }
 }
