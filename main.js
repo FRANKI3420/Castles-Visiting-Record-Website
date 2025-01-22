@@ -122,6 +122,8 @@ function displayStoredData() {
     // HTMLに表示
     const savedDataDiv = document.getElementById("savedData");
     savedDataDiv.innerHTML = "";
+    savedDataDiv.innerHTML += "\n訪れてたお城:"+storedData.length+"城\n";
+
 
     storedData.forEach(function (data) {
         // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;

@@ -287,6 +287,7 @@ function displayStoredData() {
     // HTMLに表示
     const savedDataDiv = document.getElementById("savedData");
     savedDataDiv.innerHTML = "";
+    savedDataDiv.innerHTML += "\n取得枚数:"+storedData.length+"枚\n";
 
     storedData.forEach(function (data) {
         // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
@@ -523,6 +524,7 @@ function getAllCastleIds() {
     const nameListDiv = document.getElementById("nameList");
     nameListDiv.innerHTML = "<ul>";
     nameListDiv.innerHTML += "未取得のお城カード一覧\n";
+    nameListDiv.innerHTML += "全"+allNumbers.length +"枚中";
     nameListDiv.innerHTML += "残り" + nameList.length + "枚";
     nameList.forEach(function (name) {
         nameListDiv.innerHTML += `<li><a href="#" class='castle-link2'>${name}</a></li>`;
