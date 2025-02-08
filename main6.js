@@ -28,11 +28,10 @@ let selectedCastleId;
 // ページが読み込まれたときに保存されたデータを表示
 displayStoredData();
 
-document.getElementById("region").addEventListener("change", function () {
-    selectedcsv = this.value;//csvfile_name
-    // console.log(selectedcsv);
-    selectedcsv = "data/" + selectedcsv;
-    castleLocations2 = []
+document.addEventListener("DOMContentLoaded", function() {
+    // 初期化処理
+    const selectedcsv = "data/medaru.csv"; // ここでデフォルトのCSVファイルを指定
+    let castleLocations2 = [];
 
     fetch(selectedcsv) // 指定したファイル名でファイルを取得
         .then(response => response.text()) // テキストデータとして取得
@@ -41,21 +40,18 @@ document.getElementById("region").addEventListener("change", function () {
             console.log(castleLocations2); // データが正しく変換されていることを確認
             hideMarkers();
             initMap(castleLocations2); // 地図を初期化する関数を呼び出す
+
+            // セレクトメニューにデータを追加
+            const citySelect = document.getElementById("catsle");
+            castleLocations2.forEach(function(castle) {
+                const option = document.createElement("option");
+                option.textContent = castle.name;
+                option.value = castle.name;
+                citySelect.appendChild(option);
+            });
         })
         .catch(error => console.error('ファイルの読み込みエラー:', error));
-
-    const citySelect = document.getElementById("catsle");
-    // 市町村リストをクリア
-    citySelect.innerHTML = "";
-
-    // 選択された都道府県に対応する市町村リストをセレクトメニューに追加
-    castleLocations2.forEach(function (castle) {
-        const option = document.createElement("option");
-        option.textContent = castle.name;
-        option.value = castle.name;
-        citySelect.appendChild(option);
     });
-});
 
 function hideMarkers() {
     markers.forEach(marker => {
@@ -122,7 +118,7 @@ function saveData() {
 
 
     // ローカルストレージから既存のデータを取得
-    let storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    let storedData = JSON.parse(localStorage.getItem("storedData6")) || [];
 
     // すでに同じ城IDが存在するか確認
     const existingIndex = storedData.findIndex(data => data.castleId === id);
@@ -150,7 +146,7 @@ function saveData() {
     markerChangeColor(selectedCastle);
 
     // ローカルストレージに保存
-    localStorage.setItem("storedData4", JSON.stringify(storedData));
+    localStorage.setItem("storedData6", JSON.stringify(storedData));
 
     displayStoredData();
 
@@ -161,7 +157,7 @@ function saveData() {
 
 function displayStoredData() {
     // ローカルストレージからデータを取得
-    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData6")) || [];
 
     // IDでソート
     storedData.sort((a, b) => a.castleId - b.castleId);
@@ -208,9 +204,9 @@ castleLinks.forEach(link => {
     });
 });
 
-function displaystoredData4() {
+function displaystoredData6() {
     // ローカルストレージからデータを取得
-    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData6")) || [];
 
     // 日付でソート
     storedData.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -267,7 +263,7 @@ function outputCSV() {
 
 
         // ローカルストレージからデータを取得
-        const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+        const storedData = JSON.parse(localStorage.getItem("storedData6")) || [];
 
         // データをCSV形式に変換
         const csvData = convertToCSV(storedData);
@@ -277,7 +273,7 @@ function outputCSV() {
 
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.setAttribute('download', 'catsle_card_zoku.csv');
+        link.setAttribute('download', 'catsle_medal.csv');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -352,7 +348,7 @@ function addData() {
     alert(parsedData.map(item => `${item.id}, 城名: ${item.name}`).join('\n'));
     alert("データが追加されました。");
 
-    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData6")) || [];
 
     // 新しいデータを追加（重複しないデータのみ）
     parsedData.forEach(item => {
@@ -368,7 +364,7 @@ function addData() {
     });
 
     // 新しいデータを再びローカルストレージに保存
-    localStorage.setItem("storedData4", JSON.stringify(storedData));
+    localStorage.setItem("storedData6", JSON.stringify(storedData));
 
     displayRecords(); // 更新後の記録を再表示
     displayStoredData();
@@ -380,7 +376,7 @@ function addData() {
 
 function getAllCastleIds() {
     // ローカルストレージからデータを取得
-    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData6")) || [];
 
     // 登録されているすべての城IDを取得
     const castleIds = storedData.map(data => data.castleId);
@@ -407,7 +403,7 @@ function getAllCastleIds() {
 
     const nameListDiv = document.getElementById("nameList");
     nameListDiv.innerHTML = "<ul>";
-    nameListDiv.innerHTML += "未取得のお城カード一覧\n";
+    nameListDiv.innerHTML += "未取得の城メダル一覧\n";
     nameListDiv.innerHTML += "全"+allNumbers.length +"枚中";
     nameListDiv.innerHTML += "残り" + nameList.length + "枚";
     nameList.forEach(function (name) {
@@ -451,7 +447,7 @@ function kakusu3() {
 function reset() {
     const confirmation = confirm('ローカルストレージに保存されたデータをリセットします。よろしいですか？');
     if (confirmation) {
-        localStorage.removeItem("storedData4"); // 特定のキーに関連付けられたデータを削除
+        localStorage.removeItem("storedData6"); // 特定のキーに関連付けられたデータを削除
         alert('データがリセットされました。'); // リセット完了のメッセージを表示
     }
     markers = [];
@@ -462,7 +458,7 @@ function reset() {
 }
 
 // 指定したCSVファイル名
-const csvFileName = 'data/catsle_card_zoku.csv';
+const csvFileName = 'data/medaru.csv';
 castleLocations = [];
 allNumbers = [];
 
@@ -535,21 +531,21 @@ function initMap(castleLocations) {
     }).addTo(map);
 
     const catsleIcon = L.icon({
-        iconUrl: 'img/siro.png', // 赤いアイコンのURL
+        iconUrl: 'img/medaru.png', // 赤いアイコンのURL
         iconSize: [25, 41], // アイコンのサイズ
         iconAnchor: [12, 41], // アイコンのアンカーポイント
         popupAnchor: [1, -34] // ポップアップのアンカーポイント
     });
 
     const redMarkerIcon = L.icon({
-        iconUrl: 'img/hono.png', // 赤いアイコンのURL
+        iconUrl: 'img/get.jpeg', // 赤いアイコンのURL
         iconSize: [25, 41], // アイコンのサイズ
         iconAnchor: [12, 41], // アイコンのアンカーポイント
         popupAnchor: [1, -34] // ポップアップのアンカーポイント
     });
 
     // ローカルストレージから城名のリストを取得
-    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData6")) || [];
 
     // 城のマーカーを地図上に表示
     castleLocations.forEach(castle => {
@@ -568,7 +564,7 @@ function initMap(castleLocations) {
 function markerChangeColor(targetCastleName) {
     // 赤いマーカーアイコン
     const redMarkerIcon = L.icon({
-        iconUrl: 'img/hono.png', // 赤いアイコンのURL
+        iconUrl: 'img/get.jpeg', // 赤いアイコンのURL
         iconSize: [25, 41], // アイコンのサイズ
         iconAnchor: [12, 41], // アイコンのアンカーポイントdd
         popupAnchor: [1, -34] // ポップアップのアンカーポイント
@@ -604,7 +600,7 @@ setCurrentLocation();
 
 // ローカルストレージから記録を取得し、チェックボックスリストを表示する関数
 function displayRecords() {
-    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData6")) || [];
     const recordList = document.getElementById("recordList");
     recordList.innerHTML = ""; // リストを初期化
 
@@ -625,7 +621,7 @@ function displayRecords() {
 function getRcordList(){
     const nameListDiv = document.getElementById("recordList");
     nameListDiv.innerHTML = null;
-    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData6")) || [];
     storedData.forEach(record => {
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
@@ -650,7 +646,7 @@ function remove() {
     const confirmation = confirm('選択された記録を削除しますか？');
     if (confirmation) {
         // ローカルストレージから既存データを取得
-        const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+        const storedData = JSON.parse(localStorage.getItem("storedData6")) || [];
 
         // チェックボックスで選択された城名を取得
         const selectedValues = checkboxes.map(checkbox => checkbox.value);
@@ -659,11 +655,11 @@ function remove() {
         const updatedData = storedData.filter(record => !selectedValues.includes(record.castleName));
         
         // ローカルストレージを更新
-        localStorage.setItem("storedData4", JSON.stringify(updatedData));
+        localStorage.setItem("storedData6", JSON.stringify(updatedData));
 
         // マーカーの色を更新
         const castleIcon = L.icon({
-            iconUrl: 'img/siro.png', // 赤いアイコンのURL
+            iconUrl: 'img/medaru.png', // 赤いアイコンのURL
             iconSize: [25, 41],
             iconAnchor: [12, 41],
             popupAnchor: [1, -34]
@@ -686,53 +682,83 @@ function remove() {
 
 function getCatsleName(castleID) {
     switch (castleID) {
-        case "105": return "白石城";
-        case "113": return "土浦城";
-        case "131": return "村上城";
-        case "138": return "越前大野城";
-        case "143": return "美濃金山城";
-        case "164": return "洲本城"; 
-        case "169": return "米子城"; 
-        case "172": return "三原城"; 
-        case "181": return "小倉城"; 
-        case "194": return "佐伯城"; 
-        case "109": return "米沢城";
-        case "135": return "増山城";
-        case "141": return "郡上八幡城";
-        case "142": return "苗木城";
-        case "155": return "赤木城";
-        case "161": return "岸和田城";
-        case "162": return "出石城・有子山城";
-        case "165": return "大和郡山城";
-        case "187": return "福江城";
-        case "199": return "座喜味城";
-        default: return "不明な城";
+        case"1":return"五稜郭";
+        case"2":return"弘前城";
+        case"3":return"館山城";
+        case"4":return"小田原城";
+        case"5":return"上田城";
+        case"6":return"松本城";
+        case"7":return"浜松城";
+        case"8":return"岡崎城";
+        case"9":return"犬山城";
+        case"10":return"小牧城";
+        case"11":return"清洲城";
+        case"12":return"名古屋城";
+        case"13":return"岐阜城";
+        case"14":return"墨俣城";
+        case"15":return"大垣城";
+        case"16":return"長浜城";
+        case"17":return"彦根城";
+        case"18":return"二条城";
+        case"19":return"大阪城";
+        case"20":return"和歌山城";
+        case"21":return"姫路城";
+        case"22":return"岡山城";
+        case"23":return"福山城";
+        case"24":return"広島城";
+        case"25":return"松江城";
+        case"26":return"岩国城";
+        case"27":return"丸亀城";
+        case"28":return"今治城";
+        case"29":return"松山城";
+        case"30":return"小倉城";
+        case"31":return"佐賀城";
+        case"32":return"唐津城";
+        case"33":return"平戸城";
+        case"34":return"島原城";
+        case"35":return"熊本城";
+        case"36":return"首里城";  
     }
 }
 
 
 function getCastleID(selectedCastleValue) {
     switch (selectedCastleValue) {
-        case "白石城": return "105";
-        case "土浦城": return "113";
-        case "村上城": return "131";
-        case "越前大野城": return "138";
-        case "美濃金山城": return "143";
-        case "洲本城": return "164";
-        case "米子城": return "169";
-        case "三原城": return "172";
-        case "小倉城": return "181";
-        case "佐伯城": return "194";
-        case "米沢城": return "109";
-        case "増山城": return "135";
-        case "郡上八幡城": return "141";
-        case "苗木城": return "142";
-        case "赤木城": return "155";
-        case "岸和田城": return "161";
-        case "出石城・有子山城": return "162";
-        case "大和郡山城": return "165";
-        case "福江城": return "187";
-        case "座喜味城": return "199";
-        default: return "不明なコード";
+        case"五稜郭":return"1";
+        case"弘前城":return"2";
+        case"館山城":return"3";
+        case"小田原城":return"4";
+        case"上田城":return"5";
+        case"松本城":return"6";
+        case"浜松城":return"7";
+        case"岡崎城":return"8";
+        case"犬山城":return"9";
+        case"小牧城":return"10";
+        case"清洲城":return"11";
+        case"名古屋城":return"12";
+        case"岐阜城":return"13";
+        case"墨俣城":return"14";
+        case"大垣城":return"15";
+        case"長浜城":return"16";
+        case"彦根城":return"17";
+        case"二条城":return"18";
+        case"大阪城":return"19";
+        case"和歌山城":return"20";
+        case"姫路城":return"21";
+        case"岡山城":return"22";
+        case"福山城":return"23";
+        case"広島城":return"24";
+        case"松江城":return"25";
+        case"岩国城":return"26";
+        case"丸亀城":return"27";
+        case"今治城":return"28";
+        case"松山城":return"29";
+        case"小倉城":return"30";
+        case"佐賀城":return"31";
+        case"唐津城":return"32";
+        case"平戸城":return"33";
+        case"島原城":return"34";
+        case"熊本城":return"35";
+        case"首里城":return"36";
     }
 }

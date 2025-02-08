@@ -7,125 +7,7 @@
     <title>日本続100名城訪問記録サイト</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-    <style>
-        body {
-            background: linear-gradient(to bottom, #ded79b, #c8e9e9);
-            margin: 0;
-            padding: 0;
-        }
-
-        #map-container {
-            display: flex;
-            width: 100%;
-            height: calc(100vh - 100px);
-            /* メニューの高さを除いた残りの画面高さに設定 */
-        }
-
-        #map {
-            height: 100%;
-            width: 100%;
-        }
-
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 200px;
-            height: 100%;
-            background-color: #d3e690;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(182, 214, 136, 0.1);
-            transition: transform 0.3s ease;
-            /* アニメーション */
-        }
-
-        .sidebar.hidden {
-            transform: translateX(-100%);
-            /* 左にスライドして隠す */
-        }
-
-        .sidebar h2 {
-            margin-bottom: 20px;
-            color: #130909;
-        }
-
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar ul li {
-            margin-bottom: 10px;
-        }
-
-        .sidebar ul li a {
-            display: block;
-            color: #5242c7;
-            text-decoration: none;
-            padding: 10px;
-            transition: background-color 0.3s ease;
-        }
-
-        .sidebar ul li a:hover {
-            background-color: #5e9cda;
-        }
-
-        .toggle-button {
-            position: fixed;
-            top: 20px;
-            left: 220px;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        .mapzone {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 40%;
-            height: 100%;
-            background-color: #d3e690;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(182, 214, 136, 0.1);
-            transition: transform 0.3s ease;
-            /* アニメーション */
-        }
-
-        .mapzone.active {
-            right: 0;
-        }
-
-        .content {
-            margin-left: 220px;
-            /* サイドバー分の余白 */
-            padding: 20px;
-            transition: margin-left 0.3s ease;
-            /* メニューが隠れるときに広がる */
-        }
-
-        .content.expanded {
-            margin-left: 0;
-            /* サイドバー非表示時、コンテンツが広がる */
-        }
-
-        button {
-            border: none;
-            color: rgb(21, 23, 16);
-            font-size: 17px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #6f9888;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
@@ -136,7 +18,9 @@
             <li><a href="index.html">100名城訪問記録</a></li>
             <li><a href="catsle_card.html">城カード取得記録(100名城)</a></li>
             <li><a href="catsle_card_zoku.html">城カード取得記録(続100名城)</a></li>
+            <li><a href="catsle_medal.html">城メダル取得記録</a></li>
             <li><a href="https://shirobito.jp/article/1843" target="_blank">続100名城公式サイト</a></li>
+            <li><a href="goshoin.html">御翔印取得記録</a></li>
             <button class="toggle-button" id="toggleButton">＜</button>
         </ul>
     </div>

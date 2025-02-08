@@ -28,11 +28,38 @@ let selectedCastleId;
 // ページが読み込まれたときに保存されたデータを表示
 displayStoredData();
 
-document.getElementById("region").addEventListener("change", function () {
-    selectedcsv = this.value;//csvfile_name
-    // console.log(selectedcsv);
-    selectedcsv = "data/" + selectedcsv;
-    castleLocations2 = []
+// document.getElementById("region").addEventListener("change", function () {
+//     selectedcsv = this.value;//csvfile_name
+//     // console.log(selectedcsv);
+//     selectedcsv = "data/" + selectedcsv;
+//     castleLocations2 = []
+
+//     fetch(selectedcsv) // 指定したファイル名でファイルを取得
+//         .then(response => response.text()) // テキストデータとして取得
+//         .then(csvData => {
+//             castleLocations2 = parseCSV2(csvData); // CSVデータを解析して配列に変換
+//             console.log(castleLocations2); // データが正しく変換されていることを確認
+//             hideMarkers();
+//             initMap(castleLocations2); // 地図を初期化する関数を呼び出す
+//         })
+//         .catch(error => console.error('ファイルの読み込みエラー:', error));
+
+//     const citySelect = document.getElementById("catsle");
+//     // 市町村リストをクリア
+//     citySelect.innerHTML = "";
+
+//     // 選択された都道府県に対応する市町村リストをセレクトメニューに追加
+//     castleLocations2.forEach(function (castle) {
+//         const option = document.createElement("option");
+//         option.textContent = castle.name;
+//         option.value = castle.name;
+//         citySelect.appendChild(option);
+//     });
+// });
+document.addEventListener("DOMContentLoaded", function() {
+    // 初期化処理
+    const selectedcsv = "data/goshoin.csv"; // ここでデフォルトのCSVファイルを指定
+    let castleLocations2 = [];
 
     fetch(selectedcsv) // 指定したファイル名でファイルを取得
         .then(response => response.text()) // テキストデータとして取得
@@ -41,21 +68,18 @@ document.getElementById("region").addEventListener("change", function () {
             console.log(castleLocations2); // データが正しく変換されていることを確認
             hideMarkers();
             initMap(castleLocations2); // 地図を初期化する関数を呼び出す
+
+            // セレクトメニューにデータを追加
+            const citySelect = document.getElementById("catsle");
+            castleLocations2.forEach(function(castle) {
+                const option = document.createElement("option");
+                option.textContent = castle.name;
+                option.value = castle.name;
+                citySelect.appendChild(option);
+            });
         })
         .catch(error => console.error('ファイルの読み込みエラー:', error));
-
-    const citySelect = document.getElementById("catsle");
-    // 市町村リストをクリア
-    citySelect.innerHTML = "";
-
-    // 選択された都道府県に対応する市町村リストをセレクトメニューに追加
-    castleLocations2.forEach(function (castle) {
-        const option = document.createElement("option");
-        option.textContent = castle.name;
-        option.value = castle.name;
-        citySelect.appendChild(option);
     });
-});
 
 function hideMarkers() {
     markers.forEach(marker => {
@@ -110,7 +134,7 @@ function saveData() {
     // if (selectedCastle.trim() === '' || selectedDate.trim() === '') {
     if (selectedCastle.trim() === '') {
         // どちらかの入力が空の場合はエラーメッセージを表示するなどの処理を行う
-        alert('城名が入力されていません。');
+        alert('空港が入力されていません。');
         return;
     }
 
@@ -122,14 +146,14 @@ function saveData() {
 
 
     // ローカルストレージから既存のデータを取得
-    let storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    let storedData = JSON.parse(localStorage.getItem("storedData5")) || [];
 
     // すでに同じ城IDが存在するか確認
     const existingIndex = storedData.findIndex(data => data.castleId === id);
 
     if (existingIndex !== -1) {
         // すでに存在する場合は確認メッセージを表示
-        const confirmOverwrite = confirm("この城名はすでに保存されています。上書きしますか？");
+        const confirmOverwrite = confirm("この空港はすでに保存されています。上書きしますか？");
 
         if (!confirmOverwrite) {
             return; // 上書きしない場合は処理を中止
@@ -150,7 +174,7 @@ function saveData() {
     markerChangeColor(selectedCastle);
 
     // ローカルストレージに保存
-    localStorage.setItem("storedData4", JSON.stringify(storedData));
+    localStorage.setItem("storedData5", JSON.stringify(storedData));
 
     displayStoredData();
 
@@ -161,7 +185,7 @@ function saveData() {
 
 function displayStoredData() {
     // ローカルストレージからデータを取得
-    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData5")) || [];
 
     // IDでソート
     storedData.sort((a, b) => a.castleId - b.castleId);
@@ -174,9 +198,9 @@ function displayStoredData() {
 
 
     storedData.forEach(function (data) {
-        // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
-        // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.da}</p>`;
-        savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a href="#"  class="castle-link">${data.castleName}</p>`;
+        // savedDataDiv.innerHTML += `<p>${data.castleId}, 空港: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
+        // savedDataDiv.innerHTML += `<p>${data.castleId}, 空港: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.da}</p>`;
+        savedDataDiv.innerHTML += `<p>${data.castleId}, 空港: <a href="#"  class="castle-link">${data.castleName}</p>`;
     });
     // getAllCastleIds();
 }
@@ -202,15 +226,15 @@ castleLinks.forEach(link => {
         // mapContainer.scrollIntoView({ behavior: "smooth" });
 
         const castleName = this.textContent;
-        console.log('クリックされた城名:', castleName);
+        console.log('クリックされた空港:', castleName);
         moveToCastleLocation(castleName, 10);
-        // ここにクリックされた城名を使用した任意の処理を追加する
+        // ここにクリックされた空港を使用した任意の処理を追加する
     });
 });
 
-function displaystoredData4() {
+function displaystoredData5() {
     // ローカルストレージからデータを取得
-    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData5")) || [];
 
     // 日付でソート
     storedData.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -220,12 +244,12 @@ function displaystoredData4() {
     savedDataDiv.innerHTML = "";
 
     storedData.forEach(function (data) {
-        // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
-        savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.date}</p>`;
+        // savedDataDiv.innerHTML += `<p>${data.castleId}, 空港: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
+        savedDataDiv.innerHTML += `<p>${data.castleId}, 空港: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.date}</p>`;
     });
 }
 
-// クリックされた城名の位置に地図を移動する関数
+// クリックされた空港の位置に地図を移動する関数
 function moveToCastleLocation(clickedCastleName) {
     // castleLocationsから対応する城の位置情報を取得
     console.log(clickedCastleName);
@@ -252,7 +276,7 @@ function moveToCastleLocation(clickedCastleName) {
 function convertToCSV(dataArray) {
     const csvArray = [];
     // ヘッダーを追加
-    csvArray.push(['城ID', '城名']);
+    csvArray.push(['城ID', '空港']);
     // データを追加
     dataArray.forEach(function (data) {
         csvArray.push([data.castleId, data.castleName]);
@@ -267,7 +291,7 @@ function outputCSV() {
 
 
         // ローカルストレージからデータを取得
-        const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+        const storedData = JSON.parse(localStorage.getItem("storedData5")) || [];
 
         // データをCSV形式に変換
         const csvData = convertToCSV(storedData);
@@ -277,7 +301,7 @@ function outputCSV() {
 
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.setAttribute('download', 'catsle_card_zoku.csv');
+        link.setAttribute('download', 'goshoin.csv');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -334,7 +358,7 @@ function parseInputCSV(data) {
         console.log(cells);
         return {
             id: cells[0], // 城ID
-            name: cells[1] // 城名
+            name: cells[1] // 空港
         };
     });
 }
@@ -343,16 +367,16 @@ function displayData(data) {
     const output = document.getElementById('output');
     output.textContent = "読み込んだデータ\n"
     // カスタムフォーマットで出力
-    const formattedData = data.map(item => `${item.id}, 城名: ${item.name}`).join('\n');
+    const formattedData = data.map(item => `${item.id}, 空港: ${item.name}`).join('\n');
     output.textContent += formattedData;
 }
 
 function addData() {
     // 追加データを表示する処理
-    alert(parsedData.map(item => `${item.id}, 城名: ${item.name}`).join('\n'));
+    alert(parsedData.map(item => `${item.id}, 空港: ${item.name}`).join('\n'));
     alert("データが追加されました。");
 
-    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData5")) || [];
 
     // 新しいデータを追加（重複しないデータのみ）
     parsedData.forEach(item => {
@@ -368,7 +392,7 @@ function addData() {
     });
 
     // 新しいデータを再びローカルストレージに保存
-    localStorage.setItem("storedData4", JSON.stringify(storedData));
+    localStorage.setItem("storedData5", JSON.stringify(storedData));
 
     displayRecords(); // 更新後の記録を再表示
     displayStoredData();
@@ -380,7 +404,7 @@ function addData() {
 
 function getAllCastleIds() {
     // ローカルストレージからデータを取得
-    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData5")) || [];
 
     // 登録されているすべての城IDを取得
     const castleIds = storedData.map(data => data.castleId);
@@ -407,7 +431,7 @@ function getAllCastleIds() {
 
     const nameListDiv = document.getElementById("nameList");
     nameListDiv.innerHTML = "<ul>";
-    nameListDiv.innerHTML += "未取得のお城カード一覧\n";
+    nameListDiv.innerHTML += "未取得の御翔印一覧\n";
     nameListDiv.innerHTML += "全"+allNumbers.length +"枚中";
     nameListDiv.innerHTML += "残り" + nameList.length + "枚";
     nameList.forEach(function (name) {
@@ -426,7 +450,7 @@ function getAllCastleIds() {
             const mapContainer = document.getElementById('map');
 
             const castleName = this.textContent;
-            console.log('クリックされた城名:', castleName);
+            console.log('クリックされた空港:', castleName);
             moveToCastleLocation(castleName, 10);
         });
     });
@@ -451,7 +475,7 @@ function kakusu3() {
 function reset() {
     const confirmation = confirm('ローカルストレージに保存されたデータをリセットします。よろしいですか？');
     if (confirmation) {
-        localStorage.removeItem("storedData4"); // 特定のキーに関連付けられたデータを削除
+        localStorage.removeItem("storedData5"); // 特定のキーに関連付けられたデータを削除
         alert('データがリセットされました。'); // リセット完了のメッセージを表示
     }
     markers = [];
@@ -462,7 +486,7 @@ function reset() {
 }
 
 // 指定したCSVファイル名
-const csvFileName = 'data/catsle_card_zoku.csv';
+const csvFileName = 'data/goshoin.csv';
 castleLocations = [];
 allNumbers = [];
 
@@ -535,7 +559,7 @@ function initMap(castleLocations) {
     }).addTo(map);
 
     const catsleIcon = L.icon({
-        iconUrl: 'img/siro.png', // 赤いアイコンのURL
+        iconUrl: 'img/kuukou.png', // 赤いアイコンのURL
         iconSize: [25, 41], // アイコンのサイズ
         iconAnchor: [12, 41], // アイコンのアンカーポイント
         popupAnchor: [1, -34] // ポップアップのアンカーポイント
@@ -548,15 +572,15 @@ function initMap(castleLocations) {
         popupAnchor: [1, -34] // ポップアップのアンカーポイント
     });
 
-    // ローカルストレージから城名のリストを取得
-    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    // ローカルストレージから空港のリストを取得
+    const storedData = JSON.parse(localStorage.getItem("storedData5")) || [];
 
     // 城のマーカーを地図上に表示
     castleLocations.forEach(castle => {
         // すでに同じマーカーが登録されているかどうかを確認
         if (!markers.some(marker => marker.getLatLng().equals(castle.location))) {
 
-            // 城名に応じて適切なアイコンを選択
+            // 空港に応じて適切なアイコンを選択
             const castleIcon = storedData.some(data => data.castleName === castle.name) ? redMarkerIcon : catsleIcon;
             // マーカーを作成して地図に追加
             const marker = L.marker(castle.location, { icon: castleIcon }).addTo(map).bindPopup(castle.name);
@@ -604,7 +628,7 @@ setCurrentLocation();
 
 // ローカルストレージから記録を取得し、チェックボックスリストを表示する関数
 function displayRecords() {
-    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData5")) || [];
     const recordList = document.getElementById("recordList");
     recordList.innerHTML = ""; // リストを初期化
 
@@ -625,7 +649,7 @@ function displayRecords() {
 function getRcordList(){
     const nameListDiv = document.getElementById("recordList");
     nameListDiv.innerHTML = null;
-    const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+    const storedData = JSON.parse(localStorage.getItem("storedData5")) || [];
     storedData.forEach(record => {
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
@@ -650,20 +674,20 @@ function remove() {
     const confirmation = confirm('選択された記録を削除しますか？');
     if (confirmation) {
         // ローカルストレージから既存データを取得
-        const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+        const storedData = JSON.parse(localStorage.getItem("storedData5")) || [];
 
-        // チェックボックスで選択された城名を取得
+        // チェックボックスで選択された空港を取得
         const selectedValues = checkboxes.map(checkbox => checkbox.value);
 
-        // 選択された城名を除外して新しいデータを作成
+        // 選択された空港を除外して新しいデータを作成
         const updatedData = storedData.filter(record => !selectedValues.includes(record.castleName));
         
         // ローカルストレージを更新
-        localStorage.setItem("storedData4", JSON.stringify(updatedData));
+        localStorage.setItem("storedData5", JSON.stringify(updatedData));
 
         // マーカーの色を更新
         const castleIcon = L.icon({
-            iconUrl: 'img/siro.png', // 赤いアイコンのURL
+            iconUrl: 'img/kuukou.png', // 赤いアイコンのURL
             iconSize: [25, 41],
             iconAnchor: [12, 41],
             popupAnchor: [1, -34]
@@ -686,53 +710,121 @@ function remove() {
 
 function getCatsleName(castleID) {
     switch (castleID) {
-        case "105": return "白石城";
-        case "113": return "土浦城";
-        case "131": return "村上城";
-        case "138": return "越前大野城";
-        case "143": return "美濃金山城";
-        case "164": return "洲本城"; 
-        case "169": return "米子城"; 
-        case "172": return "三原城"; 
-        case "181": return "小倉城"; 
-        case "194": return "佐伯城"; 
-        case "109": return "米沢城";
-        case "135": return "増山城";
-        case "141": return "郡上八幡城";
-        case "142": return "苗木城";
-        case "155": return "赤木城";
-        case "161": return "岸和田城";
-        case "162": return "出石城・有子山城";
-        case "165": return "大和郡山城";
-        case "187": return "福江城";
-        case "199": return "座喜味城";
-        default: return "不明な城";
+        case"1":return"伊丹空港";
+        case"2":return"羽田空港";
+        case"3":return"那覇空港";
+        case"4":return"新千歳空港";
+        case"5":return"新潟空港";
+        case"6":return"中部国際空港";
+        case"7":return"福岡空港";
+        case"8":return"松山空港";
+        case"9":return"小松空港";
+        case"10":return"出雲空港";
+        case"11":return"青森空港";
+        case"12":return"花巻空港";
+        case"13":return"但馬空港";
+        case"14":return"徳島空港";
+        case"15":return"熊本空港";
+        case"16":return"大分空港";
+        case"17":return"長崎空港";
+        case"18":return"鹿児島空港";
+        case"19":return"函館空港";
+        case"20":return"南紀白浜空港";
+        case"21":return"関西国際空港";
+        case"22":return"岡山空港";
+        case"23":return"成田国際空港";
+        case"24":return"宮崎空港";
+        case"25":return"高知空港";
+        case"26":return"高松空港";
+        case"27":return"山口宇部空港";
+        case"28":return"広島空港";
+        case"29":return"秋田空港";
+        case"30":return"釧路空港";
+        case"31":return"仙台空港";
+        case"32":return"札幌空港丘珠";
+        case"33":return"女満別空港";
+        case"34":return"北九州空港";
+        case"35":return"三沢空港";
+        case"36":return"山形空港";
+        case"37":return"旭川空港";
+        case"38":return"帯広空港";
+        case"39":return"種子島空港";
+        case"40":return"喜界空港";
+        case"41":return"奄美空港";
+        case"42":return"徳之島空港";
+        case"43":return"与論空港";
+        case"44":return"沖永良部空港";
+        case"45":return"久米島空港";
+        case"46":return"宮古空港";
+        case"47":return"多良間空港";
+        case"48":return"新石垣空港";
+        case"49":return"与那国空港";
+        case"50":return"隠岐空港";
+        case"51":return"北大東空港";
+        case"52":return"南大東空港";
+        case"53":return"屋久島空港";
+        case"54":return"奥尻空港";
+        case"55":return"利尻空港";     
     }
 }
 
 
 function getCastleID(selectedCastleValue) {
     switch (selectedCastleValue) {
-        case "白石城": return "105";
-        case "土浦城": return "113";
-        case "村上城": return "131";
-        case "越前大野城": return "138";
-        case "美濃金山城": return "143";
-        case "洲本城": return "164";
-        case "米子城": return "169";
-        case "三原城": return "172";
-        case "小倉城": return "181";
-        case "佐伯城": return "194";
-        case "米沢城": return "109";
-        case "増山城": return "135";
-        case "郡上八幡城": return "141";
-        case "苗木城": return "142";
-        case "赤木城": return "155";
-        case "岸和田城": return "161";
-        case "出石城・有子山城": return "162";
-        case "大和郡山城": return "165";
-        case "福江城": return "187";
-        case "座喜味城": return "199";
-        default: return "不明なコード";
+        case"伊丹空港":return"1";
+        case"羽田空港":return"2";
+        case"那覇空港":return"3";
+        case"新千歳空港":return"4";
+        case"新潟空港":return"5";
+        case"中部国際空港":return"6";
+        case"福岡空港":return"7";
+        case"松山空港":return"8";
+        case"小松空港":return"9";
+        case"出雲空港":return"10";
+        case"青森空港":return"11";
+        case"花巻空港":return"12";
+        case"但馬空港":return"13";
+        case"徳島空港":return"14";
+        case"熊本空港":return"15";
+        case"大分空港":return"16";
+        case"長崎空港":return"17";
+        case"鹿児島空港":return"18";
+        case"函館空港":return"19";
+        case"南紀白浜空港":return"20";
+        case"関西国際空港":return"21";
+        case"岡山空港":return"22";
+        case"成田国際空港":return"23";
+        case"宮崎空港":return"24";
+        case"高知空港":return"25";
+        case"高松空港":return"26";
+        case"山口宇部空港":return"27";
+        case"広島空港":return"28";
+        case"秋田空港":return"29";
+        case"釧路空港":return"30";
+        case"仙台空港":return"31";
+        case"札幌空港丘珠":return"32";
+        case"女満別空港":return"33";
+        case"北九州空港":return"34";
+        case"三沢空港":return"35";
+        case"山形空港":return"36";
+        case"旭川空港":return"37";
+        case"帯広空港":return"38";
+        case"種子島空港":return"39";
+        case"喜界空港":return"40";
+        case"奄美空港":return"41";
+        case"徳之島空港":return"42";
+        case"与論空港":return"43";
+        case"沖永良部空港":return"44";
+        case"久米島空港":return"45";
+        case"宮古空港":return"46";
+        case"多良間空港":return"47";
+        case"新石垣空港":return"48";
+        case"与那国空港":return"49";
+        case"隠岐空港":return"50";
+        case"北大東空港":return"51";
+        case"南大東空港":return"52";
+        case"屋久島空港":return"53";
+        case"奥尻空港":return"54";
+        case"利尻空港":return"55";
     }
 }
