@@ -84,15 +84,15 @@ function parseCSV2(csv) {
     const catsleSelect = document.getElementById("catsle");
 
     // castleMapの全ての名前をセレクトメニューに追加する
-    console.log(castleMap);
-    castleMap2.forEach((key, value) => {
-        const option = document.createElement("option");
-        option.textContent = value;
-        option.value = value;
-        console.log(key);
-        console.log(value);
-        catsleSelect.appendChild(option);
-    });
+    // console.log(castleMap);
+    // castleMap2.forEach((key, value) => {
+    //     const option = document.createElement("option");
+    //     option.textContent = value;
+    //     option.value = value;
+    //     console.log(key);
+    //     console.log(value);
+    //     catsleSelect.appendChild(option);
+    // });
 
 
     return data;
@@ -368,6 +368,7 @@ function addData() {
 
     displayRecords(); // 更新後の記録を再表示
     displayStoredData();
+    getAllCastleIds();
     // ページをリロードする
     location.reload();
 
@@ -497,15 +498,15 @@ function parseCSV(csv) {
     const catsleSelect = document.getElementById("catsle");
 
     // castleMapの全ての名前をセレクトメニューに追加する
-    console.log(castleMap);
-    castleMap.forEach((key, value) => {
-        const option = document.createElement("option");
-        option.textContent = value;
-        option.value = value;
-        console.log(key);
-        console.log(value);
-        catsleSelect.appendChild(option);
-    });
+    // console.log(castleMap);
+    // castleMap.forEach((key, value) => {
+    //     const option = document.createElement("option");
+    //     option.textContent = value;
+    //     option.value = value;
+    //     console.log(key);
+    //     console.log(value);
+    //     catsleSelect.appendChild(option);
+    // });
 
 
     return data;

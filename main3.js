@@ -488,6 +488,7 @@ function addData() {
 
     displayRecords(); // 更新後の記録を再表示
     displayStoredData();
+    getAllCastleIds();
     // ページをリロードする
     location.reload();
 
