@@ -126,8 +126,15 @@ function displayStoredData() {
 
 
     storedData.forEach(function (data) {
-        // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
-        savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.date}</p>`;
+        // pタグをdivに変え、class="castle-item" を付与します
+        savedDataDiv.innerHTML += `
+        <div class="castle-item">
+            <span class="id-badge">${data.castleId}</span>
+            <div class="castle-info">
+                <a href="#" class="castle-link">${data.castleName}</a>
+                <span class="visit-date">${data.date}</span>
+            </div>
+        </div>`;
     });
     getAllCastleIds();
 }
@@ -171,10 +178,26 @@ function displayStoredData2() {
     // HTMLに表示
     const savedDataDiv = document.getElementById("savedData");
     savedDataDiv.innerHTML = "";
-
     storedData.forEach(function (data) {
-        // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
-        savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.date}</p>`;
+        // pタグをdivに変え、class="castle-item" を付与します
+        savedDataDiv.innerHTML += `
+        <div class="castle-item">
+            <span class="id-badge">${data.castleId}</span>
+            <div class="castle-info">
+                <a href="#" class="castle-link">${data.castleName}</a>
+                <span class="visit-date">${data.date}</span>
+            </div>
+        </div>`;
+    }); storedData.forEach(function (data) {
+        // pタグをdivに変え、class="castle-item" を付与します
+        savedDataDiv.innerHTML += `
+        <div class="castle-item">
+            <span class="id-badge">${data.castleId}</span>
+            <div class="castle-info">
+                <a href="#" class="castle-link">${data.castleName}</a>
+                <span class="visit-date">${data.date}</span>
+            </div>
+        </div>`;
     });
 }
 
@@ -215,54 +238,44 @@ function outputCSV() {
 }
 
 function getAllCastleIds() {
-    // ローカルストレージからデータを取得
     const storedData = JSON.parse(localStorage.getItem("storedData1")) || [];
-
-    // 登録されているすべての城IDを取得
     const castleIds = storedData.map(data => data.castleId);
-
-    // 1から100までの数字を生成
     const allNumbers = Array.from({ length: 100 }, (_, index) => index + 1);
-
-    // 登録されていない数字を取得
     const unregisteredNumbers = allNumbers.filter(number => !castleIds.includes(number.toString()));
-    // console.log(unregisteredNumbers);
 
-    const nameList = [];
-    for (const number of unregisteredNumbers) {
-        const stringNumber = String(number);
-
-        nameList.push(getCatsleName(stringNumber));
-    }
-    // console.log(nameList);
     const nameListDiv = document.getElementById("nameList");
-    nameListDiv.innerHTML = "<ul>";
-    nameListDiv.innerHTML += "訪れていないお城一覧\n";
-    nameListDiv.innerHTML += "残り" + nameList.length + "城";
-    nameList.forEach(function (name) {
-        // nameListDiv.innerHTML += `<li>${name}</li>`;
-        nameListDiv.innerHTML += `<li><a href="#" class='castle-link2'>${name}</a></li>`;
 
+    // ヘッダー部分（残り件数など）
+    let html = `
+        <div class="list-header">
+            <h3>訪れていないお城一覧</h3>
+            <p class="remaining-count">残り <span>${unregisteredNumbers.length}</span> 城</p>
+        </div>
+        <div class="castle-grid">`; // グリッド用のコンテナを開始
+
+    unregisteredNumbers.forEach(number => {
+        const name = getCatsleName(String(number));
+        // カード形式で作成
+        html += `
+            <div class="castle-item unvisited">
+                <span class="id-badge">${number}</span>
+                <a href="#" class="castle-link2">${name}</a>
+            </div>`;
     });
-    nameListDiv.innerHTML += "</ul>";
 
-    // castle-link クラスを持つすべての要素にイベントリスナーを追加する
+    html += `</div>`; // グリッド用のコンテナを閉じる
+    nameListDiv.innerHTML = html;
+
+    // イベントリスナーの部分（既存のロジックを維持）
     const castleLinks = document.querySelectorAll('.castle-link2');
     castleLinks.forEach(link => {
         link.addEventListener('click', function (event) {
-            // クリックされた城の名前を取得する
             event.preventDefault();
-
-            // 地図コンテナを取得
-            const mapContainer = document.getElementById('map');
-
-            // 地図コンテナの位置を取得
-            const containerTop = mapContainer.getBoundingClientRect().top;
-
             const castleName = this.textContent;
-            console.log('クリックされた城名:', castleName);
             moveToCastleLocation(castleName, 10);
-            // ここにクリックされた城名を使用した任意の処理を追加する
+
+            // 地図までスムーズにスクロールさせる（スマホで便利）
+            document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
         });
     });
 }
@@ -305,23 +318,66 @@ function kakusu3() {
     document.getElementById('recordList').style.display = 'none';
     nameListDiv.innerHTML = null;
 }
-function getRcordList() {
-    const nameListDiv = document.getElementById("recordList");
-    document.getElementById('recordList').style.display = 'block';
-    nameListDiv.innerHTML = null;
-    const storedData = JSON.parse(localStorage.getItem("storedData1")) || [];
+
+/**
+ * 削除リストを表示する汎用関数
+ * @param {string} storageKey - localStorageのキー名
+ * @param {string} title - 表示するタイトルの接頭辞
+ */
+function getRcordList(storageKey = "storedData1", title = "日本100名城") {
+    const recordListDiv = document.getElementById("recordList");
+    recordListDiv.style.display = 'block';
+    recordListDiv.innerHTML = "";
+
+    // 指定されたストレージからデータを取得
+    let storedData = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+    // --- ID順（昇順）に並べ替え ---
+    storedData.sort((a, b) => Number(a.castleId) - Number(b.castleId));
+
+    // ヘッダーの組み立て
+    let html = `
+        <div class="list-header delete-header">
+            <h3>削除する記録の選択 (${title})</h3>
+            <p>削除したい項目にチェックを入れてください</p>
+        </div>
+        <div class="castle-grid">`;
+
     storedData.forEach(record => {
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = record.castleName; // お城のIDなどをvalueとして設定
-        recordList.appendChild(checkbox);
+        // IDの重複を避けるため storageKey を含めたユニークなIDを作成
+        const uniqueId = `check-${storageKey}-${record.castleId}`;
 
-        const label = document.createElement("label");
-        label.textContent = record.castleName;
-        recordList.appendChild(label);
-
-        recordList.appendChild(document.createElement("br"));
+        html += `
+            <div class="castle-item delete-item">
+                <input type="checkbox" id="${uniqueId}" value="${record.castleName}" class="delete-checkbox">
+                <label for="${uniqueId}" class="delete-label">
+                    <span class="id-badge">${record.castleId}</span>
+                    <span class="castle-name-text">${record.castleName}</span>
+                </label>
+            </div>`;
     });
+
+    html += `</div>`;
+
+    // 削除ボタンエリア
+    if (storedData.length > 0) {
+        html += `
+            <div class="delete-action-area">
+                <button onclick="remove('${storageKey}')" class="btn-execute-delete">
+                    選択した記録を削除する
+                </button>
+            </div>`;
+    } else {
+        html += `
+            <div class="empty-message">
+                <p>保存された記録がありません。</p>
+            </div>`;
+    }
+
+    recordListDiv.innerHTML = html;
+
+    // リストへスクロール（表示されたことがわかりやすい）
+    recordListDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function reset() {

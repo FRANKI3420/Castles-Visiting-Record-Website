@@ -246,10 +246,16 @@ function displayStoredData() {
     savedDataDiv.innerHTML += "\n訪れたお城:" + storedData.length + "城\n";
 
     storedData.forEach(function (data) {
-        // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
-        savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.date}</p>`;
+        // pタグをdivに変え、class="castle-item" を付与します
+        savedDataDiv.innerHTML += `
+        <div class="castle-item">
+            <span class="id-badge">${data.castleId}</span>
+            <div class="castle-info">
+                <a href="#" class="castle-link">${data.castleName}</a>
+                <span class="visit-date">${data.date}</span>
+            </div>
+        </div>`;
     });
-
     getAllCastleIds();
 
 }
@@ -293,8 +299,15 @@ function displayStoredData2() {
     savedDataDiv.innerHTML = "";
 
     storedData.forEach(function (data) {
-        // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
-        savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.date}</p>`;
+        // pタグをdivに変え、class="castle-item" を付与します
+        savedDataDiv.innerHTML += `
+        <div class="castle-item">
+            <span class="id-badge">${data.castleId}</span>
+            <div class="castle-info">
+                <a href="#" class="castle-link">${data.castleName}</a>
+                <span class="visit-date">${data.date}</span>
+            </div>
+        </div>`;
     });
 }
 
@@ -358,55 +371,57 @@ function outputCSV() {
 }
 
 function getAllCastleIds() {
-    // ローカルストレージからデータを取得
+    // ローカルストレージからデータを取得（続100名城用のstoredData2）
     const storedData = JSON.parse(localStorage.getItem("storedData2")) || [];
-
-    // 登録されているすべての城IDを取得
-    // const castleIds = storedData.map(data => data.castleId);
     const castleIds = storedData.map(data => Number(data.castleId));
-    console.log(castleIds);
 
+    // 101から200までの数字を生成
     const allNumbers = Array.from({ length: 100 }, (_, index) => index + 101);
 
-    // 登録されていない数字を取得
+    // 未登録のIDを取得
     const unregisteredNumbers = allNumbers.filter(number => !castleIds.includes(number));
-    // console.log(unregisteredNumbers);
 
-    const nameList = [];
-    for (const number of unregisteredNumbers) {
-        // const stringNumber = String(number);
-
-        // nameList.push(getCatsleName(stringNumber));
-        nameList.push(idMap.get(number));
-    }
-    console.log("訪れていないお城")
-    console.log(nameList);
     const nameListDiv = document.getElementById("nameList");
-    nameListDiv.innerHTML = "<ul>";
-    nameListDiv.innerHTML += "訪れていないお城一覧\n";
-    nameListDiv.innerHTML += "残り" + nameList.length + "城";
-    nameList.forEach(function (name) {
-        nameListDiv.innerHTML += `<li><a href="#" class='castle-link2'>${name}</a></li>`;
-    });
-    nameListDiv.innerHTML += "</ul>";
-    // castle-link クラスを持つすべての要素にイベントリスナーを追加する
-    const castleLinks2 = document.querySelectorAll('.castle-link2');
 
+    // HTMLの組み立て開始
+    let html = `
+        <div class="list-header">
+            <h3>続・訪れていないお城一覧</h3>
+            <p class="remaining-count">残り <span>${unregisteredNumbers.length}</span> 城</p>
+        </div>
+        <div class="castle-grid">`; // CSS Grid用のコンテナ
+
+    unregisteredNumbers.forEach(number => {
+        const name = idMap.get(number);
+        if (name) {
+            html += `
+                <div class="castle-item unvisited">
+                    <span class="id-badge">${number}</span>
+                    <a href="#" class="castle-link2">${name}</a>
+                </div>`;
+        }
+    });
+
+    html += `</div>`;
+    nameListDiv.innerHTML = html;
+
+    // イベントリスナーの設定
+    const castleLinks2 = document.querySelectorAll('.castle-link2');
     castleLinks2.forEach(link => {
         link.addEventListener('click', function (event) {
-            // クリックされた城の名前を取得する
             event.preventDefault();
-
-            // 地図コンテナを取得
-            const mapContainer = document.getElementById('map');
-
             const castleName = this.textContent;
             console.log('クリックされた城名:', castleName);
+
             moveToCastleLocation(castleName, 10);
-            // ここにクリックされた城名を使用した任意の処理を追加する
+
+            // 地図までスムーズにスクロール（スマホ・PC共通で便利）
+            const mapElement = document.getElementById('map');
+            if (mapElement) {
+                mapElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         });
     });
-
 }
 
 function kakusu() {
@@ -425,22 +440,45 @@ function kakusu3() {
     nameListDiv.innerHTML = null;
 }
 function getRcordList() {
-    const nameListDiv = document.getElementById("recordList");
-    document.getElementById('recordList').style.display = 'block';
-    nameListDiv.innerHTML = null;
+    const recordListDiv = document.getElementById("recordList");
+    recordListDiv.style.display = 'block';
+    recordListDiv.innerHTML = "";
+
     const storedData = JSON.parse(localStorage.getItem("storedData2")) || [];
+
+    let html = `
+        <div class="list-header delete-header">
+            <h3>削除する記録の選択</h3>
+            <p>削除したいお城にチェックを入れてください</p>
+        </div>
+        <div class="castle-grid">`;
+
     storedData.forEach(record => {
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = record.castleName; // お城のIDなどをvalueとして設定
-        recordList.appendChild(checkbox);
-
-        const label = document.createElement("label");
-        label.textContent = record.castleName;
-        recordList.appendChild(label);
-
-        recordList.appendChild(document.createElement("br"));
+        html += `
+            <div class="castle-item delete-item">
+                <input type="checkbox" id="check-zoku-${record.castleId}" value="${record.castleName}" class="delete-checkbox">
+                <label for="check-zoku-${record.castleId}" class="delete-label">
+                    <span class="id-badge">${record.castleId}</span>
+                    ${record.castleName}
+                </label>
+            </div>`;
     });
+
+    html += `</div>`;
+
+    // --- ここで削除ボタンを動的に追加 ---
+    if (storedData.length > 0) {
+        html += `
+            <div class="delete-action-area">
+                <button onclick="remove()" class="btn-execute-delete">
+                    選択した記録を削除する
+                </button>
+            </div>`;
+    } else {
+        html += `<p style="text-align:center; padding:20px;">記録がありません。</p>`;
+    }
+
+    recordListDiv.innerHTML = html;
 }
 
 function reset() {

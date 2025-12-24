@@ -26,7 +26,6 @@
     </div>
 
     <div class="mapzone" id="mapzone">
-        <h2>Map</h2>
         <button onclick="setCurrentLocation()" style="font-size: 20px;">現在地へ</button>
         <div id="map-container">
             <!-- 地図を表示するためのコンテナ -->
@@ -38,10 +37,13 @@
         <header>
 
             <h1>御翔印取得記録サイト</h1>
-
-            <div id="image-container">
-                <img id="image" src="img/shirushi.jpg" alt="画像" ,width="400" height="300">
-                <img id="image" src="img/peach.jpg" alt="画像" ,width="400" height="300">
+            <div class="image-container">
+                <div class="image-box">
+                    <img src="img/shirushi.jpg" alt="御翔印">
+                </div>
+                <!-- <div class="image-box">
+                    <img src="img/peach.jpg" alt="御翔印2">
+                </div> -->
             </div>
             <br>
             <div id="dannData"></div>

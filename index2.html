@@ -27,7 +27,6 @@
 
     <div>
         <div class="mapzone" id="mapzone">
-            <h2>Map</h2>
             <button onclick="setCurrentLocation()" style="font-size: 20px;">現在地へ</button>
             <div id="map-container">
                 <!-- 地図を表示するためのコンテナ -->
@@ -38,14 +37,16 @@
         <div class="content" id="content">
             <header>
                 <!-- <a href="index.html">100名城の訪問記録サイトへ</a> -->
-                <h1>続100名城訪問記録サイト</h1>
+                <h1>続100名城訪問記録</h1>
 
                 <div class="image-container">
-                    <img src="img/gujo.jpg" alt="画像1" width="200" height="300">
-                    <img src="img/ninn.jpg" alt="画像2" width="200" height="300">
+                    <div class="image-box">
+                        <img src="img/gujo.jpg" alt="郡上八幡城">
+                    </div>
+                    <!-- <div class="image-box">
+                        <img src="img/ninn.jpg" alt="二条城">
+                    </div> -->
                 </div>
-
-
 
                 <label for="region" style="font-size: 20px;">エリア選択:</label>
                 <select id="region" name="region" style="font-size: 20px;">

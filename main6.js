@@ -170,9 +170,14 @@ function displayStoredData() {
 
 
     storedData.forEach(function (data) {
-        // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
-        // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.da}</p>`;
-        savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a href="#"  class="castle-link">${data.castleName}</p>`;
+        // 1つの項目を <div class="castle-item"> で囲むことで、Gridレイアウトが適用されます
+        savedDataDiv.innerHTML += `
+        <div class="castle-item">
+            <span class="id-badge">${data.castleId}</span>
+            <div class="castle-info">
+                <a href="#" class="castle-link" onclick="zoomToCastle('${data.castleId}')">${data.castleName}</a>
+            </div>
+        </div>`;
     });
     // getAllCastleIds();
 }
@@ -619,24 +624,52 @@ function displayRecords() {
         recordList.appendChild(document.createElement("br"));
     });
 }
-
 function getRcordList() {
-    const nameListDiv = document.getElementById("recordList");
-    document.getElementById('recordList').style.display = 'block';
-    nameListDiv.innerHTML = null;
-    const storedData = JSON.parse(localStorage.getItem("storedData6")) || [];
+    const recordListDiv = document.getElementById("recordList");
+    recordListDiv.style.display = 'block';
+    recordListDiv.innerHTML = ""; // 初期化
+
+    // データの取得
+    let storedData = JSON.parse(localStorage.getItem("storedData6")) || [];
+
+    // --- ID順（昇順）に並べ替え ---
+    storedData.sort((a, b) => Number(a.castleId) - Number(b.castleId));
+
+    // ヘッダーを追加
+    let html = `
+        <div class="list-header delete-header">
+            <h3>削除する記録の選択</h3>
+            <p>削除したい項目にチェックを入れてください</p>
+        </div>
+        <div class="castle-grid">`;
+
     storedData.forEach(record => {
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = record.castleName; // お城のIDなどをvalueとして設定
-        recordList.appendChild(checkbox);
-
-        const label = document.createElement("label");
-        label.textContent = record.castleName;
-        recordList.appendChild(label);
-
-        recordList.appendChild(document.createElement("br"));
+        // IDの一致を保証するため id属性に "stored6-" を付与
+        html += `
+            <div class="castle-item delete-item">
+                <input type="checkbox" id="check-stored6-${record.castleId}" value="${record.castleName}" class="delete-checkbox">
+                <label for="check-stored6-${record.castleId}" class="delete-label">
+                    <span class="id-badge">${record.castleId}</span>
+                    ${record.castleName}
+                </label>
+            </div>`;
     });
+
+    html += `</div>`;
+
+    // --- 削除実行ボタンの追加 ---
+    if (storedData.length > 0) {
+        html += `
+            <div class="delete-action-area">
+                <button onclick="remove()" class="btn-execute-delete">
+                    選択した記録を削除する
+                </button>
+            </div>`;
+    } else {
+        html += `<p style="text-align:center; padding:20px; color:#666;">記録がありません。</p>`;
+    }
+
+    recordListDiv.innerHTML = html;
 }
 
 function remove() {

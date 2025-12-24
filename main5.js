@@ -198,9 +198,14 @@ function displayStoredData() {
 
 
     storedData.forEach(function (data) {
-        // savedDataDiv.innerHTML += `<p>${data.castleId}, 空港: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
-        // savedDataDiv.innerHTML += `<p>${data.castleId}, 空港: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.da}</p>`;
-        savedDataDiv.innerHTML += `<p>${data.castleId}, 空港: <a href="#"  class="castle-link">${data.castleName}</p>`;
+        // 1つの項目を <div class="castle-item"> で囲むことで、Gridレイアウトが適用されます
+        savedDataDiv.innerHTML += `
+        <div class="castle-item">
+            <span class="id-badge">${data.castleId}</span>
+            <div class="castle-info">
+                <a href="#" class="castle-link" onclick="zoomToCastle('${data.castleId}')">${data.castleName}</a>
+            </div>
+        </div>`;
     });
     // getAllCastleIds();
 }
@@ -400,61 +405,58 @@ function addData() {
     location.reload();
 
 }
-
-
 function getAllCastleIds() {
-    // ローカルストレージからデータを取得
+    // ローカルストレージからデータを取得（御翔印用 storedData5）
     const storedData = JSON.parse(localStorage.getItem("storedData5")) || [];
-
-    // 登録されているすべての城IDを取得
     const castleIds = storedData.map(data => data.castleId);
-    console.log("castleIds");
-    console.log(castleIds);
 
-    // const allNumbers = getAllNumber(csvFileName);
-    console.log("allNumbers");
-    console.log(allNumbers);
-
-
-    // 登録されていない数字を取得
+    // 未登録のIDを抽出
     const unregisteredNumbers = allNumbers.filter(number => !castleIds.includes(number));
-    console.log("unregisteredNumbers");
-    console.log(unregisteredNumbers);
-
-    const nameList = [];
-    for (const number of unregisteredNumbers) {
-        const stringNumber = String(number);
-        nameList.push(getCatsleName(stringNumber));
-        // nameList.push(idMap.get(number));
-    }
-    console.log(nameList);
 
     const nameListDiv = document.getElementById("nameList");
-    nameListDiv.innerHTML = "<ul>";
-    nameListDiv.innerHTML += "未取得の御翔印一覧\n";
-    nameListDiv.innerHTML += "全" + allNumbers.length + "枚中";
-    nameListDiv.innerHTML += "残り" + nameList.length + "枚";
-    nameList.forEach(function (name) {
-        nameListDiv.innerHTML += `<li><a href="#" class='castle-link2'>${name}</a></li>`;
-    });
-    nameListDiv.innerHTML += "</ul>";
-    // castle-link クラスを持つすべての要素にイベントリスナーを追加する
-    const castleLinks2 = document.querySelectorAll('.castle-link2');
 
+    // HTML組み立て（グリッドレイアウト適用）
+    let html = `
+        <div class="list-header goshouin-header">
+            <h3>未取得の御翔印一覧</h3>
+            <div class="progress-info">
+                <p>全 ${allNumbers.length} 枚中</p>
+                <p class="remaining-count">残り <span>${unregisteredNumbers.length}</span> 枚</p>
+            </div>
+        </div>
+        <div class="castle-grid">`;
+
+    unregisteredNumbers.forEach(number => {
+        const name = getCatsleName(String(number));
+        if (name) {
+            html += `
+                <div class="castle-item unvisited goshouin-item">
+                    <span class="id-badge">${number}</span>
+                    <a href="#" class="castle-link2">${name}</a>
+                </div>`;
+        }
+    });
+
+    html += `</div>`;
+    nameListDiv.innerHTML = html;
+
+    // イベントリスナー
+    const castleLinks2 = document.querySelectorAll('.castle-link2');
     castleLinks2.forEach(link => {
         link.addEventListener('click', function (event) {
-            // クリックされた城の名前を取得する
             event.preventDefault();
+            const airportName = this.textContent;
+            console.log('クリックされた空港:', airportName);
 
-            // 地図コンテナを取得
-            const mapContainer = document.getElementById('map');
+            moveToCastleLocation(airportName, 10);
 
-            const castleName = this.textContent;
-            console.log('クリックされた空港:', castleName);
-            moveToCastleLocation(castleName, 10);
+            // 地図へスムーズスクロール
+            const mapElement = document.getElementById('map');
+            if (mapElement) {
+                mapElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         });
     });
-
 }
 
 
@@ -646,24 +648,51 @@ function displayRecords() {
         recordList.appendChild(document.createElement("br"));
     });
 }
-
 function getRcordList() {
-    const nameListDiv = document.getElementById("recordList");
-    document.getElementById('recordList').style.display = 'block';
-    nameListDiv.innerHTML = null;
-    const storedData = JSON.parse(localStorage.getItem("storedData5")) || [];
+    const recordListDiv = document.getElementById("recordList");
+    recordListDiv.style.display = 'block';
+    recordListDiv.innerHTML = ""; // 初期化
+
+    // 御翔印用データ（storedData5）を取得
+    let storedData = JSON.parse(localStorage.getItem("storedData5")) || [];
+
+    // --- ID順（昇順）に並べ替え ---
+    storedData.sort((a, b) => Number(a.castleId) - Number(b.castleId));
+
+    // ヘッダーを追加（御翔印用のクラス goshouin-header を使用）
+    let html = `
+        <div class="list-header delete-header goshouin-header">
+            <h3>削除する御翔印の選択</h3>
+            <p>削除したい項目にチェックを入れてください</p>
+        </div>
+        <div class="castle-grid">`;
+
     storedData.forEach(record => {
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = record.castleName; // お城のIDなどをvalueとして設定
-        recordList.appendChild(checkbox);
-
-        const label = document.createElement("label");
-        label.textContent = record.castleName;
-        recordList.appendChild(label);
-
-        recordList.appendChild(document.createElement("br"));
+        html += `
+            <div class="castle-item delete-item goshouin-item">
+                <input type="checkbox" id="check-goshouin-${record.castleId}" value="${record.castleName}" class="delete-checkbox">
+                <label for="check-goshouin-${record.castleId}" class="delete-label">
+                    <span class="id-badge">${record.castleId}</span>
+                    ${record.castleName}
+                </label>
+            </div>`;
     });
+
+    html += `</div>`;
+
+    // 削除ボタンの追加
+    if (storedData.length > 0) {
+        html += `
+            <div class="delete-action-area">
+                <button onclick="remove()" class="btn-execute-delete">
+                    選択した御翔印を削除する
+                </button>
+            </div>`;
+    } else {
+        html += `<p style="text-align:center; padding:20px; color:#666;">取得済みの御翔印がありません。</p>`;
+    }
+
+    recordListDiv.innerHTML = html;
 }
 
 function remove() {
