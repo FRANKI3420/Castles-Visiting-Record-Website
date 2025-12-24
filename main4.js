@@ -1,10 +1,10 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const toggleButton = document.getElementById("toggleButton");
     const sidebar = document.getElementById("sidebar");
     const mapzone = document.getElementById("mapzone");
     const content = document.getElementById("content");
 
-    toggleButton.addEventListener("click", function() {
+    toggleButton.addEventListener("click", function () {
         sidebar.classList.toggle("hidden");
         mapzone.classList.toggle("active");
         content.classList.toggle("expanded");
@@ -170,7 +170,7 @@ function displayStoredData() {
     // HTMLに表示
     const savedDataDiv = document.getElementById("savedData");
     savedDataDiv.innerHTML = "";
-    savedDataDiv.innerHTML += "\n取得枚数:"+storedData.length+"枚\n";
+    savedDataDiv.innerHTML += "\n取得枚数:" + storedData.length + "枚\n";
 
 
     storedData.forEach(function (data) {
@@ -284,10 +284,10 @@ function outputCSV() {
     }
 }
 
-function getAllNumber(csvFileName){
+function getAllNumber(csvFileName) {
     const lines = csvFileName.split('\n'); // 改行で分割して各行を取得
     const allNumbers = []; // データを格納する配列
-    
+
     // 各行を処理してデータを取得
     for (let i = 1; i < lines.length; i++) { // 最初の行はヘッダーなのでスキップする
         const line = lines[i].trim(); // 前後の空白を削除
@@ -322,8 +322,8 @@ function inputCSV() {
         alert('ファイルを読み込む際にエラーが発生しました。');
     };
     reader.readAsText(file, 'UTF-8');
-     // ファイルが選ばれた後にボタンを表示
-     document.getElementById('loadButton').style.display = 'inline';
+    // ファイルが選ばれた後にボタンを表示
+    document.getElementById('loadButton').style.display = 'inline';
 }
 
 function parseInputCSV(data) {
@@ -362,7 +362,7 @@ function addData() {
             console.log(item.id);
             console.log(item.name);
             // storedData.push(item);
-            storedData.push({ castleId: item.id, castleName: item.name});
+            storedData.push({ castleId: item.id, castleName: item.name });
 
         }
     });
@@ -387,11 +387,11 @@ function getAllCastleIds() {
     const castleIds = storedData.map(data => data.castleId);
     console.log("castleIds");
     console.log(castleIds);
-    
+
     // const allNumbers = getAllNumber(csvFileName);
     console.log("allNumbers");
     console.log(allNumbers);
-    
+
 
     // 登録されていない数字を取得
     const unregisteredNumbers = allNumbers.filter(number => !castleIds.includes(number));
@@ -409,7 +409,7 @@ function getAllCastleIds() {
     const nameListDiv = document.getElementById("nameList");
     nameListDiv.innerHTML = "<ul>";
     nameListDiv.innerHTML += "未取得のお城カード一覧\n";
-    nameListDiv.innerHTML += "全"+allNumbers.length +"枚中";
+    nameListDiv.innerHTML += "全" + allNumbers.length + "枚中";
     nameListDiv.innerHTML += "残り" + nameList.length + "枚";
     nameList.forEach(function (name) {
         nameListDiv.innerHTML += `<li><a href="#" class='castle-link2'>${name}</a></li>`;
@@ -445,6 +445,7 @@ function kakusu2() {
 }
 function kakusu3() {
     const nameListDiv = document.getElementById("recordList");
+    document.getElementById('recordList').style.display = 'none';
     nameListDiv.innerHTML = null;
 }
 
@@ -623,8 +624,9 @@ function displayRecords() {
     });
 }
 
-function getRcordList(){
+function getRcordList() {
     const nameListDiv = document.getElementById("recordList");
+    document.getElementById('recordList').style.display = 'block';
     nameListDiv.innerHTML = null;
     const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
     storedData.forEach(record => {
@@ -658,7 +660,7 @@ function remove() {
 
         // 選択された城名を除外して新しいデータを作成
         const updatedData = storedData.filter(record => !selectedValues.includes(record.castleName));
-        
+
         // ローカルストレージを更新
         localStorage.setItem("storedData4", JSON.stringify(updatedData));
 
@@ -692,11 +694,11 @@ function getCatsleName(castleID) {
         case "131": return "村上城";
         case "138": return "越前大野城";
         case "143": return "美濃金山城";
-        case "164": return "洲本城"; 
-        case "169": return "米子城"; 
-        case "172": return "三原城"; 
-        case "181": return "小倉城"; 
-        case "194": return "佐伯城"; 
+        case "164": return "洲本城";
+        case "169": return "米子城";
+        case "172": return "三原城";
+        case "181": return "小倉城";
+        case "194": return "佐伯城";
         case "109": return "米沢城";
         case "135": return "増山城";
         case "141": return "郡上八幡城";

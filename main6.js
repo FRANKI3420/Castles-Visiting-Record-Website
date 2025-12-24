@@ -1,10 +1,10 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const toggleButton = document.getElementById("toggleButton");
     const sidebar = document.getElementById("sidebar");
     const mapzone = document.getElementById("mapzone");
     const content = document.getElementById("content");
 
-    toggleButton.addEventListener("click", function() {
+    toggleButton.addEventListener("click", function () {
         sidebar.classList.toggle("hidden");
         mapzone.classList.toggle("active");
         content.classList.toggle("expanded");
@@ -28,7 +28,7 @@ let selectedCastleId;
 // ページが読み込まれたときに保存されたデータを表示
 displayStoredData();
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     // 初期化処理
     const selectedcsv = "data/medaru.csv"; // ここでデフォルトのCSVファイルを指定
     let castleLocations2 = [];
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             // セレクトメニューにデータを追加
             const citySelect = document.getElementById("catsle");
-            castleLocations2.forEach(function(castle) {
+            castleLocations2.forEach(function (castle) {
                 const option = document.createElement("option");
                 option.textContent = castle.name;
                 option.value = castle.name;
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         })
         .catch(error => console.error('ファイルの読み込みエラー:', error));
-    });
+});
 
 function hideMarkers() {
     markers.forEach(marker => {
@@ -166,7 +166,7 @@ function displayStoredData() {
     // HTMLに表示
     const savedDataDiv = document.getElementById("savedData");
     savedDataDiv.innerHTML = "";
-    savedDataDiv.innerHTML += "\n取得枚数:"+storedData.length+"枚\n";
+    savedDataDiv.innerHTML += "\n取得枚数:" + storedData.length + "枚\n";
 
 
     storedData.forEach(function (data) {
@@ -280,10 +280,10 @@ function outputCSV() {
     }
 }
 
-function getAllNumber(csvFileName){
+function getAllNumber(csvFileName) {
     const lines = csvFileName.split('\n'); // 改行で分割して各行を取得
     const allNumbers = []; // データを格納する配列
-    
+
     // 各行を処理してデータを取得
     for (let i = 1; i < lines.length; i++) { // 最初の行はヘッダーなのでスキップする
         const line = lines[i].trim(); // 前後の空白を削除
@@ -318,8 +318,8 @@ function inputCSV() {
         alert('ファイルを読み込む際にエラーが発生しました。');
     };
     reader.readAsText(file, 'UTF-8');
-     // ファイルが選ばれた後にボタンを表示
-     document.getElementById('loadButton').style.display = 'inline';
+    // ファイルが選ばれた後にボタンを表示
+    document.getElementById('loadButton').style.display = 'inline';
 }
 
 function parseInputCSV(data) {
@@ -358,7 +358,7 @@ function addData() {
             console.log(item.id);
             console.log(item.name);
             // storedData.push(item);
-            storedData.push({ castleId: item.id, castleName: item.name});
+            storedData.push({ castleId: item.id, castleName: item.name });
 
         }
     });
@@ -383,11 +383,11 @@ function getAllCastleIds() {
     const castleIds = storedData.map(data => data.castleId);
     console.log("castleIds");
     console.log(castleIds);
-    
+
     // const allNumbers = getAllNumber(csvFileName);
     console.log("allNumbers");
     console.log(allNumbers);
-    
+
 
     // 登録されていない数字を取得
     const unregisteredNumbers = allNumbers.filter(number => !castleIds.includes(number));
@@ -405,7 +405,7 @@ function getAllCastleIds() {
     const nameListDiv = document.getElementById("nameList");
     nameListDiv.innerHTML = "<ul>";
     nameListDiv.innerHTML += "未取得の城メダル一覧\n";
-    nameListDiv.innerHTML += "全"+allNumbers.length +"枚中";
+    nameListDiv.innerHTML += "全" + allNumbers.length + "枚中";
     nameListDiv.innerHTML += "残り" + nameList.length + "枚";
     nameList.forEach(function (name) {
         nameListDiv.innerHTML += `<li><a href="#" class='castle-link2'>${name}</a></li>`;
@@ -441,6 +441,7 @@ function kakusu2() {
 }
 function kakusu3() {
     const nameListDiv = document.getElementById("recordList");
+    document.getElementById('recordList').style.display = 'none';
     nameListDiv.innerHTML = null;
 }
 
@@ -619,8 +620,9 @@ function displayRecords() {
     });
 }
 
-function getRcordList(){
+function getRcordList() {
     const nameListDiv = document.getElementById("recordList");
+    document.getElementById('recordList').style.display = 'block';
     nameListDiv.innerHTML = null;
     const storedData = JSON.parse(localStorage.getItem("storedData6")) || [];
     storedData.forEach(record => {
@@ -654,7 +656,7 @@ function remove() {
 
         // 選択された城名を除外して新しいデータを作成
         const updatedData = storedData.filter(record => !selectedValues.includes(record.castleName));
-        
+
         // ローカルストレージを更新
         localStorage.setItem("storedData6", JSON.stringify(updatedData));
 
@@ -683,83 +685,83 @@ function remove() {
 
 function getCatsleName(castleID) {
     switch (castleID) {
-        case"1":return"五稜郭";
-        case"2":return"弘前城";
-        case"3":return"館山城";
-        case"4":return"小田原城";
-        case"5":return"上田城";
-        case"6":return"松本城";
-        case"7":return"浜松城";
-        case"8":return"岡崎城";
-        case"9":return"犬山城";
-        case"10":return"小牧城";
-        case"11":return"清洲城";
-        case"12":return"名古屋城";
-        case"13":return"岐阜城";
-        case"14":return"墨俣城";
-        case"15":return"大垣城";
-        case"16":return"長浜城";
-        case"17":return"彦根城";
-        case"18":return"二条城";
-        case"19":return"大阪城";
-        case"20":return"和歌山城";
-        case"21":return"姫路城";
-        case"22":return"岡山城";
-        case"23":return"福山城";
-        case"24":return"広島城";
-        case"25":return"松江城";
-        case"26":return"岩国城";
-        case"27":return"丸亀城";
-        case"28":return"今治城";
-        case"29":return"松山城";
-        case"30":return"小倉城";
-        case"31":return"佐賀城";
-        case"32":return"唐津城";
-        case"33":return"平戸城";
-        case"34":return"島原城";
-        case"35":return"熊本城";
-        case"36":return"首里城";  
+        case "1": return "五稜郭";
+        case "2": return "弘前城";
+        case "3": return "館山城";
+        case "4": return "小田原城";
+        case "5": return "上田城";
+        case "6": return "松本城";
+        case "7": return "浜松城";
+        case "8": return "岡崎城";
+        case "9": return "犬山城";
+        case "10": return "小牧城";
+        case "11": return "清洲城";
+        case "12": return "名古屋城";
+        case "13": return "岐阜城";
+        case "14": return "墨俣城";
+        case "15": return "大垣城";
+        case "16": return "長浜城";
+        case "17": return "彦根城";
+        case "18": return "二条城";
+        case "19": return "大阪城";
+        case "20": return "和歌山城";
+        case "21": return "姫路城";
+        case "22": return "岡山城";
+        case "23": return "福山城";
+        case "24": return "広島城";
+        case "25": return "松江城";
+        case "26": return "岩国城";
+        case "27": return "丸亀城";
+        case "28": return "今治城";
+        case "29": return "松山城";
+        case "30": return "小倉城";
+        case "31": return "佐賀城";
+        case "32": return "唐津城";
+        case "33": return "平戸城";
+        case "34": return "島原城";
+        case "35": return "熊本城";
+        case "36": return "首里城";
     }
 }
 
 
 function getCastleID(selectedCastleValue) {
     switch (selectedCastleValue) {
-        case"五稜郭":return"1";
-        case"弘前城":return"2";
-        case"館山城":return"3";
-        case"小田原城":return"4";
-        case"上田城":return"5";
-        case"松本城":return"6";
-        case"浜松城":return"7";
-        case"岡崎城":return"8";
-        case"犬山城":return"9";
-        case"小牧城":return"10";
-        case"清洲城":return"11";
-        case"名古屋城":return"12";
-        case"岐阜城":return"13";
-        case"墨俣城":return"14";
-        case"大垣城":return"15";
-        case"長浜城":return"16";
-        case"彦根城":return"17";
-        case"二条城":return"18";
-        case"大阪城":return"19";
-        case"和歌山城":return"20";
-        case"姫路城":return"21";
-        case"岡山城":return"22";
-        case"福山城":return"23";
-        case"広島城":return"24";
-        case"松江城":return"25";
-        case"岩国城":return"26";
-        case"丸亀城":return"27";
-        case"今治城":return"28";
-        case"松山城":return"29";
-        case"小倉城":return"30";
-        case"佐賀城":return"31";
-        case"唐津城":return"32";
-        case"平戸城":return"33";
-        case"島原城":return"34";
-        case"熊本城":return"35";
-        case"首里城":return"36";
+        case "五稜郭": return "1";
+        case "弘前城": return "2";
+        case "館山城": return "3";
+        case "小田原城": return "4";
+        case "上田城": return "5";
+        case "松本城": return "6";
+        case "浜松城": return "7";
+        case "岡崎城": return "8";
+        case "犬山城": return "9";
+        case "小牧城": return "10";
+        case "清洲城": return "11";
+        case "名古屋城": return "12";
+        case "岐阜城": return "13";
+        case "墨俣城": return "14";
+        case "大垣城": return "15";
+        case "長浜城": return "16";
+        case "彦根城": return "17";
+        case "二条城": return "18";
+        case "大阪城": return "19";
+        case "和歌山城": return "20";
+        case "姫路城": return "21";
+        case "岡山城": return "22";
+        case "福山城": return "23";
+        case "広島城": return "24";
+        case "松江城": return "25";
+        case "岩国城": return "26";
+        case "丸亀城": return "27";
+        case "今治城": return "28";
+        case "松山城": return "29";
+        case "小倉城": return "30";
+        case "佐賀城": return "31";
+        case "唐津城": return "32";
+        case "平戸城": return "33";
+        case "島原城": return "34";
+        case "熊本城": return "35";
+        case "首里城": return "36";
     }
 }

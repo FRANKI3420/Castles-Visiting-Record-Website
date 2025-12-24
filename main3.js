@@ -561,6 +561,7 @@ function kakusu2() {
 }
 function kakusu3() {
     const nameListDiv = document.getElementById("recordList");
+    document.getElementById('recordList').style.display = 'none';
     nameListDiv.innerHTML = null;
 }
 
@@ -741,6 +742,7 @@ function displayRecords() {
 
 function getRcordList() {
     const nameListDiv = document.getElementById("recordList");
+    document.getElementById('recordList').style.display = 'block';
     nameListDiv.innerHTML = null;
     const storedData = JSON.parse(localStorage.getItem("storedData3")) || [];
     storedData.forEach(record => {

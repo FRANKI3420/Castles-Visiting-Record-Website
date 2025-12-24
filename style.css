@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
 
-header{
+header {
     width: 50%;
     text-align: center;
 }
@@ -110,7 +110,7 @@ body {
     position: fixed;
     top: 0;
     right: 0;
-    width: 45%;
+    width: 40%;
     height: 100%;
     background: linear-gradient(to bottom, #7cf554, #c8e9e9);
     padding: 20px;
@@ -206,4 +206,88 @@ body {
 ._a a:hover {
     color: #ffffff;
     background-position: -100% 0;
+}
+
+#savedData {
+    column-count: 2;
+    /* PCでは3段にする */
+    column-gap: 20px;
+    padding: 10px;
+}
+
+#nameList {
+    column-count: 2;
+    /* PCでは3段にする */
+    column-gap: 20px;
+    padding: 10px;
+}
+
+/* --- スマホ向けのレスポンシブ設定 --- */
+
+@media screen and (max-width: 768px) {
+
+    /* 1. 全体の固定配置を解除して縦に並べる */
+    header {
+        width: 100%;
+        /* 50%から100%へ */
+    }
+
+    .sidebar {
+        position: relative;
+        /* 固定を解除 */
+        width: 100%;
+        height: auto;
+        transform: none !important;
+        /* 強制的に表示（隠すと操作できないため） */
+        padding: 10px;
+    }
+
+    .toggle-button {
+        display: none;
+        /* スマホではサイドバーを常時出すか、別の仕組みにするため一旦非表示 */
+    }
+
+    /* 2. マップを画面上部（または任意の位置）に大きく表示 */
+    .mapzone {
+        position: relative;
+        /* 固定を解除 */
+        width: 100%;
+        height: 350px;
+        /* スマホで見やすい高さに固定 */
+        right: auto;
+        padding: 10px;
+        margin-top: 10px;
+    }
+
+    #map-container {
+        height: 300px;
+        /* マップの高さを確保 */
+    }
+
+    /* 3. コンテンツエリアの余白を消す */
+    .content {
+        margin-left: 0;
+        /* サイドバー分の220pxを消す */
+        padding: 15px;
+        width: 100%;
+    }
+
+    /* 4. 画像をスマホの幅に合わせる */
+    #image-container img {
+        width: 100% !important;
+        height: auto !important;
+        max-width: 100%;
+        margin-bottom: 10px;
+    }
+
+    /* 5. 入力フォームやボタンを押しやすくする */
+    select,
+    input,
+    button {
+        width: 100%;
+        /* 横幅いっぱいに広げる */
+        margin-bottom: 15px;
+        font-size: 16px;
+        /* iPhoneでズームされないための最小サイズ */
+    }
 }

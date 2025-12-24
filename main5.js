@@ -1,10 +1,10 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const toggleButton = document.getElementById("toggleButton");
     const sidebar = document.getElementById("sidebar");
     const mapzone = document.getElementById("mapzone");
     const content = document.getElementById("content");
 
-    toggleButton.addEventListener("click", function() {
+    toggleButton.addEventListener("click", function () {
         sidebar.classList.toggle("hidden");
         mapzone.classList.toggle("active");
         content.classList.toggle("expanded");
@@ -56,7 +56,7 @@ displayStoredData();
 //         citySelect.appendChild(option);
 //     });
 // });
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     // 初期化処理
     const selectedcsv = "data/goshoin.csv"; // ここでデフォルトのCSVファイルを指定
     let castleLocations2 = [];
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             // セレクトメニューにデータを追加
             const citySelect = document.getElementById("catsle");
-            castleLocations2.forEach(function(castle) {
+            castleLocations2.forEach(function (castle) {
                 const option = document.createElement("option");
                 option.textContent = castle.name;
                 option.value = castle.name;
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         })
         .catch(error => console.error('ファイルの読み込みエラー:', error));
-    });
+});
 
 function hideMarkers() {
     markers.forEach(marker => {
@@ -194,7 +194,7 @@ function displayStoredData() {
     // HTMLに表示
     const savedDataDiv = document.getElementById("savedData");
     savedDataDiv.innerHTML = "";
-    savedDataDiv.innerHTML += "\n取得枚数:"+storedData.length+"枚\n";
+    savedDataDiv.innerHTML += "\n取得枚数:" + storedData.length + "枚\n";
 
 
     storedData.forEach(function (data) {
@@ -308,10 +308,10 @@ function outputCSV() {
     }
 }
 
-function getAllNumber(csvFileName){
+function getAllNumber(csvFileName) {
     const lines = csvFileName.split('\n'); // 改行で分割して各行を取得
     const allNumbers = []; // データを格納する配列
-    
+
     // 各行を処理してデータを取得
     for (let i = 1; i < lines.length; i++) { // 最初の行はヘッダーなのでスキップする
         const line = lines[i].trim(); // 前後の空白を削除
@@ -346,8 +346,8 @@ function inputCSV() {
         alert('ファイルを読み込む際にエラーが発生しました。');
     };
     reader.readAsText(file, 'UTF-8');
-     // ファイルが選ばれた後にボタンを表示
-     document.getElementById('loadButton').style.display = 'inline';
+    // ファイルが選ばれた後にボタンを表示
+    document.getElementById('loadButton').style.display = 'inline';
 }
 
 function parseInputCSV(data) {
@@ -386,7 +386,7 @@ function addData() {
             console.log(item.id);
             console.log(item.name);
             // storedData.push(item);
-            storedData.push({ castleId: item.id, castleName: item.name});
+            storedData.push({ castleId: item.id, castleName: item.name });
 
         }
     });
@@ -410,11 +410,11 @@ function getAllCastleIds() {
     const castleIds = storedData.map(data => data.castleId);
     console.log("castleIds");
     console.log(castleIds);
-    
+
     // const allNumbers = getAllNumber(csvFileName);
     console.log("allNumbers");
     console.log(allNumbers);
-    
+
 
     // 登録されていない数字を取得
     const unregisteredNumbers = allNumbers.filter(number => !castleIds.includes(number));
@@ -432,7 +432,7 @@ function getAllCastleIds() {
     const nameListDiv = document.getElementById("nameList");
     nameListDiv.innerHTML = "<ul>";
     nameListDiv.innerHTML += "未取得の御翔印一覧\n";
-    nameListDiv.innerHTML += "全"+allNumbers.length +"枚中";
+    nameListDiv.innerHTML += "全" + allNumbers.length + "枚中";
     nameListDiv.innerHTML += "残り" + nameList.length + "枚";
     nameList.forEach(function (name) {
         nameListDiv.innerHTML += `<li><a href="#" class='castle-link2'>${name}</a></li>`;
@@ -468,6 +468,7 @@ function kakusu2() {
 }
 function kakusu3() {
     const nameListDiv = document.getElementById("recordList");
+    document.getElementById('recordList').style.display = 'none';
     nameListDiv.innerHTML = null;
 }
 
@@ -646,8 +647,9 @@ function displayRecords() {
     });
 }
 
-function getRcordList(){
+function getRcordList() {
     const nameListDiv = document.getElementById("recordList");
+    document.getElementById('recordList').style.display = 'block';
     nameListDiv.innerHTML = null;
     const storedData = JSON.parse(localStorage.getItem("storedData5")) || [];
     storedData.forEach(record => {
@@ -681,7 +683,7 @@ function remove() {
 
         // 選択された空港を除外して新しいデータを作成
         const updatedData = storedData.filter(record => !selectedValues.includes(record.castleName));
-        
+
         // ローカルストレージを更新
         localStorage.setItem("storedData5", JSON.stringify(updatedData));
 
@@ -710,121 +712,121 @@ function remove() {
 
 function getCatsleName(castleID) {
     switch (castleID) {
-        case"1":return"伊丹空港";
-        case"2":return"羽田空港";
-        case"3":return"那覇空港";
-        case"4":return"新千歳空港";
-        case"5":return"新潟空港";
-        case"6":return"中部国際空港";
-        case"7":return"福岡空港";
-        case"8":return"松山空港";
-        case"9":return"小松空港";
-        case"10":return"出雲空港";
-        case"11":return"青森空港";
-        case"12":return"花巻空港";
-        case"13":return"但馬空港";
-        case"14":return"徳島空港";
-        case"15":return"熊本空港";
-        case"16":return"大分空港";
-        case"17":return"長崎空港";
-        case"18":return"鹿児島空港";
-        case"19":return"函館空港";
-        case"20":return"南紀白浜空港";
-        case"21":return"関西国際空港";
-        case"22":return"岡山空港";
-        case"23":return"成田国際空港";
-        case"24":return"宮崎空港";
-        case"25":return"高知空港";
-        case"26":return"高松空港";
-        case"27":return"山口宇部空港";
-        case"28":return"広島空港";
-        case"29":return"秋田空港";
-        case"30":return"釧路空港";
-        case"31":return"仙台空港";
-        case"32":return"札幌空港丘珠";
-        case"33":return"女満別空港";
-        case"34":return"北九州空港";
-        case"35":return"三沢空港";
-        case"36":return"山形空港";
-        case"37":return"旭川空港";
-        case"38":return"帯広空港";
-        case"39":return"種子島空港";
-        case"40":return"喜界空港";
-        case"41":return"奄美空港";
-        case"42":return"徳之島空港";
-        case"43":return"与論空港";
-        case"44":return"沖永良部空港";
-        case"45":return"久米島空港";
-        case"46":return"宮古空港";
-        case"47":return"多良間空港";
-        case"48":return"新石垣空港";
-        case"49":return"与那国空港";
-        case"50":return"隠岐空港";
-        case"51":return"北大東空港";
-        case"52":return"南大東空港";
-        case"53":return"屋久島空港";
-        case"54":return"奥尻空港";
-        case"55":return"利尻空港";     
+        case "1": return "伊丹空港";
+        case "2": return "羽田空港";
+        case "3": return "那覇空港";
+        case "4": return "新千歳空港";
+        case "5": return "新潟空港";
+        case "6": return "中部国際空港";
+        case "7": return "福岡空港";
+        case "8": return "松山空港";
+        case "9": return "小松空港";
+        case "10": return "出雲空港";
+        case "11": return "青森空港";
+        case "12": return "花巻空港";
+        case "13": return "但馬空港";
+        case "14": return "徳島空港";
+        case "15": return "熊本空港";
+        case "16": return "大分空港";
+        case "17": return "長崎空港";
+        case "18": return "鹿児島空港";
+        case "19": return "函館空港";
+        case "20": return "南紀白浜空港";
+        case "21": return "関西国際空港";
+        case "22": return "岡山空港";
+        case "23": return "成田国際空港";
+        case "24": return "宮崎空港";
+        case "25": return "高知空港";
+        case "26": return "高松空港";
+        case "27": return "山口宇部空港";
+        case "28": return "広島空港";
+        case "29": return "秋田空港";
+        case "30": return "釧路空港";
+        case "31": return "仙台空港";
+        case "32": return "札幌空港丘珠";
+        case "33": return "女満別空港";
+        case "34": return "北九州空港";
+        case "35": return "三沢空港";
+        case "36": return "山形空港";
+        case "37": return "旭川空港";
+        case "38": return "帯広空港";
+        case "39": return "種子島空港";
+        case "40": return "喜界空港";
+        case "41": return "奄美空港";
+        case "42": return "徳之島空港";
+        case "43": return "与論空港";
+        case "44": return "沖永良部空港";
+        case "45": return "久米島空港";
+        case "46": return "宮古空港";
+        case "47": return "多良間空港";
+        case "48": return "新石垣空港";
+        case "49": return "与那国空港";
+        case "50": return "隠岐空港";
+        case "51": return "北大東空港";
+        case "52": return "南大東空港";
+        case "53": return "屋久島空港";
+        case "54": return "奥尻空港";
+        case "55": return "利尻空港";
     }
 }
 
 
 function getCastleID(selectedCastleValue) {
     switch (selectedCastleValue) {
-        case"伊丹空港":return"1";
-        case"羽田空港":return"2";
-        case"那覇空港":return"3";
-        case"新千歳空港":return"4";
-        case"新潟空港":return"5";
-        case"中部国際空港":return"6";
-        case"福岡空港":return"7";
-        case"松山空港":return"8";
-        case"小松空港":return"9";
-        case"出雲空港":return"10";
-        case"青森空港":return"11";
-        case"花巻空港":return"12";
-        case"但馬空港":return"13";
-        case"徳島空港":return"14";
-        case"熊本空港":return"15";
-        case"大分空港":return"16";
-        case"長崎空港":return"17";
-        case"鹿児島空港":return"18";
-        case"函館空港":return"19";
-        case"南紀白浜空港":return"20";
-        case"関西国際空港":return"21";
-        case"岡山空港":return"22";
-        case"成田国際空港":return"23";
-        case"宮崎空港":return"24";
-        case"高知空港":return"25";
-        case"高松空港":return"26";
-        case"山口宇部空港":return"27";
-        case"広島空港":return"28";
-        case"秋田空港":return"29";
-        case"釧路空港":return"30";
-        case"仙台空港":return"31";
-        case"札幌空港丘珠":return"32";
-        case"女満別空港":return"33";
-        case"北九州空港":return"34";
-        case"三沢空港":return"35";
-        case"山形空港":return"36";
-        case"旭川空港":return"37";
-        case"帯広空港":return"38";
-        case"種子島空港":return"39";
-        case"喜界空港":return"40";
-        case"奄美空港":return"41";
-        case"徳之島空港":return"42";
-        case"与論空港":return"43";
-        case"沖永良部空港":return"44";
-        case"久米島空港":return"45";
-        case"宮古空港":return"46";
-        case"多良間空港":return"47";
-        case"新石垣空港":return"48";
-        case"与那国空港":return"49";
-        case"隠岐空港":return"50";
-        case"北大東空港":return"51";
-        case"南大東空港":return"52";
-        case"屋久島空港":return"53";
-        case"奥尻空港":return"54";
-        case"利尻空港":return"55";
+        case "伊丹空港": return "1";
+        case "羽田空港": return "2";
+        case "那覇空港": return "3";
+        case "新千歳空港": return "4";
+        case "新潟空港": return "5";
+        case "中部国際空港": return "6";
+        case "福岡空港": return "7";
+        case "松山空港": return "8";
+        case "小松空港": return "9";
+        case "出雲空港": return "10";
+        case "青森空港": return "11";
+        case "花巻空港": return "12";
+        case "但馬空港": return "13";
+        case "徳島空港": return "14";
+        case "熊本空港": return "15";
+        case "大分空港": return "16";
+        case "長崎空港": return "17";
+        case "鹿児島空港": return "18";
+        case "函館空港": return "19";
+        case "南紀白浜空港": return "20";
+        case "関西国際空港": return "21";
+        case "岡山空港": return "22";
+        case "成田国際空港": return "23";
+        case "宮崎空港": return "24";
+        case "高知空港": return "25";
+        case "高松空港": return "26";
+        case "山口宇部空港": return "27";
+        case "広島空港": return "28";
+        case "秋田空港": return "29";
+        case "釧路空港": return "30";
+        case "仙台空港": return "31";
+        case "札幌空港丘珠": return "32";
+        case "女満別空港": return "33";
+        case "北九州空港": return "34";
+        case "三沢空港": return "35";
+        case "山形空港": return "36";
+        case "旭川空港": return "37";
+        case "帯広空港": return "38";
+        case "種子島空港": return "39";
+        case "喜界空港": return "40";
+        case "奄美空港": return "41";
+        case "徳之島空港": return "42";
+        case "与論空港": return "43";
+        case "沖永良部空港": return "44";
+        case "久米島空港": return "45";
+        case "宮古空港": return "46";
+        case "多良間空港": return "47";
+        case "新石垣空港": return "48";
+        case "与那国空港": return "49";
+        case "隠岐空港": return "50";
+        case "北大東空港": return "51";
+        case "南大東空港": return "52";
+        case "屋久島空港": return "53";
+        case "奥尻空港": return "54";
+        case "利尻空港": return "55";
     }
 }

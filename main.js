@@ -11,13 +11,13 @@ const citiesByRegion = {
 
 };
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const toggleButton = document.getElementById("toggleButton");
     const sidebar = document.getElementById("sidebar");
     const mapzone = document.getElementById("mapzone");
     const content = document.getElementById("content");
 
-    toggleButton.addEventListener("click", function() {
+    toggleButton.addEventListener("click", function () {
         sidebar.classList.toggle("hidden");
         mapzone.classList.toggle("active");
         content.classList.toggle("expanded");
@@ -122,7 +122,7 @@ function displayStoredData() {
     // HTMLに表示
     const savedDataDiv = document.getElementById("savedData");
     savedDataDiv.innerHTML = "";
-    savedDataDiv.innerHTML += "\n訪れてたお城:"+storedData.length+"城\n";
+    savedDataDiv.innerHTML += "\n訪れてたお城:" + storedData.length + "城\n";
 
 
     storedData.forEach(function (data) {
@@ -302,10 +302,12 @@ function kakusu2() {
 
 function kakusu3() {
     const nameListDiv = document.getElementById("recordList");
+    document.getElementById('recordList').style.display = 'none';
     nameListDiv.innerHTML = null;
 }
-function getRcordList(){
+function getRcordList() {
     const nameListDiv = document.getElementById("recordList");
+    document.getElementById('recordList').style.display = 'block';
     nameListDiv.innerHTML = null;
     const storedData = JSON.parse(localStorage.getItem("storedData1")) || [];
     storedData.forEach(record => {
@@ -397,8 +399,8 @@ function inputCSV() {
         alert('ファイルを読み込む際にエラーが発生しました。');
     };
     reader.readAsText(file, 'UTF-8');
-     // ファイルが選ばれた後にボタンを表示
-     document.getElementById('loadButton').style.display = 'inline';
+    // ファイルが選ばれた後にボタンを表示
+    document.getElementById('loadButton').style.display = 'inline';
 }
 
 function parseInputCSV(data) {
@@ -444,7 +446,7 @@ function addData() {
             console.log(item.name);
             console.log(item.date);
             // storedData.push(item);
-            storedData.push({ castleId: item.id, castleName: item.name,date: item.date});
+            storedData.push({ castleId: item.id, castleName: item.name, date: item.date });
 
         }
     });
@@ -586,7 +588,7 @@ function remove() {
 
         // 選択された城名を除外して新しいデータを作成
         const updatedData = storedData.filter(record => !selectedValues.includes(record.castleName));
-        
+
         // ローカルストレージを更新
         localStorage.setItem("storedData1", JSON.stringify(updatedData));
 
