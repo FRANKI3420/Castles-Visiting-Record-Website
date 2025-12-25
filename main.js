@@ -8,7 +8,29 @@ const citiesByRegion = {
     "九州・沖縄": ["福岡城", "大野城", "吉野ヶ里", "佐賀城", "名護屋城", "平戸城", "島原城", "大分府内城", "岡城", "熊本城", "人吉城", "飫肥城", "鹿児島城", "首里城", "今帰仁城", "中城城"],
     "国宝5名城": ["松本城", "彦根城", "姫路城", "松江城", "犬山城"],
     "現存12天守": ["松本城", "彦根城", "姫路城", "松江城", "犬山城", "弘前城", "丸岡城", "丸亀城", "高知城", "松山城", "備中松山城", "宇和島城"],
+};
 
+const castleMasterList = {
+    "1": "根室チャシ跡群", "2": "五稜郭", "3": "松前城", "4": "弘前城", "5": "根城",
+    "6": "盛岡城", "7": "多賀城", "8": "仙台城", "9": "久保田城", "10": "山形城",
+    "11": "二本松城", "12": "会津若松城", "13": "白河小峰城", "14": "水戸城", "15": "足利氏館(鑁阿寺)",
+    "16": "箕輪城", "17": "金山城", "18": "鉢形城", "19": "川越城", "20": "佐倉城",
+    "21": "江戸城", "22": "八王子城", "23": "小田原城", "24": "武田氏館(武田神社)", "25": "甲府城",
+    "26": "松代城", "27": "上田城", "28": "小諸城", "29": "松本城", "30": "高遠城",
+    "31": "新発田城", "32": "春日山城", "33": "高岡城", "34": "七尾城", "35": "金沢城",
+    "36": "丸岡城", "37": "一乗谷城", "38": "岩村城", "39": "岐阜城", "40": "山中城",
+    "41": "駿府城", "42": "掛川城", "43": "犬山城", "44": "名古屋城", "45": "岡崎城",
+    "46": "長篠城", "47": "伊賀上野城", "48": "松阪城", "49": "小谷城", "50": "彦根城",
+    "51": "安土城", "52": "観音寺城", "53": "二条城", "54": "大阪城", "55": "千早城",
+    "56": "竹田城", "57": "篠山城", "58": "明石城", "59": "姫路城", "60": "赤穂城",
+    "61": "高取城", "62": "和歌山城", "63": "鳥取城", "64": "松江城", "65": "月山富田城",
+    "66": "津和野城", "67": "津山城", "68": "備中松山城", "69": "鬼ノ城", "70": "岡山城",
+    "71": "福山城", "72": "郡山城", "73": "広島城", "74": "岩国城", "75": "萩城",
+    "76": "徳島城", "77": "高松城", "78": "丸亀城", "79": "今治城", "80": "湯築城",
+    "81": "松山城", "82": "大洲城", "83": "宇和島城", "84": "高知城", "85": "福岡城",
+    "86": "大野城", "87": "名護屋城", "88": "吉野ヶ里", "89": "佐賀城", "90": "平戸城",
+    "91": "島原城", "92": "熊本城", "93": "人吉城", "94": "大分府内城", "95": "岡城",
+    "96": "飫肥城", "97": "鹿児島城", "98": "今帰仁城", "99": "中城城", "100": "首里城"
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -200,7 +222,33 @@ function displayStoredData2() {
 
     // HTMLに表示
     const savedDataDiv = document.getElementById("savedData");
+    // 表示エリアをクリア
     savedDataDiv.innerHTML = "";
+
+    // 達成率の計算（100名城の場合）
+    const totalCastles = 100;
+    const visitedCount = storedData.length;
+    const percentage = Math.floor((visitedCount / totalCastles) * 100);
+
+    // 統計エリアのHTMLを作成
+    const statsHtml = `
+    <div class="stats-container">
+        <div class="stats-header">
+            <span class="stats-label">現在の登城状況</span>
+            <span class="stats-count"><strong>${visitedCount}</strong> / ${totalCastles} 城</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: ${percentage}%"></div>
+        </div>
+        <div class="stats-footer">
+            達成率: ${percentage}% ${percentage === 100 ? '🎉 全制覇！' : ''}
+        </div>
+    </div>
+`;
+
+    savedDataDiv.innerHTML = statsHtml;
+
+
     storedData.forEach(function (data) {
         // pタグをdivに変え、class="castle-item" を付与します
         savedDataDiv.innerHTML += `
@@ -211,17 +259,8 @@ function displayStoredData2() {
                 <span class="visit-date">${data.date}</span>
             </div>
         </div>`;
-    }); storedData.forEach(function (data) {
-        // pタグをdivに変え、class="castle-item" を付与します
-        savedDataDiv.innerHTML += `
-        <div class="castle-item">
-            <span class="id-badge">${data.castleId}</span>
-            <div class="castle-info">
-                <a href="#" class="castle-link">${data.castleName}</a>
-                <span class="visit-date">${data.date}</span>
-            </div>
-        </div>`;
     });
+    getAllCastleIds();
 }
 
 
@@ -751,629 +790,10 @@ function changeMonth(diff) {
 // ページ読み込み時に実行
 document.addEventListener("DOMContentLoaded", renderCalendar);
 
-
 function getCatsleName(castleID) {
-    switch (castleID) {
-        case "1": return "根室チャシ跡群";
-        case "2": return "五稜郭";
-        case "3": return "松前城";
-        case "4": return "弘前城";
-        case "5": return "根城";
-        case "6": return "盛岡城";
-        case "7": return "多賀城";
-        case "8": return "仙台城";
-        case "9": return "久保田城";
-        case "10": return "山形城";
-        case "11": return "二本松城";
-        case "12": return "会津若松城";
-        case "13": return "白河小峰城";
-        case "14": return "水戸城";
-        case "15": return "足利氏館(鑁阿寺)";
-        case "16": return "箕輪城";
-        case "17": return "金山城";
-        case "18": return "鉢形城";
-        case "19": return "川越城";
-        case "20": return "佐倉城";
-        case "21": return "江戸城";
-        case "22": return "八王子城";
-        case "23": return "小田原城";
-        case "24": return "武田氏館(武田神社)";
-        case "25": return "甲府城";
-        case "26": return "松代城";
-        case "27": return "上田城";
-        case "28": return "小諸城";
-        case "29": return "松本城";
-        case "30": return "高遠城";
-        case "31": return "新発田城";
-        case "32": return "春日山城";
-        case "33": return "高岡城";
-        case "34": return "七尾城";
-        case "35": return "金沢城";
-        case "36": return "丸岡城";
-        case "37": return "一乗谷城";
-        case "38": return "岩村城";
-        case "39": return "岐阜城";
-        case "40": return "山中城";
-        case "41": return "駿府城";
-        case "42": return "掛川城";
-        case "43": return "犬山城";
-        case "44": return "名古屋城";
-        case "45": return "岡崎城";
-        case "46": return "長篠城";
-        case "47": return "伊賀上野城";
-        case "48": return "松阪城";
-        case "49": return "小谷城";
-        case "50": return "彦根城";
-        case "51": return "安土城";
-        case "52": return "観音寺城";
-        case "53": return "二条城";
-        case "54": return "大阪城";
-        case "55": return "千早城";
-        case "56": return "竹田城";
-        case "57": return "篠山城";
-        case "58": return "明石城";
-        case "59": return "姫路城";
-        case "60": return "赤穂城";
-        case "61": return "高取城";
-        case "62": return "和歌山城";
-        case "63": return "鳥取城";
-        case "64": return "松江城";
-        case "65": return "月山富田城";
-        case "66": return "津和野城";
-        case "67": return "津山城";
-        case "68": return "備中松山城";
-        case "69": return "鬼ノ城";
-        case "70": return "岡山城";
-        case "71": return "福山城";
-        case "72": return "郡山城";
-        case "73": return "広島城";
-        case "74": return "岩国城";
-        case "75": return "萩城";
-        case "76": return "徳島城";
-        case "77": return "高松城";
-        case "78": return "丸亀城";
-        case "79": return "今治城";
-        case "80": return "湯築城";
-        case "81": return "松山城";
-        case "82": return "大洲城";
-        case "83": return "宇和島城";
-        case "84": return "高知城";
-        case "85": return "福岡城";
-        case "86": return "大野城";
-        case "87": return "名護屋城";
-        case "88": return "吉野ヶ里";
-        case "89": return "佐賀城";
-        case "90": return "平戸城";
-        case "91": return "島原城";
-        case "92": return "熊本城";
-        case "93": return "人吉城";
-        case "94": return "大分府内城";
-        case "95": return "岡城";
-        case "96": return "飫肥城";
-        case "97": return "鹿児島城";
-        case "98": return "今帰仁城";
-        case "99": return "中城城";
-        case "100": return "首里城";
-        // default: return "不明な城";
-    }
+    return castleMasterList[castleID] || "不明な城";
 }
-
 
 function getCatsleID(selectedCastleValue) {
-    switch (selectedCastleValue) {
-        case "根室チャシ跡群": return "1";
-        case "五稜郭": return "2";
-        case "松前城": return "3";
-        case "弘前城": return "4";
-        case "根城": return "5";
-        case "盛岡城": return "6";
-        case "多賀城": return "7";
-        case "仙台城": return "8";
-        case "久保田城": return "9";
-        case "山形城": return "10";
-        case "二本松城": return "11";
-        case "会津若松城": return "12";
-        case "白河小峰城": return "13";
-        case "水戸城": return "14";
-        case "足利氏館(鑁阿寺)": return "15";
-        case "箕輪城": return "16";
-        case "金山城": return "17";
-        case "鉢形城": return "18";
-        case "川越城": return "19";
-        case "佐倉城": return "20";
-        case "江戸城": return "21";
-        case "八王子城": return "22";
-        case "小田原城": return "23";
-        case "武田氏館(武田神社)": return "24";
-        case "甲府城": return "25";
-        case "松代城": return "26";
-        case "上田城": return "27";
-        case "小諸城": return "28";
-        case "松本城": return "29";
-        case "高遠城": return "30";
-        case "新発田城": return "31";
-        case "春日山城": return "32";
-        case "高岡城": return "33";
-        case "七尾城": return "34";
-        case "金沢城": return "35";
-        case "丸岡城": return "36";
-        case "一乗谷城": return "37";
-        case "岩村城": return "38";
-        case "岐阜城": return "39";
-        case "山中城": return "40";
-        case "駿府城": return "41";
-        case "掛川城": return "42";
-        case "犬山城": return "43";
-        case "名古屋城": return "44";
-        case "岡崎城": return "45";
-        case "長篠城": return "46";
-        case "伊賀上野城": return "47";
-        case "松阪城": return "48";
-        case "小谷城": return "49";
-        case "彦根城": return "50";
-        case "安土城": return "51";
-        case "観音寺城": return "52";
-        case "二条城": return "53";
-        case "大阪城": return "54";
-        case "千早城": return "55";
-        case "竹田城": return "56";
-        case "篠山城": return "57";
-        case "明石城": return "58";
-        case "姫路城": return "59";
-        case "赤穂城": return "60";
-        case "高取城": return "61";
-        case "和歌山城": return "62";
-        case "鳥取城": return "63";
-        case "松江城": return "64";
-        case "月山富田城": return "65";
-        case "津和野城": return "66";
-        case "津山城": return "67";
-        case "備中松山城": return "68";
-        case "鬼ノ城": return "69";
-        case "岡山城": return "70";
-        case "福山城": return "71";
-        case "郡山城": return "72";
-        case "広島城": return "73";
-        case "岩国城": return "74";
-        case "萩城": return "75";
-        case "徳島城": return "76";
-        case "高松城": return "77";
-        case "丸亀城": return "78";
-        case "今治城": return "79";
-        case "湯築城": return "80";
-        case "松山城": return "81";
-        case "大洲城": return "82";
-        case "宇和島城": return "83";
-        case "高知城": return "84";
-        case "福岡城": return "85";
-        case "大野城": return "86";
-        case "名護屋城": return "87";
-        case "吉野ヶ里": return "88";
-        case "佐賀城": return "89";
-        case "平戸城": return "90";
-        case "島原城": return "91";
-        case "熊本城": return "92";
-        case "人吉城": return "93";
-        case "大分府内城": return "94";
-        case "岡城": return "95";
-        case "飫肥城": return "96";
-        case "鹿児島城": return "97";
-        case "今帰仁城": return "98";
-        case "中城城": return "99";
-        case "首里城": return "100";
-        // default: return "不明な城";
-    }
+    return Object.keys(castleMasterList).find(key => castleMasterList[key] === selectedCastleValue);
 }
-
-// function getCatsleName(castelID) {
-//     // 選択された城名に応じて城IDを更新
-//     if (castelID === "2") {
-//         return "五稜郭";
-//     } else if (castelID === "1") {
-//         return "根室チャシ跡群";
-//     } else if (castelID === "3") {
-//         return "松前城";
-//     } else if (castelID === "4") {
-//         return "弘前城";
-//     } else if (castelID === "5") {
-//         return "根城";
-//     } else if (castelID === "6") {
-//         return "久保田城";
-//     } else if (castelID === "7") {
-//         return "盛岡城";
-//     } else if (castelID === "8") {
-//         return "多賀城";
-//     } else if (castelID === "9") {
-//         return "仙台城";
-//     } else if (castelID === "10") {
-//         return "山形城";
-//     } else if (castelID === "11") {
-//         return "二本松城";
-//     } else if (castelID === "12") {
-//         return "会津若松城";
-//     } else if (castelID === "13") {
-//         return "白河小峰城";
-//     } else if (castelID === "14") {
-//         return "足利氏館(鑁阿寺)";
-//     } else if (castelID === "15") {
-//         return "水戸城";
-//     } else if (castelID === "16") {
-//         return "金山城";
-//     } else if (castelID === "17") {
-//         return "箕輪城";
-//     } else if (castelID === "18") {
-//         return "川越城";
-//     } else if (castelID === "19") {
-//         return "鉢形城";
-//     } else if (castelID === "20") {
-//         return "佐倉城";
-//     } else if (castelID === "21") {
-//         return "江戸城";
-//     } else if (castelID === "22") {
-//         return "八王子城";
-//     } else if (castelID === "23") {
-//         return "小田原城";
-//     } else if (castelID === "24") {
-//         return "新発田城";
-//     } else if (castelID === "25") {
-//         return "春日山城";
-//     } else if (castelID === "26") {
-//         return "甲府城";
-//     } else if (castelID === "27") {
-//         return "武田氏舘(武田神社)";
-//     } else if (castelID === "28") {
-//         return "松代城";
-//     } else if (castelID === "29") {
-//         return "高遠城";
-//     } else if (castelID === "30") {
-//         return "上田城";
-//     } else if (castelID === "31") {
-//         return "小諸城";
-//     } else if (castelID === "32") {
-//         return "松本城";
-//     } else if (castelID === "33") {
-//         return "高岡城";
-//     } else if (castelID === "34") {
-//         return "七尾城";
-//     } else if (castelID === "35") {
-//         return "金沢城";
-//     } else if (castelID === "36") {
-//         return "丸岡城";
-//     } else if (castelID === "37") {
-//         return "一乗谷城";
-//     } else if (castelID === "38") {
-//         return "山中城";
-//     } else if (castelID === "39") {
-//         return "駿府城";
-//     } else if (castelID === "40") {
-//         return "掛川城";
-//     } else if (castelID === "41") {
-//         return "岩村城";
-//     } else if (castelID === "42") {
-//         return "岐阜城";
-//     } else if (castelID === "43") {
-//         return "名古屋城";
-//     } else if (castelID === "44") {
-//         return "長篠城";
-//     } else if (castelID === "45") {
-//         return "犬山城";
-//     } else if (castelID === "46") {
-//         return "岡崎城";
-//     } else if (castelID === "47") {
-//         return "伊賀上野城";
-//     } else if (castelID === "48") {
-//         return "松阪城";
-//     } else if (castelID === "49") {
-//         return "安土城";
-//     } else if (castelID === "50") {
-//         return "観音寺城";
-//     } else if (castelID === "51") {
-//         return "小谷城";
-//     } else if (castelID === "52") {
-//         return "彦根城";
-//     } else if (castelID === "53") {
-//         return "二条城";
-//     } else if (castelID === "54") {
-//         return "大阪城";
-//     } else if (castelID === "55") {
-//         return "千早城";
-//     } else if (castelID === "56") {
-//         return "明石城";
-//     } else if (castelID === "57") {
-//         return "姫路城";
-//     } else if (castelID === "58") {
-//         return "赤穂城";
-//     } else if (castelID === "59") {
-//         return "竹田城";
-//     } else if (castelID === "60") {
-//         return "篠山城";
-//     } else if (castelID === "61") {
-//         return "高取城";
-//     } else if (castelID === "62") {
-//         return "和歌山城";
-//     } else if (castelID === "63") {
-//         return "松江城";
-//     } else if (castelID === "64") {
-//         return "月山富田城";
-//     } else if (castelID === "65") {
-//         return "津和野城";
-//     } else if (castelID === "66") {
-//         return "鳥取城";
-//     } else if (castelID === "67") {
-//         return "津山城";
-//     } else if (castelID === "68") {
-//         return "鬼ノ城";
-//     } else if (castelID === "69") {
-//         return "岡山城";
-//     } else if (castelID === "70") {
-//         return "備中松山城";
-//     } else if (castelID === "71") {
-//         return "福山城";
-//     } else if (castelID === "72") {
-//         return "郡山城";
-//     } else if (castelID === "73") {
-//         return "広島城";
-//     } else if (castelID === "74") {
-//         return "高松城";
-//     } else if (castelID === "75") {
-//         return "丸亀城";
-//     } else if (castelID === "76") {
-//         return "萩城";
-//     } else if (castelID === "77") {
-//         return "岩国城";
-//     } else if (castelID === "78") {
-//         return "徳島城";
-//     } else if (castelID === "79") {
-//         return "今治城";
-//     } else if (castelID === "80") {
-//         return "松山城";
-//     } else if (castelID === "81") {
-//         return "宇和島城";
-//     } else if (castelID === "82") {
-//         return "湯築城";
-//     } else if (castelID === "83") {
-//         return "大洲城";
-//     } else if (castelID === "84") {
-//         return "高知城";
-//     } else if (castelID === "85") {
-//         return "福岡城";
-//     } else if (castelID === "86") {
-//         return "大野城";
-//     } else if (castelID === "87") {
-//         return "吉野ヶ里";
-//     } else if (castelID === "88") {
-//         return "佐賀城";
-//     } else if (castelID === "89") {
-//         return "名護屋城";
-//     } else if (castelID === "90") {
-//         return "平戸城";
-//     } else if (castelID === "91") {
-//         return "島原城";
-//     } else if (castelID === "92") {
-//         return "大分城";
-//     } else if (castelID === "93") {
-//         return "岡城";
-//     } else if (castelID === "94") {
-//         return "熊本城";
-//     } else if (castelID === "95") {
-//         return "人吉城";
-//     } else if (castelID === "96") {
-//         return "飫肥城";
-//     } else if (castelID === "97") {
-//         return "鹿児島城";
-//     } else if (castelID === "98") {
-//         return "首里城";
-//     } else if (castelID === "99") {
-//         return "今帰仁城";
-//     } else if (castelID === "100") {
-//         return "中城城";
-//     }
-// }
-
-
-// function getCatsleID(selectedCastleValue) {
-
-//     // 選択された城名に応じて城IDを更新
-//     if (selectedCastleValue === "五稜郭") {
-//         return "2";
-//     } else if (selectedCastleValue === "根室チャシ跡群") {
-//         return "1";
-//     } else if (selectedCastleValue === "松前城") {
-//         return "3";
-//     } else if (selectedCastleValue === "弘前城") {
-//         return "4";
-//     } else if (selectedCastleValue === "根城") {
-//         return "5";
-//     } else if (selectedCastleValue === "久保田城") {
-//         return "6";
-//     } else if (selectedCastleValue === "盛岡城") {
-//         return "7";
-//     } else if (selectedCastleValue === "多賀城") {
-//         return "8";
-//     } else if (selectedCastleValue === "仙台城") {
-//         return "9";
-//     } else if (selectedCastleValue === "山形城") {
-//         return "10";
-//     } else if (selectedCastleValue === "二本松城") {
-//         return "11";
-//     } else if (selectedCastleValue === "会津若松城") {
-//         return "12";
-//     } else if (selectedCastleValue === "白河小峰城") {
-//         return "13";
-//     } else if (selectedCastleValue === "足利氏館(鑁阿寺)") {
-//         return "14";
-//     } else if (selectedCastleValue === "水戸城") {
-//         return "15";
-//     } else if (selectedCastleValue === "金山城") {
-//         return "16";
-//     } else if (selectedCastleValue === "箕輪城") {
-//         return "17";
-//     } else if (selectedCastleValue === "川越城") {
-//         return "18";
-//     } else if (selectedCastleValue === "鉢形城") {
-//         return "19";
-//     } else if (selectedCastleValue === "佐倉城") {
-//         return "20";
-//     } else if (selectedCastleValue === "江戸城") {
-//         return "21";
-//     } else if (selectedCastleValue === "八王子城") {
-//         return "22";
-//     } else if (selectedCastleValue === "小田原城") {
-//         return "23";
-//     } else if (selectedCastleValue === "新発田城") {
-//         return "24";
-//     } else if (selectedCastleValue === "春日山城") {
-//         return "25";
-//     } else if (selectedCastleValue === "甲府城") {
-//         return "26";
-//     } else if (selectedCastleValue === "武田氏舘(武田神社)") {
-//         return "27";
-//     } else if (selectedCastleValue === "松代城") {
-//         return "28";
-//     } else if (selectedCastleValue === "高遠城") {
-//         return "29";
-//     } else if (selectedCastleValue === "上田城") {
-//         return "30";
-//     } else if (selectedCastleValue === "小諸城") {
-//         return "31";
-//     } else if (selectedCastleValue === "松本城") {
-//         return "32";
-//     } else if (selectedCastleValue === "高岡城") {
-//         return "33";
-//     } else if (selectedCastleValue === "七尾城") {
-//         return "34";
-//     } else if (selectedCastleValue === "金沢城") {
-//         return "35";
-//     } else if (selectedCastleValue === "丸岡城") {
-//         return "36";
-//     } else if (selectedCastleValue === "一乗谷城") {
-//         return "37";
-//     } else if (selectedCastleValue === "山中城") {
-//         return "38";
-//     } else if (selectedCastleValue === "駿府城") {
-//         return "39";
-//     } else if (selectedCastleValue === "掛川城") {
-//         return "40";
-//     } else if (selectedCastleValue === "岩村城") {
-//         return "41";
-//     } else if (selectedCastleValue === "岐阜城") {
-//         return "42";
-//     } else if (selectedCastleValue === "名古屋城") {
-//         return "43";
-//     } else if (selectedCastleValue === "長篠城") {
-//         return "44";
-//     } else if (selectedCastleValue === "犬山城") {
-//         return "45";
-//     } else if (selectedCastleValue === "岡崎城") {
-//         return "46";
-//     } else if (selectedCastleValue === "伊賀上野城") {
-//         return "47";
-//     } else if (selectedCastleValue === "松阪城") {
-//         return "48";
-//     } else if (selectedCastleValue === "安土城") {
-//         return "49";
-//     } else if (selectedCastleValue === "観音寺城") {
-//         return "50";
-//     } else if (selectedCastleValue === "小谷城") {
-//         return "51";
-//     } else if (selectedCastleValue === "彦根城") {
-//         return "52";
-//     } else if (selectedCastleValue === "二条城") {
-//         return "53";
-//     } else if (selectedCastleValue === "大阪城") {
-//         return "54";
-//     } else if (selectedCastleValue === "千早城") {
-//         return "55";
-//     } else if (selectedCastleValue === "明石城") {
-//         return "56";
-//     } else if (selectedCastleValue === "姫路城") {
-//         return "57";
-//     } else if (selectedCastleValue === "赤穂城") {
-//         return "58";
-//     } else if (selectedCastleValue === "竹田城") {
-//         return "59";
-//     } else if (selectedCastleValue === "篠山城") {
-//         return "60";
-//     } else if (selectedCastleValue === "高取城") {
-//         return "61";
-//     } else if (selectedCastleValue === "和歌山城") {
-//         return "62";
-//     } else if (selectedCastleValue === "松江城") {
-//         return "63";
-//     } else if (selectedCastleValue === "月山富田城") {
-//         return "64";
-//     } else if (selectedCastleValue === "津和野城") {
-//         return "65";
-//     } else if (selectedCastleValue === "鳥取城") {
-//         return "66";
-//     } else if (selectedCastleValue === "津山城") {
-//         return "67";
-//     } else if (selectedCastleValue === "鬼ノ城") {
-//         return "68";
-//     } else if (selectedCastleValue === "岡山城") {
-//         return "69";
-//     } else if (selectedCastleValue === "備中松山城") {
-//         return "70";
-//     } else if (selectedCastleValue === "福山城") {
-//         return "71";
-//     } else if (selectedCastleValue === "郡山城") {
-//         return "72";
-//     } else if (selectedCastleValue === "広島城") {
-//         return "73";
-//     } else if (selectedCastleValue === "高松城") {
-//         return "74";
-//     } else if (selectedCastleValue === "丸亀城") {
-//         return "75";
-//     } else if (selectedCastleValue === "萩城") {
-//         return "76";
-//     } else if (selectedCastleValue === "岩国城") {
-//         return "77";
-//     } else if (selectedCastleValue === "徳島城") {
-//         return "78";
-//     } else if (selectedCastleValue === "今治城") {
-//         return "79";
-//     } else if (selectedCastleValue === "松山城") {
-//         return "80";
-//     } else if (selectedCastleValue === "宇和島城") {
-//         return "81";
-//     } else if (selectedCastleValue === "湯築城") {
-//         return "82";
-//     } else if (selectedCastleValue === "大洲城") {
-//         return "83";
-//     } else if (selectedCastleValue === "高知城") {
-//         return "84";
-//     } else if (selectedCastleValue === "福岡城") {
-//         return "85";
-//     } else if (selectedCastleValue === "大野城") {
-//         return "86";
-//     } else if (selectedCastleValue === "吉野ヶ里") {
-//         return "87";
-//     } else if (selectedCastleValue === "佐賀城") {
-//         return "88";
-//     } else if (selectedCastleValue === "名護屋城") {
-//         return "89";
-//     } else if (selectedCastleValue === "平戸城") {
-//         return "90";
-//     } else if (selectedCastleValue === "島原城") {
-//         return "91";
-//     } else if (selectedCastleValue === "大分城") {
-//         return "92";
-//     } else if (selectedCastleValue === "岡城") {
-//         return "93";
-//     } else if (selectedCastleValue === "熊本城") {
-//         return "94";
-//     } else if (selectedCastleValue === "人吉城") {
-//         return "95";
-//     } else if (selectedCastleValue === "飫肥城") {
-//         return "96";
-//     } else if (selectedCastleValue === "鹿児島城") {
-//         return "97";
-//     } else if (selectedCastleValue === "首里城") {
-//         return "98";
-//     } else if (selectedCastleValue === "今帰仁城") {
-//         return "99";
-//     } else if (selectedCastleValue === "中城城") {
-//         return "100";
-//     }
-
-// }

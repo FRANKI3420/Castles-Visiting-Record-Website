@@ -375,7 +375,32 @@ function displayStoredData2() {
 
     // HTMLに表示
     const savedDataDiv = document.getElementById("savedData");
+    // 表示エリアをクリア
     savedDataDiv.innerHTML = "";
+
+    // 達成率の計算（100名城の場合）
+    const totalCastles = 100;
+    const visitedCount = storedData.length;
+    const percentage = Math.floor((visitedCount / totalCastles) * 100);
+
+    // 統計エリアのHTMLを作成
+    const statsHtml = `
+    <div class="stats-container">
+        <div class="stats-header">
+            <span class="stats-label">現在の登城状況</span>
+            <span class="stats-count"><strong>${visitedCount}</strong> / ${totalCastles} 城</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: ${percentage}%"></div>
+        </div>
+        <div class="stats-footer">
+            達成率: ${percentage}% ${percentage === 100 ? '🎉 全制覇！' : ''}
+        </div>
+    </div>
+`;
+
+    savedDataDiv.innerHTML = statsHtml;
+
 
     storedData.forEach(function (data) {
         // pタグをdivに変え、class="castle-item" を付与します
@@ -388,6 +413,7 @@ function displayStoredData2() {
             </div>
         </div>`;
     });
+    getAllCastleIds();
 }
 
 // クリックされた城名の位置に地図を移動する関数
