@@ -121,8 +121,31 @@ function displayStoredData() {
 
     // HTMLに表示
     const savedDataDiv = document.getElementById("savedData");
+    // 表示エリアをクリア
     savedDataDiv.innerHTML = "";
-    savedDataDiv.innerHTML += "\n訪れてたお城:" + storedData.length + "城\n";
+
+    // 達成率の計算（100名城の場合）
+    const totalCastles = 100;
+    const visitedCount = storedData.length;
+    const percentage = Math.floor((visitedCount / totalCastles) * 100);
+
+    // 統計エリアのHTMLを作成
+    const statsHtml = `
+    <div class="stats-container">
+        <div class="stats-header">
+            <span class="stats-label">現在の登城状況</span>
+            <span class="stats-count"><strong>${visitedCount}</strong> / ${totalCastles} 城</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: ${percentage}%"></div>
+        </div>
+        <div class="stats-footer">
+            達成率: ${percentage}% ${percentage === 100 ? '🎉 全制覇！' : ''}
+        </div>
+    </div>
+`;
+
+    savedDataDiv.innerHTML = statsHtml;
 
 
     storedData.forEach(function (data) {
@@ -670,6 +693,63 @@ function remove() {
         alert("選択した記録が削除されました。");
     }
 }
+
+let currentViewDate = new Date(); // 現在表示している月
+
+function renderCalendar() {
+    const grid = document.getElementById("calendarGrid");
+    const title = document.getElementById("calendarTitle");
+    grid.innerHTML = "";
+
+    const year = currentViewDate.getFullYear();
+    const month = currentViewDate.getMonth();
+    title.innerText = `${year}年 ${month + 1}月`;
+
+    // 曜日ヘッダー
+    const days = ["日", "月", "火", "水", "木", "金", "土"];
+    days.forEach(d => {
+        grid.innerHTML += `<div class="calendar-day-head">${d}</div>`;
+    });
+
+    // 月の最初の日と最後の日
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
+
+    // データを取得
+    const storedData = JSON.parse(localStorage.getItem("storedData1")) || [];
+
+    // 空白埋め（前月分）
+    for (let i = 0; i < firstDay; i++) {
+        grid.innerHTML += `<div class="calendar-day"></div>`;
+    }
+
+    // 日付を埋める
+    for (let date = 1; date <= lastDate; date++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+
+        // その日に行ったお城を探す
+        const events = storedData.filter(item => item.visitDate === dateStr);
+        let eventHtml = "";
+        events.forEach(e => {
+            eventHtml += `<div class="calendar-event" title="${e.castleName}">${e.castleName}</div>`;
+        });
+
+        grid.innerHTML += `
+            <div class="calendar-day">
+                <span class="calendar-day-num">${date}</span>
+                ${eventHtml}
+            </div>
+        `;
+    }
+}
+
+function changeMonth(diff) {
+    currentViewDate.setMonth(currentViewDate.getMonth() + diff);
+    renderCalendar();
+}
+
+// ページ読み込み時に実行
+document.addEventListener("DOMContentLoaded", renderCalendar);
 
 
 function getCatsleName(castleID) {

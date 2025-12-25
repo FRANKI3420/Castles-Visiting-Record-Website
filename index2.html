@@ -48,6 +48,18 @@
                     </div> -->
                 </div>
 
+                <section class="calendar-panel">
+                    <div class="panel-header">
+                        <h3>📅 登城カレンダー</h3>
+                        <div class="calendar-controls">
+                            <button onclick="changeMonth(-1)">◀</button>
+                            <span id="calendarTitle">2023年 10月</span>
+                            <button onclick="changeMonth(1)">▶</button>
+                        </div>
+                    </div>
+                    <div id="calendarGrid" class="calendar-grid"></div>
+                </section>
+
                 <label for="region" style="font-size: 20px;">エリア選択:</label>
                 <select id="region" name="region" style="font-size: 20px;">
                     <option value="未選択">未選択</option>

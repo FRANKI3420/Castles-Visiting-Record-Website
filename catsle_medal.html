@@ -26,7 +26,6 @@
     </div>
 
     <div class="mapzone" id="mapzone">
-        <h2>Map</h2>
         <button onclick="setCurrentLocation()" style="font-size: 20px;">現在地へ</button>
         <div id="map-container">
             <!-- 地図を表示するためのコンテナ -->
@@ -37,10 +36,14 @@
     <div class="content" id="content">
         <header>
 
-            <h1>城メダル取得記録サイト</h1>
-
-            <div id="image-container">
-                <img id="image" src="img/medaru_machine.jpg" alt="画像" ,width=100% height="300">
+            <h1>城メダル取得記録</h1>
+            <div class="image-container">
+                <div class="image-box">
+                    <img src="img/medaru_machine.jpg" alt="御翔印">
+                </div>
+                <!-- <div class="image-box">
+                                <img src="img/peach.jpg" alt="御翔印2">
+                            </div> -->
             </div>
             <br>
             <div id="dannData"></div>

@@ -44,12 +44,34 @@
                 <!-- <img id="image2" src="img/ueda.jpg" alt="上田城"> -->
             </div>
 
+            <section class="calendar-panel">
+                <div class="panel-header">
+                    <h3>📅 登城カレンダー</h3>
+                    <div class="calendar-controls">
+                        <button onclick="changeMonth(-1)">◀</button>
+                        <span id="calendarTitle">2023年 10月</span>
+                        <button onclick="changeMonth(1)">▶</button>
+                    </div>
+                </div>
+                <div id="calendarGrid" class="calendar-grid"></div>
+            </section>
+
             <section class="control-panel">
                 <h3>🏠 記録を登録する</h3>
                 <div class="input-group">
                     <div class="field">
                         <label for="region">エリア選択</label>
-                        <select id="region" name="region"></select>
+                        <select id="region" name="region">
+                            <option value="未選択">未選択</option>
+                            <option value="北海道・東北">北海道・東北</option>
+                            <option value="関東">関東</option>
+                            <option value="甲信越・北陸">甲信越・北陸</option>
+                            <option value="東海・近畿">東海・近畿</option>
+                            <option value="中国・四国">中国・四国</option>
+                            <option value="九州・沖縄">九州・沖縄</option>
+                            <option value="国宝5名城">国宝5名城</option>
+                            <option value="現存12天守">現存12天守</option>
+                        </select>
                     </div>
                     <div class="field">
                         <label for="catsle">お城選択</label>

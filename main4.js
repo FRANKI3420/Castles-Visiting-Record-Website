@@ -170,7 +170,26 @@ function displayStoredData() {
     // HTMLに表示
     const savedDataDiv = document.getElementById("savedData");
     savedDataDiv.innerHTML = "";
-    savedDataDiv.innerHTML += "\n取得枚数:" + storedData.length + "枚\n";
+
+    // カードコレクション統計の作成
+    const cardCount = storedData.length;
+
+    const statsHtml = `
+    <div class="card-stats-wrapper">
+        <div class="card-badge">
+            <div class="badge-icon">🎴</div>
+            <div class="badge-text">
+                <span class="badge-label">CARD COLLECTION</span>
+                <span class="badge-number"><strong>${cardCount}</strong> <small>枚</small></span>
+            </div>
+        </div>
+        <div class="card-status-msg">
+            ${cardCount > 0 ? 'コレクションが着実に増えていますね！' : '最初の1枚を登録しましょう！'}
+        </div>
+    </div>
+`;
+
+    savedDataDiv.innerHTML = statsHtml;
 
 
     storedData.forEach(function (data) {
