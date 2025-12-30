@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function () {
     const toggleButton = document.getElementById("toggleButton");
     const sidebar = document.getElementById("sidebar");
@@ -16,7 +17,62 @@ document.addEventListener("DOMContentLoaded", function () {
             toggleButton.textContent = "＜";  // メニューが表示されているときは左向きの矢印
         }
     });
+
+    displayStoredData();
+
+    // 💡 追加：ページ読み込み時に、現在選ばれているCSVでリストを自動更新する
+    const regionSelect = document.getElementById("region");
+    if (regionSelect.value) {
+        // changeイベントを手動で発生させ、CSV読み込みとフィルタリングを走らせる
+        regionSelect.dispatchEvent(new Event('change'));
+    }
+
+    // もし最初から「未訪問リスト」を表示させたいなら、ボタンの文字も変える
+    const nameListDiv = document.getElementById("nameList");
+    const unvisitedBtn = document.getElementById("btn-toggle-unvisited");
+    if (nameListDiv && unvisitedBtn && nameListDiv.innerHTML !== "") {
+        unvisitedBtn.textContent = "未訪問のお城を隠す";
+    }
 });
+
+
+/**
+ * 未訪問リストの表示/非表示を切り替える
+ */
+function toggleUnvisitedList() {
+    const nameListDiv = document.getElementById("nameList");
+    const btn = document.getElementById("btn-toggle-unvisited");
+
+    // 中身が空（非表示状態）なら表示する
+    if (nameListDiv.innerHTML === "") {
+        getAllCastleIds(); // 既存の表示関数を呼び出す
+        btn.textContent = "未取得のお城カードを隠す";
+        btn.classList.add("active"); // 必要ならスタイル変更用
+    } else {
+        kakusu(); // 既存の非表示関数を呼び出す
+        btn.textContent = "未取得のお城カードを表示";
+        btn.classList.remove("active");
+    }
+}
+
+/**
+ * 削除リストの表示/非表示を切り替える
+ */
+function toggleDeleteList() {
+    const recordListDiv = document.getElementById("recordList");
+    const btn = document.getElementById("btn-toggle-delete");
+
+    // ディスプレイ設定が none なら表示する
+    if (recordListDiv.style.display === 'none') {
+        getRcordList(); // 既存の表示関数を呼び出す
+        // getRcordList内でstyle.display='block'されるのでここではテキスト変更のみ
+        btn.textContent = "削除リストを閉じる";
+    } else {
+        kakusu3(); // 既存の非表示（style.display='none'）関数を呼び出す
+        btn.textContent = "削除リストを表示";
+    }
+}
+
 
 
 const castleMap = new Map();
@@ -27,34 +83,44 @@ let selectedDate;
 let selectedCastleId;
 // ページが読み込まれたときに保存されたデータを表示
 displayStoredData();
-
 document.getElementById("region").addEventListener("change", function () {
-    selectedcsv = this.value;//csvfile_name
-    // console.log(selectedcsv);
-    selectedcsv = "data/" + selectedcsv;
-    castleLocations2 = []
-
-    fetch(selectedcsv) // 指定したファイル名でファイルを取得
-        .then(response => response.text()) // テキストデータとして取得
-        .then(csvData => {
-            castleLocations2 = parseCSV2(csvData); // CSVデータを解析して配列に変換
-            console.log(castleLocations2); // データが正しく変換されていることを確認
-            hideMarkers();
-            initMap(castleLocations2); // 地図を初期化する関数を呼び出す
-        })
-        .catch(error => console.error('ファイルの読み込みエラー:', error));
-
+    const selectedcsv = "data/" + this.value;
     const citySelect = document.getElementById("catsle");
-    // 市町村リストをクリア
-    citySelect.innerHTML = "";
 
-    // 選択された都道府県に対応する市町村リストをセレクトメニューに追加
-    castleLocations2.forEach(function (castle) {
-        const option = document.createElement("option");
-        option.textContent = castle.name;
-        option.value = castle.name;
-        citySelect.appendChild(option);
-    });
+    citySelect.innerHTML = "<option>読み込み中...</option>";
+
+    fetch(selectedcsv)
+        .then(response => response.text())
+        .then(csvData => {
+            const castleLocations2 = parseCSV2(csvData); // CSV解析
+
+            hideMarkers();
+            initMap(castleLocations2);
+
+            // 💡 ここが重要：最新の保存データをこのタイミングで読み出す
+            const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
+            // 保存されている城名（またはID）のリストを作成
+            const visitedNames = storedData.map(data => data.castleName);
+
+            citySelect.innerHTML = '<option value="">未選択</option>';
+
+            castleLocations2.forEach(function (castle) {
+                // 💡 保存済みリストに含まれていない場合のみ、選択肢に追加
+                if (!visitedNames.includes(castle.name)) {
+                    const option = document.createElement("option");
+                    option.textContent = castle.name;
+                    option.value = castle.name;
+                    citySelect.appendChild(option);
+                }
+            });
+
+            if (citySelect.options.length === 1 && this.value !== "未選択") {
+                const option = document.createElement("option");
+                option.textContent = "すべて取得済みです！🎉";
+                option.disabled = true;
+                citySelect.appendChild(option);
+            }
+        });
 });
 
 function hideMarkers() {
@@ -153,47 +219,59 @@ function saveData() {
     localStorage.setItem("storedData4", JSON.stringify(storedData));
 
     displayStoredData();
+    document.getElementById("region").dispatchEvent(new Event('change'));
 
     console.log("データが保存されました:", storedData);
     displayRecords();
 
 }
 
-function displayStoredData() {
-    // ローカルストレージからデータを取得
+async function displayStoredData() {
+    // 1. ローカルストレージから取得済みデータを取得 (storedData3)
     const storedData = JSON.parse(localStorage.getItem("storedData4")) || [];
-
-    // IDでソート
     storedData.sort((a, b) => a.castleId - b.castleId);
+    const cardCount = storedData.length;
 
+    // 2. CSVファイルから全件数を取得
+    let totalCount = 0;
+    try {
+        const response = await fetch('data/catsle_card_zoku.csv');
+        const csvText = await response.text();
+        const lines = csvText.trim().split('\n');
+        // ヘッダー行を除いた行数が全件数
+        totalCount = lines.length - 1;
+    } catch (error) {
+        console.error("CSV読み込みエラー:", error);
+        totalCount = 100; // エラー時のフォールバック
+    }
 
-    // HTMLに表示
+    // 3. 取得率の計算
+    const completionRate = totalCount > 0 ? Math.round((cardCount / totalCount) * 100) : 0;
+
+    // 4. HTMLの構築
     const savedDataDiv = document.getElementById("savedData");
     savedDataDiv.innerHTML = "";
-
-    // カードコレクション統計の作成
-    const cardCount = storedData.length;
 
     const statsHtml = `
     <div class="card-stats-wrapper">
         <div class="card-badge">
-            <div class="badge-icon">🎴</div>
+            <div class="badge-icon">🏯</div>
             <div class="badge-text">
                 <span class="badge-label">CARD COLLECTION</span>
-                <span class="badge-number"><strong>${cardCount}</strong> <small>枚</small></span>
+                <span class="badge-number"><strong>${cardCount}</strong> / ${totalCount} <small>枚</small></span>
             </div>
         </div>
         <div class="card-status-msg">
-            ${cardCount > 0 ? 'コレクションが着実に増えていますね！' : '最初の1枚を登録しましょう！'}
+            現在の取得率: <strong>${completionRate}%</strong>
+            ${completionRate === 100 ? '<span style="color: #d32f2f; font-weight: bold;"> 🎉 コンプリート！</span>' : ''}
         </div>
     </div>
-`;
+    `;
 
     savedDataDiv.innerHTML = statsHtml;
 
-
+    // 5. 取得済みリストの表示
     storedData.forEach(function (data) {
-        // 1つの項目を <div class="castle-item"> で囲むことで、Gridレイアウトが適用されます
         savedDataDiv.innerHTML += `
         <div class="castle-item">
             <span class="id-badge">${data.castleId}</span>
@@ -202,7 +280,6 @@ function displayStoredData() {
             </div>
         </div>`;
     });
-    // getAllCastleIds();
 }
 
 // castle-link クラスを持つすべての要素にイベントリスナーを追加する

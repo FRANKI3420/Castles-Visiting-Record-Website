@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function () {
     const toggleButton = document.getElementById("toggleButton");
     const sidebar = document.getElementById("sidebar");
@@ -16,8 +17,54 @@ document.addEventListener("DOMContentLoaded", function () {
             toggleButton.textContent = "＜";  // メニューが表示されているときは左向きの矢印
         }
     });
+
+    displayStoredData();
+
+    // もし最初から「未訪問リスト」を表示させたいなら、ボタンの文字も変える
+    const nameListDiv = document.getElementById("nameList");
+    const unvisitedBtn = document.getElementById("btn-toggle-unvisited");
+    if (nameListDiv && unvisitedBtn && nameListDiv.innerHTML !== "") {
+        unvisitedBtn.textContent = "未訪問のお城メダルを隠す";
+    }
 });
 
+
+/**
+ * 未訪問リストの表示/非表示を切り替える
+ */
+function toggleUnvisitedList() {
+    const nameListDiv = document.getElementById("nameList");
+    const btn = document.getElementById("btn-toggle-unvisited");
+
+    // 中身が空（非表示状態）なら表示する
+    if (nameListDiv.innerHTML === "") {
+        getAllCastleIds(); // 既存の表示関数を呼び出す
+        btn.textContent = "未取得のお城メダルを隠す";
+        btn.classList.add("active"); // 必要ならスタイル変更用
+    } else {
+        kakusu(); // 既存の非表示関数を呼び出す
+        btn.textContent = "未取得のお城メダルを表示";
+        btn.classList.remove("active");
+    }
+}
+
+/**
+ * 削除リストの表示/非表示を切り替える
+ */
+function toggleDeleteList() {
+    const recordListDiv = document.getElementById("recordList");
+    const btn = document.getElementById("btn-toggle-delete");
+
+    // ディスプレイ設定が none なら表示する
+    if (recordListDiv.style.display === 'none') {
+        getRcordList(); // 既存の表示関数を呼び出す
+        // getRcordList内でstyle.display='block'されるのでここではテキスト変更のみ
+        btn.textContent = "削除リストを閉じる";
+    } else {
+        kakusu3(); // 既存の非表示（style.display='none'）関数を呼び出す
+        btn.textContent = "削除リストを表示";
+    }
+}
 
 const castleMap = new Map();
 const idMap = new Map();

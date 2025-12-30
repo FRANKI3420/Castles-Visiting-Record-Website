@@ -45,10 +45,10 @@
                     <img src="img/peach.jpg" alt="御翔印2">
                 </div> -->
             </div>
-            <br>
+
             <div id="dannData"></div>
-            <br>
-            <div style="margin: 10px 0;"></div>
+            <!-- <br>
+            <div style="margin: 10px 0;"></div> -->
 
             <label for="catsle" style="font-size: 20px;">空港選択:</label>
             <select id="catsle" name="catsle" style="font-size: 20px;">
@@ -57,17 +57,14 @@
             <br>
             <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
 
-            <br>
-            <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
-
             <button onclick="saveData()" style="font-size: 20px;">データを保存</button>
 
             <br>
             <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
-            <br>
 
-            <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
-
+            <div class="panel-header">
+                <h3>📊 訪問データの表示</h3>
+            </div>
 
             <button onclick="displayStoredData()">保存データを表示</button>
             <button onclick="kakusu2()">非表示</button>
@@ -76,21 +73,32 @@
             <div id="savedData"></div>
             <div style="margin: 30px 0;"></div> <!-- 縦の隙間 -->
 
-            <button onclick="getAllCastleIds()">未取得の御翔印を表示</button>
-            <button onclick="kakusu()">非表示</button>
-            <div id="nameList"></div>
+            <section class="unvisited-panel">
+                <div class="panel-header">
+                    <h3>🚩 未取得の御翔印</h3>
+                </div>
+                <button id="btn-toggle-unvisited" onclick="toggleUnvisitedList()" class="btn-outline full-width">
+                    未取得の御翔印を表示
+                </button>
+                <div id="nameList"></div>
+            </section>
+
+            <section class="admin-panel">
+                <div class="panel-header">
+                    <h3>⚙️ データ管理</h3>
+                </div>
+
+                <div class="admin-sub-section">
+                    <div class="button-row">
+                        <button id="btn-toggle-delete" onclick="toggleDeleteList()" class="btn-manage">
+                            削除リストを表示
+                        </button>
+                    </div>
+                    <div id="recordList" style="display: none;"></div>
+                </div>
+            </section>
 
             <br>
-            <button onclick="remove()">選択した取得記録の削除</button>
-            <button onclick="getRcordList()">表示</button>
-            <button onclick="kakusu3()">非表示</button>
-            <br>
-            <div id="recordList" style="display: none;"> </div>
-            <br>
-
-            <br>
-
-
 
             <button onclick="reset()">記録をリセットする</button>
             <br>

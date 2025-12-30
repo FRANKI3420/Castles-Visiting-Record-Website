@@ -1,14 +1,40 @@
-const citiesByRegion = {
-    "未選択": ["未選択"],
-    "北海道・東北": ["根室チャシ跡群", "五稜郭", "松前城", "弘前城", "根城", "久保田城", "盛岡城", "多賀城", "仙台城", "山形城", "二本松城", "会津若松城", "白河小峰城"],
-    "関東": ["足利氏館(鑁阿寺)", "水戸城", "金山城", "箕輪城", "川越城", "鉢形城", "佐倉城", "江戸城", "八王子城", "小田原城"],
-    "甲信越・北陸": ["新発田城", "春日山城", "甲府城", "武田氏館(武田神社)", "松代城", "高遠城", "上田城", "小諸城", "松本城", "高岡城", "七尾城", "金沢城", "丸岡城", "一乗谷城"],
-    "東海・近畿": ["山中城", "駿府城", "掛川城", "岩村城", "岐阜城", "名古屋城", "長篠城", "犬山城", "岡崎城", "伊賀上野城", "松阪城", "安土城", "観音寺城", "小谷城", "彦根城", "二条城", "大阪城", "千早城", "明石城", "姫路城", "赤穂城", "竹田城", "篠山城", "高取城", "和歌山城"],
-    "中国・四国": ["松江城", "月山富田城", "津和野城", "鳥取城", "津山城", "鬼ノ城", "岡山城", "備中松山城", "福山城", "郡山城", "広島城", "高松城", "丸亀城", "萩城", "岩国城", "徳島城", "今治城", "松山城", "宇和島城", "湯築城", "大洲城", "高知城"],
-    "九州・沖縄": ["福岡城", "大野城", "吉野ヶ里", "佐賀城", "名護屋城", "平戸城", "島原城", "大分府内城", "岡城", "熊本城", "人吉城", "飫肥城", "鹿児島城", "首里城", "今帰仁城", "中城城"],
-    "国宝5名城": ["松本城", "彦根城", "姫路城", "松江城", "犬山城"],
-    "現存12天守": ["松本城", "彦根城", "姫路城", "松江城", "犬山城", "弘前城", "丸岡城", "丸亀城", "高知城", "松山城", "備中松山城", "宇和島城"],
+// エリア紐付けデータ
+const castleRegionMap = {
+    // 北海道・東北 (1-13)
+    "1": "北海道・東北", "2": "北海道・東北", "3": "北海道・東北", "4": "北海道・東北", "5": "北海道・東北",
+    "6": "北海道・東北", "7": "北海道・東北", "8": "北海道・東北", "9": "北海道・東北", "10": "北海道・東北",
+    "11": "北海道・東北", "12": "北海道・東北", "13": "北海道・東北",
+    // 関東 (14-23)
+    "14": "関東", "15": "関東", "16": "関東", "17": "関東", "18": "関東", "19": "関東", "20": "関東",
+    "21": "関東", "22": "関東", "23": "関東",
+    // 甲信越・北陸 (24-37)
+    "24": "甲信越・北陸", "25": "甲信越・北陸", "26": "甲信越・北陸", "27": "甲信越・北陸", "28": "甲信越・北陸",
+    "29": "甲信越・北陸", "30": "甲信越・北陸", "31": "甲信越・北陸", "32": "甲信越・北陸", "33": "甲信越・北陸",
+    "34": "甲信越・北陸", "35": "甲信越・北陸", "36": "甲信越・北陸", "37": "甲信越・北陸",
+    // 東海・近畿 (38-62)
+    "38": "東海・近畿", "39": "東海・近畿", "40": "東海・近畿", "41": "東海・近畿", "42": "東海・近畿",
+    "43": "東海・近畿", "44": "東海・近畿", "45": "東海・近畿", "46": "東海・近畿", "47": "東海・近畿",
+    "48": "東海・近畿", "49": "東海・近畿", "50": "東海・近畿", "51": "東海・近畿", "52": "東海・近畿",
+    "53": "東海・近畿", "54": "東海・近畿", "55": "東海・近畿", "56": "東海・近畿", "57": "東海・近畿",
+    "58": "東海・近畿", "59": "東海・近畿", "60": "東海・近畿", "61": "東海・近畿", "62": "東海・近畿",
+    // 中国・四国 (63-84)
+    "63": "中国・四国", "64": "中国・四_国", "65": "中国・四国", "66": "中国・四国", "67": "中国・四国",
+    "68": "中国・四国", "69": "中国・四国", "70": "中国・四国", "71": "中国・四国", "72": "中国・四国",
+    "73": "中国・四国", "74": "中国・四国", "75": "中国・四国", "76": "中国・四国", "77": "中国・四国",
+    "78": "中国・四国", "79": "中国・四国", "80": "中国・四国", "81": "中国・四国", "82": "中国・四国",
+    "83": "中国・四_国", "84": "中国・四国",
+    // 九州・沖縄 (85-100)
+    "85": "九州・沖縄", "86": "九州・沖縄", "87": "九州・沖縄", "88": "九州・沖縄", "89": "九州・沖縄",
+    "90": "九州・沖縄", "91": "九州・沖縄", "92": "九州・沖縄", "93": "九州・沖縄", "94": "九州・沖縄",
+    "95": "九州・沖縄", "96": "九州・沖縄", "97": "九州・沖縄", "98": "九州・沖縄", "99": "九州・沖縄", "100": "九州・沖縄"
 };
+
+// 特殊カテゴリIDリスト
+const specialCategories = {
+    "国宝5名城": ["29", "43", "50", "59", "64"],
+    "現存12天守": ["4", "29", "36", "43", "50", "59", "64", "68", "78", "81", "83", "84"]
+};
+
 
 const castleMasterList = {
     "1": "根室チャシ跡群", "2": "五稜郭", "3": "松前城", "4": "弘前城", "5": "根城",
@@ -33,6 +59,50 @@ const castleMasterList = {
     "96": "飫肥城", "97": "鹿児島城", "98": "今帰仁城", "99": "中城城", "100": "首里城"
 };
 
+document.getElementById("region").addEventListener("change", function () {
+    const selectedRegion = this.value; // 選択されたエリア名
+    const castleSelect = document.getElementById("catsle");
+    castleSelect.innerHTML = '<option value="">未選択</option>'; // 初期化
+
+    // 保存済みデータを取得（IDの配列にする）
+    const storedData = JSON.parse(localStorage.getItem("storedData1")) || [];
+    const visitedIds = storedData.map(data => String(data.castleId));
+
+    // 100名城をループして条件に合うものを抽出
+    Object.keys(castleMasterList).forEach(id => {
+        const castleName = castleMasterList[id];
+        const region = castleRegionMap[id];
+
+        let shouldAdd = false;
+
+        // A. 通常エリア判定
+        if (selectedRegion === region) {
+            shouldAdd = true;
+        }
+        // B. 特殊カテゴリ判定（国宝・現存天守）
+        else if (specialCategories[selectedRegion] && specialCategories[selectedRegion].includes(id)) {
+            shouldAdd = true;
+        }
+
+        // C. すでに保存されている城（visitedIdsに含まれる）は除外
+        if (shouldAdd && !visitedIds.includes(id)) {
+            const option = document.createElement("option");
+            option.value = castleName;
+            option.textContent = castleName;
+            castleSelect.appendChild(option);
+        }
+    });
+
+    // 選択肢がない場合のメッセージ
+    if (castleSelect.options.length === 1 && selectedRegion !== "未選択") {
+        const option = document.createElement("option");
+        option.textContent = "このエリアは全制覇！🎉";
+        option.disabled = true;
+        castleSelect.appendChild(option);
+    }
+});
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const toggleButton = document.getElementById("toggleButton");
     const sidebar = document.getElementById("sidebar");
@@ -51,7 +121,53 @@ document.addEventListener("DOMContentLoaded", function () {
             toggleButton.textContent = "＜";  // メニューが表示されているときは左向きの矢印
         }
     });
+
+    displayStoredData();
+
+    // もし最初から「未訪問リスト」を表示させたいなら、ボタンの文字も変える
+    const nameListDiv = document.getElementById("nameList");
+    const unvisitedBtn = document.getElementById("btn-toggle-unvisited");
+    if (nameListDiv && unvisitedBtn && nameListDiv.innerHTML !== "") {
+        unvisitedBtn.textContent = "未訪問のお城を隠す";
+    }
 });
+
+/**
+ * 未訪問リストの表示/非表示を切り替える
+ */
+function toggleUnvisitedList() {
+    const nameListDiv = document.getElementById("nameList");
+    const btn = document.getElementById("btn-toggle-unvisited");
+
+    // 中身が空（非表示状態）なら表示する
+    if (nameListDiv.innerHTML === "") {
+        getAllCastleIds(); // 既存の表示関数を呼び出す
+        btn.textContent = "未訪問のお城を隠す";
+        btn.classList.add("active"); // 必要ならスタイル変更用
+    } else {
+        kakusu(); // 既存の非表示関数を呼び出す
+        btn.textContent = "未訪問のお城を表示";
+        btn.classList.remove("active");
+    }
+}
+
+/**
+ * 削除リストの表示/非表示を切り替える
+ */
+function toggleDeleteList() {
+    const recordListDiv = document.getElementById("recordList");
+    const btn = document.getElementById("btn-toggle-delete");
+
+    // ディスプレイ設定が none なら表示する
+    if (recordListDiv.style.display === 'none') {
+        getRcordList(); // 既存の表示関数を呼び出す
+        // getRcordList内でstyle.display='block'されるのでここではテキスト変更のみ
+        btn.textContent = "削除リストを閉じる";
+    } else {
+        kakusu3(); // 既存の非表示（style.display='none'）関数を呼び出す
+        btn.textContent = "削除リストを表示";
+    }
+}
 
 
 let selectedDate;
@@ -59,22 +175,61 @@ let selectedCastleId;
 // ページが読み込まれたときに保存されたデータを表示
 displayStoredData();
 
-// 都道府県が変更されたときの処理
-document.getElementById("region").addEventListener("change", function () {
-    const selectedregion = this.value;
-    const citySelect = document.getElementById("catsle");
 
-    // 市町村リストをクリア
-    citySelect.innerHTML = "";
+/**
+ * 訪問履歴から月別グラフを描画する
+ * @param {Array} storedData - LocalStorageから取得したデータの配列
+ */
+function createVisitChart(storedData) {
+    const ctx = document.getElementById('visitChart');
+    if (!ctx) return;
 
-    // 選択された都道府県に対応する市町村リストをセレクトメニューに追加
-    citiesByRegion[selectedregion].forEach(function (city) {
-        const option = document.createElement("option");
-        option.textContent = city;
-        option.value = city;
-        citySelect.appendChild(option);
+    // 1. データの集計 (月ごとにカウント)
+    const visitCounts = {};
+    storedData.forEach(data => {
+        if (data.date) {
+            const month = data.date.substring(0, 7); // "YYYY-MM" 形式
+            visitCounts[month] = (visitCounts[month] || 0) + 1;
+        }
     });
-});
+
+    // 2. グラフ用のラベル（月）とデータ（数）を整理
+    const sortedMonths = Object.keys(visitCounts).sort();
+    const counts = sortedMonths.map(m => visitCounts[m]);
+
+    // 3. 既存のグラフがある場合は破棄（再描画時のバグ防止）
+    if (window.myChart) {
+        window.myChart.destroy();
+    }
+
+    // 4. Chart.js インスタンスの作成
+    window.myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: sortedMonths,
+            datasets: [{
+                label: '訪問数',
+                data: counts,
+                backgroundColor: 'rgba(76, 175, 80, 0.6)',
+                borderColor: '#4caf50',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1, precision: 0 }
+                }
+            },
+            plugins: {
+                legend: { display: false } // 凡例は不要なら隠す
+            }
+        }
+    });
+}
 
 function saveData() {
     const selectedCastle = document.getElementById("catsle").value;
@@ -127,52 +282,44 @@ function saveData() {
     markerChangeColor(selectedCastle);
 
     displayStoredData();
+    document.getElementById("region").dispatchEvent(new Event('change'));
 
     alert("データが保存されました");
     console.log("データが保存されました:", storedData);
     displayRecords();
+    createVisitChart(storedData);
 }
 
 function displayStoredData() {
-    // ローカルストレージからデータを取得
     const storedData = JSON.parse(localStorage.getItem("storedData1")) || [];
-
-    // IDでソート
     storedData.sort((a, b) => a.castleId - b.castleId);
 
-
-    // HTMLに表示
     const savedDataDiv = document.getElementById("savedData");
-    // 表示エリアをクリア
     savedDataDiv.innerHTML = "";
 
-    // 達成率の計算（100名城の場合）
+    // 1. 統計エリアとグラフ用キャンバスを準備
     const totalCastles = 100;
     const visitedCount = storedData.length;
     const percentage = Math.floor((visitedCount / totalCastles) * 100);
 
-    // 統計エリアのHTMLを作成
-    const statsHtml = `
-    <div class="stats-container">
-        <div class="stats-header">
-            <span class="stats-label">現在の登城状況</span>
-            <span class="stats-count"><strong>${visitedCount}</strong> / ${totalCastles} 城</span>
+    savedDataDiv.innerHTML = `
+        <div class="stats-container">
+            <div class="stats-header">登城状況: ${visitedCount}/${totalCastles}</div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${percentage}%"></div></div>
         </div>
-        <div class="progress-bar-bg">
-            <div class="progress-bar-fill" style="width: ${percentage}%"></div>
+        <div class="chart-container" style="position: relative; height:200px; width:100%; margin: 20px 0;">
+            <canvas id="visitChart"></canvas>
         </div>
-        <div class="stats-footer">
-            達成率: ${percentage}% ${percentage === 100 ? '🎉 全制覇！' : ''}
-        </div>
-    </div>
-`;
+        <div id="listArea"></div>
+    `;
 
-    savedDataDiv.innerHTML = statsHtml;
+    createVisitChart(storedData);
 
 
-    storedData.forEach(function (data) {
-        // pタグをdivに変え、class="castle-item" を付与します
-        savedDataDiv.innerHTML += `
+    // 3. リスト表示
+    const listArea = document.getElementById("listArea");
+    storedData.forEach(data => {
+        listArea.innerHTML += `
         <div class="castle-item">
             <span class="id-badge">${data.castleId}</span>
             <div class="castle-info">
@@ -181,36 +328,7 @@ function displayStoredData() {
             </div>
         </div>`;
     });
-    getAllCastleIds();
 }
-
-// castle-link クラスを持つすべての要素にイベントリスナーを追加する
-const castleLinks = document.querySelectorAll('.castle-link');
-castleLinks.forEach(link => {
-    link.addEventListener('click', function (event) {
-        // クリックされた城の名前を取得する
-        event.preventDefault();
-
-        // 地図コンテナを取得
-        const mapContainer = document.getElementById('map');
-
-        // 地図コンテナの位置を取得
-        const containerTop = mapContainer.getBoundingClientRect().top;
-
-        // 画面をスクロールして地図コンテナが画面の中央に来るようにする
-        // window.scrollTo({
-        //     top: containerTop,
-        //     behavior: 'smooth' // スムーズなスクロールを有効にする
-        // });
-        // mapContainer.scrollIntoView({ behavior: "smooth" });
-
-        const castleName = this.textContent;
-        console.log('クリックされた城名:', castleName);
-        moveToCastleLocation(castleName, 10);
-        // ここにクリックされた城名を使用した任意の処理を追加する
-    });
-});
-
 
 
 function displayStoredData2() {
@@ -724,6 +842,9 @@ function remove() {
                 marker.setIcon(castleIcon);
             }
         });
+
+        // 💡 ここでも実行！
+        document.getElementById("region").dispatchEvent(new Event('change'));
 
         // UIを更新
         displayRecords();

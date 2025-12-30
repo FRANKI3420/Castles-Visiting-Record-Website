@@ -48,7 +48,7 @@
                     </div> -->
                 </div>
 
-                <section class="calendar-panel">
+                <!-- <section class="calendar-panel">
                     <div class="panel-header">
                         <h3>📅 登城カレンダー</h3>
                         <div class="calendar-controls">
@@ -58,7 +58,7 @@
                         </div>
                     </div>
                     <div id="calendarGrid" class="calendar-grid"></div>
-                </section>
+                </section> -->
 
                 <label for="region" style="font-size: 20px;">エリア選択:</label>
                 <select id="region" name="region" style="font-size: 20px;">
@@ -70,9 +70,6 @@
                     <option value="中国・四国地方">中国・四国地方</option>
                     <option value="九州・沖縄地方">九州・沖縄地方</option>
                 </select>
-                <br>
-
-
                 <br>
                 <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
 
@@ -90,9 +87,12 @@
                 <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
 
                 <button onclick="saveData()" style="font-size: 20px;">データを保存</button>
-
                 <br>
                 <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
+                <div style="width: 100%; max-width: 500px; margin: 20px 0;">
+                    <canvas id="visitChart"></canvas>
+                </div>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                 <br>
 
                 <div style="margin: 10px 0;"></div> <!-- 縦の隙間 -->
@@ -111,18 +111,31 @@
                     <div id="map"></div>
                 </div>
                 -->
+                <section class="unvisited-panel">
+                    <div class="panel-header">
+                        <h3>🚩 未訪問のお城</h3>
+                    </div>
+                    <button id="btn-toggle-unvisited" onclick="toggleUnvisitedList()" class="btn-outline full-width">
+                        未訪問のお城を表示
+                    </button>
+                    <div id="nameList"></div>
+                </section>
 
-                <button onclick="getAllCastleIds()">訪れていないお城を表示</button>
-                <button onclick="kakusu()">非表示</button>
-                <div id="nameList"></div>
+                <section class="admin-panel">
+                    <div class="panel-header">
+                        <h3>⚙️ データ管理</h3>
+                    </div>
 
-                <br>
-                <button onclick="remove()">選択した訪問記録の削除</button>
-                <button onclick="getRcordList()">表示</button>
-                <button onclick="kakusu3()">非表示</button>
-                <br>
-                <div id="recordList" style="display: none;"> </div>
-                <br>
+                    <div class="admin-sub-section">
+                        <div class="button-row">
+                            <button id="btn-toggle-delete" onclick="toggleDeleteList()" class="btn-manage">
+                                削除リストを表示
+                            </button>
+                        </div>
+                        <div id="recordList" style="display: none;"></div>
+                    </div>
+                </section>
+
 
                 <br>
 

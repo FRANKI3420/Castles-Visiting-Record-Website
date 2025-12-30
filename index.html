@@ -44,7 +44,7 @@
                 <!-- <img id="image2" src="img/ueda.jpg" alt="上田城"> -->
             </div>
 
-            <section class="calendar-panel">
+            <!-- <section class="calendar-panel">
                 <div class="panel-header">
                     <h3>📅 登城カレンダー</h3>
                     <div class="calendar-controls">
@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <div id="calendarGrid" class="calendar-grid"></div>
-            </section>
+            </section> -->
 
             <section class="control-panel">
                 <h3>🏠 記録を登録する</h3>
@@ -87,6 +87,11 @@
 
             <hr class="divider">
 
+            <div style="width: 100%; max-width: 500px; margin: 20px 0;">
+                <canvas id="visitChart"></canvas>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
             <section class="display-panel">
                 <div class="panel-header">
                     <h3>📊 訪問データの表示</h3>
@@ -102,9 +107,10 @@
             <section class="unvisited-panel">
                 <div class="panel-header">
                     <h3>🚩 未訪問のお城</h3>
-                    <button onclick="kakusu()" class="btn-hide">非表示</button>
                 </div>
-                <button onclick="getAllCastleIds()" class="btn-outline full-width">未訪問のお城を表示</button>
+                <button id="btn-toggle-unvisited" onclick="toggleUnvisitedList()" class="btn-outline full-width">
+                    未訪問のお城を表示
+                </button>
                 <div id="nameList"></div>
             </section>
 
@@ -115,21 +121,25 @@
 
                 <div class="admin-sub-section">
                     <div class="button-row">
-                        <button onclick="getRcordList()" class="btn-manage">削除リストを表示</button>
-                        <button onclick="kakusu3()" class="btn-hide">閉じる</button>
+                        <button id="btn-toggle-delete" onclick="toggleDeleteList()" class="btn-manage">
+                            削除リストを表示
+                        </button>
                     </div>
-                    <div id="recordList" style="display: none;"> </div>
+                    <div id="recordList" style="display: none;"></div>
                 </div>
+            </section>
 
-                <div class="admin-sub-section data-tools">
-                    <button onclick="outputCSV()" class="btn-csv">CSV書き出し</button>
-                    <button onclick="document.getElementById('csvInput').click()" class="btn-csv">CSV読み込み</button>
-                    <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="inputCSV()">
-                    <button onclick="reset()" class="btn-reset">全記録リセット</button>
-                </div>
+            <br>
 
-                <pre id="output"></pre>
-                <button id="loadButton" class="btn-save" style="display:none" onclick="addData()">読み込んだデータを追加する</button>
+            <div class="admin-sub-section data-tools">
+                <button onclick="outputCSV()" class="btn-csv">CSV書き出し</button>
+                <button onclick="document.getElementById('csvInput').click()" class="btn-csv">CSV読み込み</button>
+                <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="inputCSV()">
+                <button onclick="reset()" class="btn-reset">全記録リセット</button>
+            </div>
+
+            <pre id="output"></pre>
+            <button id="loadButton" class="btn-save" style="display:none" onclick="addData()">読み込んだデータを追加する</button>
             </section>
         </header>
     </div>

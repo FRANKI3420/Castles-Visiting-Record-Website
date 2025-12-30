@@ -385,6 +385,20 @@ body {
     color: white;
 }
 
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggle-button {
+    cursor: pointer;
+    /* 閉じた後もボタンを右端に残すための調整 */
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
 /* サイドバー内のヘッダー部分 */
 .sidebar-header {
     padding: 20px;
