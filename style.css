@@ -1,6 +1,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
 
+h1 {
+    /* clamp(最小サイズ, 推奨サイズ, 最大サイズ) 
+       画面幅(vw)に応じて動き、小さくなりすぎず大きくなりすぎない設定です
+    */
+    font-size: clamp(1.2rem, 5vw, 2.5rem);
+
+    /* 一行に収めるための必須設定 */
+    white-space: nowrap;
+    /* 改行を禁止する */
+    overflow: hidden;
+    /* はみ出た場合は隠す（念のため） */
+    text-overflow: ellipsis;
+    /* 万が一入りきらない場合は「...」にする */
+
+    /* 見栄えの調整 */
+    text-align: center;
+    width: 100%;
+    margin: 10px 0;
+}
+
+/* スマホなど極端に幅が狭い画面（360px以下など）への微調整 */
+@media (max-width: 400px) {
+    h1 {
+        font-size: 5.5vw;
+        /* 画面幅いっぱいに文字を広げる */
+        letter-spacing: -1px;
+        /* 文字間隔を少し詰めて一行に収める */
+    }
+}
+
 :root {
     --sidebar-width: 260px;
     /* サイドバーの幅 */
@@ -299,11 +329,11 @@ header {
 
 /* タイトルの見栄え調整 */
 header h1 {
-    font-size: 2.5rem;
+    /* font-size: 2.5rem;
     color: #333;
     text-align: center;
     margin-bottom: 30px;
-    padding-bottom: 10px;
+    padding-bottom: 10px; */
     border-bottom: 3px solid var(--primary-color);
 }
 
