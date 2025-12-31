@@ -29,6 +29,68 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+
+function updateCastlePicker() {
+    const regionSelect = document.getElementById("region");
+    const citySelect = document.getElementById("catsle");
+    const selectedcsv = "data/" + regionSelect.value;
+
+    // console.log("--- デバッグ開始 ---");
+    // console.log("選択されたCSV:", selectedcsv);
+
+    fetch(selectedcsv)
+        .then(response => response.text())
+        .then(csvData => {
+            const castleLocations2 = parseCSV2(csvData);
+
+            // 💡 チェックポイント1: ローカルストレージの中身
+            const rawData = localStorage.getItem("storedData6"); // ここを実際に使っているキーに変えてください
+            const storedData = JSON.parse(rawData) || [];
+            const visitedNames = storedData.map(data => data.castleName.trim());
+
+            console.log("LocalStorageから取得した生の文字列:", rawData);
+            console.log("訪問済みリスト(visitedNames):", visitedNames);
+
+            citySelect.innerHTML = '<option value="">未選択</option>';
+
+            castleLocations2.forEach(function (castle) {
+                const cName = castle.name.trim();
+                const isVisited = visitedNames.includes(cName);
+
+                // 💡 チェックポイント2: 個別の比較ログ
+                // 特定のお城（例: 志苔館）が消えない場合に特に有効
+                if (cName.includes("志苔")) {
+                    console.log(`比較テスト [${cName}] は訪問済みか？ ->`, isVisited);
+                }
+
+                if (!isVisited) {
+                    const option = document.createElement("option");
+                    option.textContent = castle.name;
+                    option.value = castle.name;
+                    citySelect.appendChild(option);
+                }
+            });
+
+            // console.log("最終的なプルダウンの選択肢数:", citySelect.options.length - 1);
+            // console.log("--- デバッグ終了 ---");
+        });
+}
+
+// --- イベントの設定 ---
+
+document.addEventListener("DOMContentLoaded", function () {
+    const regionSelect = document.getElementById("region");
+
+    // 💡 変更イベントに紐付け
+    regionSelect.addEventListener("change", updateCastlePicker);
+
+    // 💡 初期表示時にも実行（これで最初から除外される）
+    updateCastlePicker();
+
+    // 他の初期化処理
+    if (typeof displayStoredData === "function") displayStoredData();
+});
+
 /**
  * 未訪問リストの表示/非表示を切り替える
  */
@@ -196,6 +258,7 @@ function saveData() {
     localStorage.setItem("storedData6", JSON.stringify(storedData));
 
     displayStoredData();
+    updateCastlePicker();
 
     console.log("データが保存されました:", storedData);
     displayRecords();

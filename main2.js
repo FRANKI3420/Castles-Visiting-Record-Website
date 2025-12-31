@@ -288,40 +288,50 @@ function displayStoredData() {
     const storedData = JSON.parse(localStorage.getItem("storedData2")) || [];
     storedData.sort((a, b) => a.castleId - b.castleId);
 
+    // HTMLに表示
     const savedDataDiv = document.getElementById("savedData");
+    // 表示エリアをクリア
     savedDataDiv.innerHTML = "";
 
-    // 1. 統計エリアとグラフ用キャンバスを準備
+    // 達成率の計算（100名城の場合）
     const totalCastles = 100;
     const visitedCount = storedData.length;
     const percentage = Math.floor((visitedCount / totalCastles) * 100);
 
-    savedDataDiv.innerHTML = `
-        <div class="stats-container">
-            <div class="stats-header">登城状況: ${visitedCount}/${totalCastles}</div>
-            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${percentage}%"></div></div>
+    // 統計エリアのHTMLを作成
+    const statsHtml = `
+    <div class="stats-container">
+        <div class="stats-header">
+            <span class="stats-label">現在の登城状況</span>
+            <span class="stats-count"><strong>${visitedCount}</strong> / ${totalCastles} 城</span>
         </div>
-        <div class="chart-container" style="position: relative; height:200px; width:100%; margin: 20px 0;">
-            <canvas id="visitChart"></canvas>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: ${percentage}%"></div>
         </div>
-        <div id="listArea"></div>
-    `;
+        <div class="stats-footer">
+            達成率: ${percentage}% ${percentage === 100 ? '🎉 全制覇！' : ''}
+        </div>
+    </div>
+`;
 
+    savedDataDiv.innerHTML = statsHtml;
     createVisitChart(storedData);
 
-
-    // 3. リスト表示
-    const listArea = document.getElementById("listArea");
-    storedData.forEach(data => {
-        listArea.innerHTML += `
-        <div class="castle-item">
-            <span class="id-badge">${data.castleId}</span>
-            <div class="castle-info">
-                <a href="#" class="castle-link">${data.castleName}</a>
-                <span class="visit-date">${data.date}</span>
-            </div>
-        </div>`;
+    // displayStoredData と displayStoredData2 両方のループ内を修正
+    storedData.forEach(function (data) {
+        savedDataDiv.innerHTML += `
+    <div class="castle-item">
+        <span class="id-badge">${data.castleId}</span>
+        <div class="castle-info">
+            <a href="#" class="castle-link2">${data.castleName}</a>
+            <span class="visit-date">${data.date}</span>
+        </div>
+    </div>`;
     });
+
+    // 💡 重要：HTMLを書き換えた直後に、イベントリスナーを再設定する必要があります
+    rebindCastleLinks();
+    getAllCastleIds();
 }
 
 // castle-link クラスを持つすべての要素にイベントリスナーを追加する
@@ -388,19 +398,55 @@ function displayStoredData2() {
 
     savedDataDiv.innerHTML = statsHtml;
 
-
+    // displayStoredData と displayStoredData2 両方のループ内を修正
     storedData.forEach(function (data) {
-        // pタグをdivに変え、class="castle-item" を付与します
         savedDataDiv.innerHTML += `
-        <div class="castle-item">
-            <span class="id-badge">${data.castleId}</span>
-            <div class="castle-info">
-                <a href="#" class="castle-link">${data.castleName}</a>
-                <span class="visit-date">${data.date}</span>
-            </div>
-        </div>`;
+    <div class="castle-item">
+        <span class="id-badge">${data.castleId}</span>
+        <div class="castle-info">
+            <a href="#" class="castle-link2">${data.castleName}</a>
+            <span class="visit-date">${data.date}</span>
+        </div>
+    </div>`;
     });
+
+    // 💡 重要：HTMLを書き換えた直後に、イベントリスナーを再設定する必要があります
+    rebindCastleLinks();
     getAllCastleIds();
+}
+
+/**
+ * リスト内の castle-link2 に対してイベントリスナーを貼り直す関数
+ */
+function rebindCastleLinks() {
+    const castleLinks = document.querySelectorAll('.castle-link2');
+    castleLinks.forEach(link => {
+        // 二重登録を防ぐため、一度削除してから追加するか、
+        // 既存のロジックをそのまま実行
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+            const castleName = this.textContent;
+            console.log('クリックされた城名:', castleName);
+
+            // 既存の関数を呼び出し
+            moveToCastleLocation(castleName, 10);
+
+            // 地図までスムーズにスクロール
+            const mapElement = document.getElementById('map');
+            if (mapElement) {
+                mapElement.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // スマホならサイドバーを閉じる（追加すると便利です）
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById("sidebar");
+                if (sidebar) {
+                    sidebar.classList.add("hidden");
+                    document.getElementById("toggleButton").textContent = "∨";
+                }
+            }
+        });
+    });
 }
 
 
@@ -485,10 +531,8 @@ function getAllCastleIds() {
 // クリックされた城名の位置に地図を移動する関数
 function moveToCastleLocation(clickedCastleName) {
     // castleLocationsから対応する城の位置情報を取得
-    console.log(clickedCastleName);
     const castle = castleLocations.find(castle => castle.name === clickedCastleName);
     if (castle) {
-
         map.setView(castle.location, 7); // 地図の中心をクリックされた城の位置に移動
         // マーカーを作成して地図に追加し、ポップアップをバインド
         const marker = L.marker(castle.location).addTo(map).bindPopup(castle.name);
@@ -598,7 +642,7 @@ function reset() {
 
 
 // 指定したCSVファイル名
-const csvFileName = 'data/siro.csv';
+const csvFileName = 'data/zoku.csv';
 castleLocations = [];
 
 
@@ -871,6 +915,8 @@ function remove() {
         // UIを更新
         displayRecords();
         displayStoredData();
+        getRcordList();
+
 
         alert("選択した記録が削除されました。");
     }

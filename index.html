@@ -45,18 +45,6 @@
                 <!-- <img id="image2" src="img/ueda.jpg" alt="上田城"> -->
             </div>
 
-            <!-- <section class="calendar-panel">
-                <div class="panel-header">
-                    <h3>📅 登城カレンダー</h3>
-                    <div class="calendar-controls">
-                        <button onclick="changeMonth(-1)">◀</button>
-                        <span id="calendarTitle">2023年 10月</span>
-                        <button onclick="changeMonth(1)">▶</button>
-                    </div>
-                </div>
-                <div id="calendarGrid" class="calendar-grid"></div>
-            </section> -->
-
             <section class="control-panel">
                 <h3>🏠 記録を登録する</h3>
                 <div class="input-group">
@@ -88,11 +76,6 @@
 
             <hr class="divider">
 
-            <div style="width: 100%; max-width: 500px; margin: 20px 0;">
-                <canvas id="visitChart"></canvas>
-            </div>
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
             <section class="display-panel">
                 <div class="panel-header">
                     <h3>📊 訪問データの表示</h3>
@@ -102,6 +85,10 @@
                     <button onclick="displayStoredData()" class="btn-outline">ID順で表示</button>
                     <button onclick="displayStoredData2()" class="btn-outline">日付順で表示</button>
                 </div>
+                <div style="width: 100%; max-width: 500px; margin: 20px 0;">
+                    <canvas id="visitChart"></canvas>
+                </div>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                 <div id="savedData"></div>
             </section>
 
@@ -144,7 +131,7 @@
             </section>
         </header>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="main.js"></script>
 </body>

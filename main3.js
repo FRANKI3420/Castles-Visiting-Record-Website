@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const sidebar = document.getElementById("sidebar");
     const mapzone = document.getElementById("mapzone");
     const content = document.getElementById("content");
-
     toggleButton.addEventListener("click", function () {
         sidebar.classList.toggle("hidden");
         mapzone.classList.toggle("active");
@@ -17,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // 2. 初期実行
     displayStoredData();
 
     // もし最初から「未訪問リスト」を表示させたいなら、ボタンの文字も変える
@@ -27,6 +27,66 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+function updateCastlePicker() {
+    const regionSelect = document.getElementById("region");
+    const citySelect = document.getElementById("catsle");
+    const selectedcsv = "data/" + regionSelect.value;
+
+    // console.log("--- デバッグ開始 ---");
+    // console.log("選択されたCSV:", selectedcsv);
+
+    fetch(selectedcsv)
+        .then(response => response.text())
+        .then(csvData => {
+            const castleLocations2 = parseCSV2(csvData);
+
+            // 💡 チェックポイント1: ローカルストレージの中身
+            const rawData = localStorage.getItem("storedData3"); // ここを実際に使っているキーに変えてください
+            const storedData = JSON.parse(rawData) || [];
+            const visitedNames = storedData.map(data => data.castleName.trim());
+
+            console.log("LocalStorageから取得した生の文字列:", rawData);
+            console.log("訪問済みリスト(visitedNames):", visitedNames);
+
+            citySelect.innerHTML = '<option value="">未選択</option>';
+
+            castleLocations2.forEach(function (castle) {
+                const cName = castle.name.trim();
+                const isVisited = visitedNames.includes(cName);
+
+                // 💡 チェックポイント2: 個別の比較ログ
+                // 特定のお城（例: 志苔館）が消えない場合に特に有効
+                if (cName.includes("志苔")) {
+                    console.log(`比較テスト [${cName}] は訪問済みか？ ->`, isVisited);
+                }
+
+                if (!isVisited) {
+                    const option = document.createElement("option");
+                    option.textContent = castle.name;
+                    option.value = castle.name;
+                    citySelect.appendChild(option);
+                }
+            });
+
+            // console.log("最終的なプルダウンの選択肢数:", citySelect.options.length - 1);
+            // console.log("--- デバッグ終了 ---");
+        });
+}
+
+// --- イベントの設定 ---
+
+document.addEventListener("DOMContentLoaded", function () {
+    const regionSelect = document.getElementById("region");
+
+    // 💡 変更イベントに紐付け
+    regionSelect.addEventListener("change", updateCastlePicker);
+
+    // 💡 初期表示時にも実行（これで最初から除外される）
+    updateCastlePicker();
+
+    // 他の初期化処理
+    if (typeof displayStoredData === "function") displayStoredData();
+});
 
 /**
  * 未訪問リストの表示/非表示を切り替える
@@ -152,13 +212,13 @@ function parseCSV2(csv) {
     const catsleSelect = document.getElementById("catsle");
 
     // castleMapの全ての名前をセレクトメニューに追加する
-    console.log(castleMap);
+    // console.log(castleMap);
     castleMap2.forEach((key, value) => {
         const option = document.createElement("option");
         option.textContent = value;
         option.value = value;
-        console.log(key);
-        console.log(value);
+        // console.log(key);
+        // console.log(value);
         catsleSelect.appendChild(option);
     });
 
@@ -216,6 +276,8 @@ function saveData() {
     // ローカルストレージに保存
     localStorage.setItem("storedData3", JSON.stringify(storedData));
 
+    // 保存した後にプルダウンを最新状態にする
+    updateCastlePicker();
     displayStoredData();
 
     document.getElementById("region").dispatchEvent(new Event('change'));
@@ -274,38 +336,29 @@ async function displayStoredData() {
         <div class="castle-item">
             <span class="id-badge">${data.castleId}</span>
             <div class="castle-info">
-                <a href="#" class="castle-link" onclick="zoomToCastle('${data.castleId}')">${data.castleName}</a>
+                <a href="#" class="castle-link">${data.castleName}</a>
             </div>
         </div>`;
     });
-}
 
-// castle-link クラスを持つすべての要素にイベントリスナーを追加する
-const castleLinks = document.querySelectorAll('.castle-link');
-castleLinks.forEach(link => {
-    link.addEventListener('click', function (event) {
-        // クリックされた城の名前を取得する
-        event.preventDefault();
+    // castle-link クラスを持つすべての要素にイベントリスナーを追加する
+    const castleLinks = document.querySelectorAll('.castle-link');
+    castleLinks.forEach(link => {
+        link.addEventListener('click', function (event) {
+            // クリックされた城の名前を取得する
+            event.preventDefault();
 
-        // 地図コンテナを取得
-        const mapContainer = document.getElementById('map');
-
-        // 地図コンテナの位置を取得
-        const containerTop = mapContainer.getBoundingClientRect().top;
-
-        // 画面をスクロールして地図コンテナが画面の中央に来るようにする
-        // window.scrollTo({
-        //     top: containerTop,
-        //     behavior: 'smooth' // スムーズなスクロールを有効にする
-        // });
-        // mapContainer.scrollIntoView({ behavior: "smooth" });
-
-        const castleName = this.textContent;
-        console.log('クリックされた城名:', castleName);
-        moveToCastleLocation(castleName, 10);
-        // ここにクリックされた城名を使用した任意の処理を追加する
+            const castleName = this.textContent;
+            console.log('クリックされた城名:', castleName);
+            moveToCastleLocation(castleName, 10);
+            // スムーズスクロール
+            const mapElement = document.getElementById('map');
+            if (mapElement) {
+                mapElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
     });
-});
+}
 
 function displaystoredData3() {
     // ローカルストレージからデータを取得
@@ -319,7 +372,6 @@ function displaystoredData3() {
     savedDataDiv.innerHTML = "";
 
     storedData.forEach(function (data) {
-        // savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a>${data.castleName}<\a>, 日付: ${data.date}</p>`;
         savedDataDiv.innerHTML += `<p>${data.castleId}, 城名: <a href="#"  class="castle-link">${data.castleName}</a>, 日付: ${data.date}</p>`;
     });
 }
@@ -390,7 +442,7 @@ function getAllNumber(csvFileName) {
     // 各行を処理してデータを取得
     for (let i = 1; i < lines.length; i++) { // 最初の行はヘッダーなのでスキップする
         const line = lines[i].trim(); // 前後の空白を削除
-        console.log(line);
+        // console.log(line);
         if (line) { // 空行でない場合のみ処理する
             const parts = line.split(','); // カンマで区切って各要素を取得
             // allNumbers.push(parseInt(parts[0], 10));
@@ -430,7 +482,7 @@ function parseInputCSV(data) {
     // ヘッダーをスキップして、データ部分のみ処理
     return rows.slice(1).map(row => {
         const cells = row.split(',').map(cell => cell.trim());
-        console.log(cells);
+        // console.log(cells);
         return {
             id: cells[0], // 城ID
             name: cells[1] // 城名
@@ -600,13 +652,13 @@ function parseCSV(csv) {
     const catsleSelect = document.getElementById("catsle");
 
     // castleMapの全ての名前をセレクトメニューに追加する
-    console.log(castleMap);
+    // console.log(castleMap);
     castleMap.forEach((key, value) => {
         const option = document.createElement("option");
         option.textContent = value;
         option.value = value;
-        console.log(key);
-        console.log(value);
+        // console.log(key);
+        // console.log(value);
         catsleSelect.appendChild(option);
     });
 
