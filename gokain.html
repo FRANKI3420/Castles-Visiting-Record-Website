@@ -16,13 +16,12 @@
             <button class="toggle-button" id="toggleButton">＜</button>
         </div>
         <ul>
+            <li><a href="index.html">100名城訪問記録</a></li>
             <li><a href="index2.html">続100名城訪問記録</a></li>
             <li><a href="catsle_card.html">城カード(100名城)</a></li>
             <li><a href="catsle_card_zoku.html">城カード(続100名城)</a></li>
             <li><a href="catsle_medal.html">城メダル取得記録</a></li>
             <li><a href="goshoin.html">御翔印取得記録</a></li>
-            <li><a href="gokain.html">御菓印取得記録</a></li>
-            <li class="external-link"><a href="https://shirobito.jp/article/1843" target="_blank">100名城公式サイト 🔗</a></li>
         </ul>
     </div>
 
@@ -39,11 +38,11 @@
     <div class="content" id="content">
         <header>
             <header style="padding: 0 10px;">
-                <h1>日本100名城 訪問記録</h1>
+                <h1>御菓印 取得記録</h1>
             </header>
             <div id="image-container" class="top-gallery">
-                <img id="image1" src="img/備中松山城.jpg" alt="備中松山城">
-                <img id="image1" src="img/himeji.jpg" alt="姫路城">
+                <img id="image1" src="img/gokain.jpg" alt="豆政">
+                <img id="image1" src="img/gokain2.jpg" alt="河道屋">
                 <!-- <img id="image2" src="img/ueda.jpg" alt="上田城"> -->
             </div>
 
@@ -54,18 +53,21 @@
                         <label for="region">エリア選択</label>
                         <select id="region" name="region">
                             <option value="未選択">未選択</option>
-                            <option value="北海道・東北">北海道・東北</option>
+                            <option value="北海道">北海道</option>
+                            <option value="東北">東北</option>
+                            <option value="東京">東京</option>
                             <option value="関東">関東</option>
-                            <option value="甲信越・北陸">甲信越・北陸</option>
-                            <option value="東海・近畿">東海・近畿</option>
-                            <option value="中国・四国">中国・四国</option>
-                            <option value="九州・沖縄">九州・沖縄</option>
-                            <option value="国宝5名城">国宝5名城</option>
-                            <option value="現存12天守">現存12天守</option>
+                            <option value="信越・北陸">信越・北陸</option>
+                            <option value="中部">中部</option>
+                            <option value="京都">京都</option>
+                            <option value="近畿">近畿</option>
+                            <option value="中国">中国</option>
+                            <option value="四国">四国</option>
+                            <option value="九州">九州</option>
                         </select>
                     </div>
                     <div class="field">
-                        <label for="catsle">お城選択</label>
+                        <label for="catsle">お店選択</label>
                         <select id="catsle" name="catsle"></select>
                     </div>
                     <div class="field">
@@ -135,7 +137,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="main.js"></script>
+    <script src="main7.js"></script>
 </body>
 
 </html>
