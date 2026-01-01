@@ -328,30 +328,29 @@ function displayStoredData2() {
     // 表示エリアをクリア
     savedDataDiv.innerHTML = "";
 
-    // 達成率の計算（100名城の場合）
-    const totalCastles = 100;
+    const totalCastles = Object.keys(castleMasterList).length;
     const visitedCount = storedData.length;
     const percentage = Math.floor((visitedCount / totalCastles) * 100);
 
     // 統計エリアのHTMLを作成
     const statsHtml = `
     <div class="stats-container">
-        <div class="stats-header">
-            <span class="stats-label">現在の登城状況</span>
-            <span class="stats-count"><strong>${visitedCount}</strong> / ${totalCastles} 城</span>
-        </div>
+    <div class="stats-header">
+    <span class="stats-label">現在の取得状況</span>
+    <span class="stats-count"><strong>${visitedCount}</strong> / ${totalCastles} 枚</span>
+    </div>
         <div class="progress-bar-bg">
             <div class="progress-bar-fill" style="width: ${percentage}%"></div>
         </div>
         <div class="stats-footer">
-            達成率: ${percentage}% ${percentage === 100 ? '🎉 全制覇！' : ''}
+        達成率: ${percentage}% ${percentage === 100 ? '🎉 全制覇！' : ''}
         </div>
-    </div>
-`;
+        </div>
+        `;
 
     savedDataDiv.innerHTML = statsHtml;
 
-
+    createVisitChart(storedData);
     // displayStoredData と displayStoredData2 両方のループ内を修正
     storedData.forEach(function (data) {
         savedDataDiv.innerHTML += `
