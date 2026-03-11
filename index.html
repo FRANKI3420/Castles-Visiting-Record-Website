@@ -23,6 +23,13 @@
             <li><a href="goshoin.html">御翔印取得記録</a></li>
             <li><a href="gokain.html">御菓印取得記録</a></li>
             <li class="external-link"><a href="https://shirobito.jp/article/1843" target="_blank">100名城公式サイト 🔗</a></li>
+
+            <hr style="border: 0.5px solid #555; margin: 10px 0;">
+            <li style="padding: 10px;">
+                <button id="authBtn" onclick="handleAuthClick()"
+                    style="width: 100%; padding: 8px; cursor: pointer; background: #4285f4; color: white; border: none; border-radius: 4px;">Google同期を有効にする</button>
+                <div id="backupStatus" style="font-size: 11px; color: #ccc; margin-top: 5px; line-height: 1.4;"></div>
+            </li>
         </ul>
     </div>
 
@@ -44,7 +51,6 @@
             <div id="image-container" class="top-gallery">
                 <img id="image1" src="img/備中松山城.jpg" alt="備中松山城">
                 <img id="image1" src="img/himeji.jpg" alt="姫路城">
-                <!-- <img id="image2" src="img/ueda.jpg" alt="上田城"> -->
             </div>
 
             <section class="control-panel">
@@ -122,6 +128,7 @@
             <br>
 
             <div class="admin-sub-section data-tools">
+
                 <button onclick="outputCSV()" class="btn-csv">CSV書き出し</button>
                 <button onclick="document.getElementById('csvInput').click()" class="btn-csv">CSV読み込み</button>
                 <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="inputCSV()">
@@ -136,6 +143,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="main.js"></script>
+    <script src="googleAuth.js"></script>
 </body>
 
 </html>

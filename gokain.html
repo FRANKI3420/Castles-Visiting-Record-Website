@@ -83,7 +83,7 @@
             <section class="display-panel">
                 <div class="panel-header">
                     <h3>📊 訪問データの表示</h3>
-                    <button onclick="kakusu2()" class="btn-hide">非表示</button>
+                    <!-- <button onclick="kakusu2()" class="btn-hide">非表示</button> -->
                 </div>
                 <div class="button-row">
                     <button onclick="displayStoredData()" class="btn-outline">ID順で表示</button>
@@ -124,20 +124,22 @@
             <br>
 
             <div class="admin-sub-section data-tools">
-                <button onclick="outputCSV()" class="btn-csv">CSV書き出し</button>
+                <button onclick="outputCSVWrapper()" class="btn-csv">CSV書き出し</button>
                 <button onclick="document.getElementById('csvInput').click()" class="btn-csv">CSV読み込み</button>
-                <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="inputCSV()">
-                <button onclick="reset()" class="btn-reset">全記録リセット</button>
+                <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="inputCSVWrapper()">
+                <button onclick="resetWrapper()" class="btn-reset">全記録リセット</button>
             </div>
 
             <pre id="output"></pre>
-            <button id="loadButton" class="btn-save" style="display:none" onclick="addData()">読み込んだデータを追加する</button>
+            <button id="loadButton" class="btn-save" style="display:none"
+                onclick="addDataWrapper()">読み込んだデータを追加する</button>
             </section>
         </header>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="main7.js"></script>
+    <!-- <script src="common.js" defer></script> -->
+    <script src="main7.js" defer></script>
 </body>
 
 </html>
