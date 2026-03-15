@@ -103,34 +103,34 @@ document.getElementById("region").addEventListener("change", function () {
 });
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    const toggleButton = document.getElementById("toggleButton");
-    const sidebar = document.getElementById("sidebar");
-    const mapzone = document.getElementById("mapzone");
-    const content = document.getElementById("content");
+// document.addEventListener("DOMContentLoaded", function () {
+//     const toggleButton = document.getElementById("toggleButton");
+//     const sidebar = document.getElementById("sidebar");
+//     const mapzone = document.getElementById("mapzone");
+//     const content = document.getElementById("content");
 
-    toggleButton.addEventListener("click", function () {
-        sidebar.classList.toggle("hidden");
-        mapzone.classList.toggle("active");
-        content.classList.toggle("expanded");
+//     toggleButton.addEventListener("click", function () {
+//         sidebar.classList.toggle("hidden");
+//         mapzone.classList.toggle("active");
+//         content.classList.toggle("expanded");
 
-        // ボタンのテキストを切り替え
-        if (sidebar.classList.contains("hidden")) {
-            toggleButton.textContent = "＞";  // メニューが隠れているときは右向きの矢印
-        } else {
-            toggleButton.textContent = "＜";  // メニューが表示されているときは左向きの矢印
-        }
-    });
+//         // ボタンのテキストを切り替え
+//         if (sidebar.classList.contains("hidden")) {
+//             toggleButton.textContent = "＞";  // メニューが隠れているときは右向きの矢印
+//         } else {
+//             toggleButton.textContent = "＜";  // メニューが表示されているときは左向きの矢印
+//         }
+//     });
 
-    displayStoredData();
+//     displayStoredData();
 
-    // もし最初から「未訪問リスト」を表示させたいなら、ボタンの文字も変える
-    const nameListDiv = document.getElementById("nameList");
-    const unvisitedBtn = document.getElementById("btn-toggle-unvisited");
-    if (nameListDiv && unvisitedBtn && nameListDiv.innerHTML !== "") {
-        unvisitedBtn.textContent = "未訪問のお城を隠す";
-    }
-});
+//     // もし最初から「未訪問リスト」を表示させたいなら、ボタンの文字も変える
+//     const nameListDiv = document.getElementById("nameList");
+//     const unvisitedBtn = document.getElementById("btn-toggle-unvisited");
+//     if (nameListDiv && unvisitedBtn && nameListDiv.innerHTML !== "") {
+//         unvisitedBtn.textContent = "未訪問のお城を隠す";
+//     }
+// });
 
 /**
  * 未訪問リストの表示/非表示を切り替える

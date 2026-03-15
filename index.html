@@ -4,146 +4,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日本百名城訪問記録サイト</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>マイ記録サイト</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#34495e">
+    <link rel="apple-touch-icon" href="numazu.png">
+
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --accent-color: #8e44ad;
+            /* 歴史的な重厚感のある紫 */
+            --text-color: #e0e0e0;
+            --sub-text: #b0b0b0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            text-align: center;
+            color: var(--text-color);
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--accent-color);
+            display: inline-block;
+            width: 100%;
+            padding-bottom: 10px;
+        }
+
+        /* メインメニュー：タイル型 */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .menu-card {
+            background: var(--card-bg);
+            padding: 20px 10px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.2s, border-color 0.2s;
+            border: 1px solid #333;
+        }
+
+        .menu-card:active {
+            transform: scale(0.95);
+            background: #252525;
+        }
+
+        .icon {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .menu-title {
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        /* リストセクション */
+        .section-title {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin: 20px 0 10px 5px;
+            text-transform: uppercase;
+        }
+
+        .record-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+
+        .record-list li {
+            border-bottom: 1px solid #333;
+        }
+
+        .record-list li:last-child {
+            border-bottom: none;
+        }
+
+        .record-list a {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .record-list a:active {
+            background: #252525;
+        }
+
+        .arrow {
+            color: #555;
+            font-size: 0.8rem;
+        }
+
+        /* 同期ボタン */
+        .auth-section {
+            margin-top: 30px;
+            padding: 10px;
+        }
+
+        #authBtn {
+            width: 100%;
+            padding: 14px;
+            cursor: pointer;
+            background: #34495e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        #backupStatus {
+            font-size: 11px;
+            color: var(--sub-text);
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>メニュー</h2>
-            <button class="toggle-button" id="toggleButton">＜</button>
-        </div>
-        <ul>
-            <li><a href="index2.html">続100名城訪問記録</a></li>
-            <li><a href="catsle_card.html">城カード(100名城)</a></li>
-            <li><a href="catsle_card_zoku.html">城カード(続100名城)</a></li>
-            <li><a href="catsle_medal.html">城メダル取得記録</a></li>
-            <li><a href="goshoin.html">御翔印取得記録</a></li>
-            <li><a href="gokain.html">御菓印取得記録</a></li>
-            <li class="external-link"><a href="https://shirobito.jp/article/1843" target="_blank">100名城公式サイト 🔗</a></li>
 
-            <hr style="border: 0.5px solid #555; margin: 10px 0;">
-            <li style="padding: 10px;">
-                <button id="authBtn" onclick="handleAuthClick()"
-                    style="width: 100%; padding: 8px; cursor: pointer; background: #4285f4; color: white; border: none; border-radius: 4px;">Google同期を有効にする</button>
-                <div id="backupStatus" style="font-size: 11px; color: #ccc; margin-top: 5px; line-height: 1.4;"></div>
-            </li>
-        </ul>
+    <h1>🏰 お城・御朱印記録</h1>
+
+    <div class="section-title">お城</div>
+    <div class="menu-grid">
+        <a href="100catsle.html" class="menu-card">
+            <span class="icon">🏯</span>
+            <span class="menu-title">日本100名城</span>
+        </a>
+        <a href="index2.html" class="menu-card">
+            <span class="icon">⚔️</span>
+            <span class="menu-title">続100名城</span>
+        </a>
+        <a href="catsle_card.html" class="menu-card">
+            <span class="icon">🎴</span>
+            <span class="menu-title">100名城カード</span>
+        </a>
+        <a href="catsle_card_zoku.html" class="menu-card">
+            <span class="icon">🎴</span>
+            <span class="menu-title">続100名城カード</span>
+        </a>
+        <a href="catsle_medal.html" class="menu-card">
+            <span class="icon">🏅</span>
+            <span class="menu-title">城メダル</span>
+        </a>
     </div>
 
-    <div class="mapzone" id="mapzone">
-        <div class="section-title">
-            <!-- <h2>Map</h2> -->
-            <button onclick="setCurrentLocation()" class="btn-location">📍 現在地へ</button>
-        </div>
-        <div id="map-container">
-            <div id="map"></div>
-        </div>
+    <div class="section-title">御朱印関連</div>
+    <ul class="record-list">
+        <li><a href="goshoin.html"><span>✈️ 御翔印 (JAL)</span> <span class="arrow">▶</span></a></li>
+        <li><a href="gokain.html"><span>🍡 御菓印 (和菓子)</span> <span class="arrow">▶</span></a></li>
+
+    </ul>
+
+    <div class="auth-section">
+        <button id="authBtn" onclick="handleAuthClick()">Google Cloud 同期</button>
+        <div id="backupStatus">最終同期: 未実施</div>
     </div>
 
-    <div class="content" id="content">
-        <header>
-            <header style="padding: 0 10px;">
-                <h1>日本100名城 訪問記録</h1>
-            </header>
-            <div id="image-container" class="top-gallery">
-                <img id="image1" src="img/備中松山城.jpg" alt="備中松山城">
-                <img id="image1" src="img/himeji.jpg" alt="姫路城">
-            </div>
-
-            <section class="control-panel">
-                <h3>🏠 記録を登録する</h3>
-                <div class="input-group">
-                    <div class="field">
-                        <label for="region">エリア選択</label>
-                        <select id="region" name="region">
-                            <option value="未選択">未選択</option>
-                            <option value="北海道・東北">北海道・東北</option>
-                            <option value="関東">関東</option>
-                            <option value="甲信越・北陸">甲信越・北陸</option>
-                            <option value="東海・近畿">東海・近畿</option>
-                            <option value="中国・四国">中国・四国</option>
-                            <option value="九州・沖縄">九州・沖縄</option>
-                            <option value="国宝5名城">国宝5名城</option>
-                            <option value="現存12天守">現存12天守</option>
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label for="catsle">お城選択</label>
-                        <select id="catsle" name="catsle"></select>
-                    </div>
-                    <div class="field">
-                        <label for="selectedDate">訪れた日付</label>
-                        <input type="date" id="selectedDate" name="selectedDate">
-                    </div>
-                </div>
-                <button onclick="saveData()" class="btn-save">データを保存</button>
-            </section>
-
-            <hr class="divider">
-
-            <section class="display-panel">
-                <div class="panel-header">
-                    <h3>📊 訪問データの表示</h3>
-                    <button onclick="kakusu2()" class="btn-hide">非表示</button>
-                </div>
-                <div class="button-row">
-                    <button onclick="displayStoredData()" class="btn-outline">ID順で表示</button>
-                    <button onclick="displayStoredData2()" class="btn-outline">日付順で表示</button>
-                </div>
-                <div style="width: 100%; max-width: 500px; margin: 20px 0;">
-                    <canvas id="visitChart"></canvas>
-                </div>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                <div id="savedData"></div>
-            </section>
-
-            <section class="unvisited-panel">
-                <div class="panel-header">
-                    <h3>🚩 未訪問のお城</h3>
-                </div>
-                <button id="btn-toggle-unvisited" onclick="toggleUnvisitedList()" class="btn-outline full-width">
-                    未訪問のお城を表示
-                </button>
-                <div id="nameList"></div>
-            </section>
-
-            <section class="admin-panel">
-                <div class="panel-header">
-                    <h3>⚙️ データ管理</h3>
-                </div>
-
-                <div class="admin-sub-section">
-                    <div class="button-row">
-                        <button id="btn-toggle-delete" onclick="toggleDeleteList()" class="btn-manage">
-                            削除リストを表示
-                        </button>
-                    </div>
-                    <div id="recordList" style="display: none;"></div>
-                </div>
-            </section>
-
-            <br>
-
-            <div class="admin-sub-section data-tools">
-
-                <button onclick="outputCSV()" class="btn-csv">CSV書き出し</button>
-                <button onclick="document.getElementById('csvInput').click()" class="btn-csv">CSV読み込み</button>
-                <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="inputCSV()">
-                <button onclick="reset()" class="btn-reset">全記録リセット</button>
-            </div>
-
-            <pre id="output"></pre>
-            <button id="loadButton" class="btn-save" style="display:none" onclick="addData()">読み込んだデータを追加する</button>
-            </section>
-        </header>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="main.js"></script>
     <script src="googleAuth.js"></script>
+
 </body>
 
 </html>

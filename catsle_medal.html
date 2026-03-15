@@ -11,10 +11,9 @@
 </head>
 
 <body>
-    <div class="sidebar" id="sidebar">
+    <!-- <div class="sidebar" id="sidebar">
         <h2>メニュー</h2>
         <ul>
-            <!-- <li><a href="#">ホーム</a></li> -->
             <li><a href="index.html">100名城訪問記録</a></li>
             <li><a href="index2.html">続100名城の訪問記録</a></li>
             <li><a href="catsle_card.html">城カード取得記録(100名城)</a></li>
@@ -24,8 +23,9 @@
             <li><a href="gokain.html">御菓印取得記録</a></li>
             <button class="toggle-button" id="toggleButton">＜</button>
         </ul>
-    </div>
+    </div> -->
 
+    <h1>城メダル取得記録</h1>
     <div class="mapzone" id="mapzone">
         <button onclick="setCurrentLocation()" style="font-size: 20px;">現在地へ</button>
         <div id="map-container">
@@ -37,7 +37,6 @@
     <div class="content" id="content">
         <header>
 
-            <h1>城メダル取得記録</h1>
             <div class="image-container">
                 <div class="image-box">
                     <img src="img/medaru_machine.jpg" alt="御翔印">
@@ -119,4 +118,21 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <script src="main6.js"></script>
+    <a href="index.html" style="
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #34495e;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+        ">🏠</a>
 </body>
