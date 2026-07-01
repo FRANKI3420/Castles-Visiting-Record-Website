@@ -47,7 +47,8 @@ async function uploadToDrive() {
         "storedData4": "城カード_続100名城.json",
         "storedData5": "城メダル取得記録.json",
         "storedData6": "御翔印取得記録.json",
-        "storedData7": "御菓印取得記録.json"
+        "storedData7": "御菓印取得記録.json",
+        "storedData8": "全国タワーメダル取得記録.json"
     };
 
     let successCount = 0;

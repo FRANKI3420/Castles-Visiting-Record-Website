@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全国タワーメダル記録サイト</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <h1>全国タワーメダル 取得記録</h1>
+
+    <div class="mapzone" id="mapzone">
+        <div class="section-title">
+            <button onclick="setCurrentLocation()" class="btn-location">📍 現在地へ</button>
+        </div>
+        <div id="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <div class="content" id="content">
+        <header>
+            <div id="image-container" class="top-gallery">
+                <img id="image1" src="img/tower1.jpg">
+                <img id="image1" src="img/tower2.jpg">
+            </div>
+
+            <section class="control-panel">
+                <h3>🏠 記録を登録する</h3>
+                <div class="input-group">
+                    <div class="field">
+                        <label for="tower">タワー選択</label>
+                        <select id="tower" name="tower">
+                        </select>
+                    </div>
+                </div>
+                <button onclick="saveData()" class="btn-save">データを保存</button>
+            </section>
+
+            <hr class="divider">
+
+            <section class="display-panel">
+                <div class="panel-header">
+                    <h3>📊 訪問データの表示</h3>
+                </div>
+                <div class="button-row">
+                    <button onclick="displayStoredData()" class="btn-outline">保存データを表示</button>
+                    <button onclick="kakusu2()" class="btn-outline">非表示</button>
+                </div>
+                <div id="savedData"></div>
+            </section>
+
+            <section class="unvisited-panel">
+                <div class="panel-header">
+                    <h3>🚩 未取得のタワーメダル</h3>
+                </div>
+                <button id="btn-toggle-unvisited" onclick="toggleUnvisitedList()" class="btn-outline full-width">
+                    未取得のタワーメダルを表示
+                </button>
+                <div id="nameList"></div>
+            </section>
+
+            <section class="admin-panel">
+                <div class="panel-header">
+                    <h3>⚙️ データ管理</h3>
+                </div>
+
+                <div class="admin-sub-section">
+                    <div class="button-row">
+                        <button id="btn-toggle-delete" onclick="toggleDeleteList()" class="btn-manage">
+                            削除リストを表示
+                        </button>
+                    </div>
+                    <div id="recordList" style="display: none;"></div>
+                </div>
+
+                <div class="admin-sub-section data-tools">
+                    <button onclick="outputCSV()" class="btn-csv">CSV書き出し</button>
+                    <button onclick="document.getElementById('csvInput').click()" class="btn-csv">CSV読み込み</button>
+                    <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="inputCSV()">
+                    <button onclick="reset()" class="btn-reset">全記録リセット</button>
+                </div>
+
+                <pre id="output"></pre>
+                <button id="loadButton" class="btn-save" style="display:none" onclick="addData()">
+                    読み込んだデータを追加する
+                </button>
+            </section>
+        </header>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="main8.js" defer></script>
+
+    <a href="index.html" style="
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #34495e;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+        ">🏠</a>
+</body>
+
+</html>
